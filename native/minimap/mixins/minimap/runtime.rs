@@ -31,6 +31,7 @@ pub struct Settings {
     pub round: bool,
     pub zoom: usize,
     pub rotate: bool,
+    pub show_coordinates: bool,
 }
 
 impl Settings {
@@ -52,6 +53,7 @@ impl Settings {
             round: get("shape").as_deref() == Some("round"),
             zoom: find("zoom", &zooms, 1),
             rotate: get("rotate").as_deref() == Some("true"),
+            show_coordinates: get("show_coordinates").as_deref() == Some("true"),
         }
     }
     pub fn labels(&self) -> Vec<String> {
@@ -72,10 +74,12 @@ impl Settings {
                 "Turn with the player: {}",
                 if self.rotate { "ON" } else { "OFF" }
             ),
+            format!("Show Coordinates: {}", if self.show_coordinates { "ON" } else { "OFF" }),
         ]
     }
     pub fn click(&mut self, i: usize) {
         let next = |i: usize, n: usize| (i + 1) % n;
+        if i == 5 { self.show_coordinates = !self.show_coordinates; return; }
         match i {
             0 => self.corner = next(self.corner, CORNERS.len()),
             1 => self.size = next(self.size, SIZES.len()),
@@ -85,7 +89,7 @@ impl Settings {
             _ => {}
         }
     }
-    pub fn stored(&self) -> [(&'static str, String); 5] {
+    pub fn stored(&self) -> [(&'static str, String); 6] {
         [
             ("corner", CORNERS[self.corner].0.to_owned()),
             ("size", SIZES[self.size].0.to_string()),
@@ -94,6 +98,7 @@ impl Settings {
                 if self.round { "round" } else { "square" }.to_owned(),
             ),
             ("zoom", ZOOMS[self.zoom].to_string()),
+            ("show_coordinates", self.show_coordinates.to_string()),
             (
                 "rotate",
                 if self.rotate { "true" } else { "false" }.to_owned(),
@@ -154,7 +159,8 @@ mod tests {
                 "Size: Large",
                 "Shape: Round",
                 "Zoom: ½ block per pixel",
-                "Turn with the player: ON"
+                "Turn with the player: ON",
+                "Show Coordinates: OFF"
             ]
         );
         s.click(3);

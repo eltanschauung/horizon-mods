@@ -12,6 +12,7 @@ horizon_revision = "6f8c7a0e5d531d3834c4d0be4659a1db8e7e5c2a"
 id = "runtime"
 file = "crates/horizon-client/src/game.rs"
 name = "official_minimap"
+visibility = "pub(crate)"
 source = "runtime.rs"
 
 [[injection]]
@@ -54,3 +55,33 @@ bindings = [
   { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
   { name = "minimap", ty = "&mut Option<crate::game::native_hooks::NativeMinimap>", value = "&mut *minimap" },
 ]
+
+[[injection]]
+id = "coordinates-before"
+kind = "HEAD"
+target = "horizon_client_lib::extras_hud::draw_minimap"
+helper = "coordinates_before.rs"
+bindings = [
+  { name = "corners", ty = "&mut Corners", value = "&mut *corners" },
+  { name = "look", ty = "&MinimapLook", value = "look" },
+]
+
+[[injection]]
+id = "coordinates-after"
+kind = "RETURN"
+target = "horizon_client_lib::extras_hud::draw_minimap"
+helper = "coordinates_after.rs"
+bindings = [
+  { name = "result", ty = "()", value = "$value" },
+  { name = "corners", ty = "&mut Corners", value = "&mut *corners" },
+  { name = "look", ty = "&MinimapLook", value = "look" },
+  { name = "batch", ty = "&mut HudBatch", value = "&mut *batch" },
+  { name = "atlas", ty = "&HudAtlas", value = "atlas" },
+]
+
+[[module]]
+id = "coordinate-state"
+file = "crates/horizon-client/src/extras_hud.rs"
+name = "minimap_coordinates"
+visibility = "pub"
+source = "coordinate_state.rs"

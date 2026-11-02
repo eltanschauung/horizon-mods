@@ -14,7 +14,7 @@ launcher downloads its own Rust and builds the game with your native mods; see H
 
 ## Made on the hook points
 
-The bundle hooks only Horizon's native hook points (`crates/horizon-client/src/game/native_hooks.rs`), which keep
+The bundle uses Horizon's native hook points (`crates/horizon-client/src/game/native_hooks.rs`), which keep
 their names and signatures across releases. `compatibility.json` names the version it needs (`"hooks": 1`), so the
 launcher builds Minimap on any Horizon with that version or a later one, the player's own game by default, together with any other
 mod. `horizon_revision` is only the commit it was last tested on.
@@ -42,3 +42,9 @@ The proof needs resources prepared from your own Minecraft 26.3 (`horizon-prepar
 It seeds an earlier version's settings (bottom right, round, 2 blocks per pixel) in a temporary game folder, then checks that Options > Mods shows them, and that the Corner button moves the map to the top left and writes the same file. CI runs `cargo test`, packages the `.hnmod` and checks the game on the tested commit, and every Monday on the newest Nightly.
 
 License: MIT.
+
+## Coordinates
+
+This fork also hooks `extras_hud::draw_minimap` to reserve and draw the coordinate strip below the map in every corner. The shared drawing module carries the current player-coordinate text from the game hook.
+
+Enable **Show Coordinates** in Minimap settings to display `XYZ: x.xx / y.yy / z.zz` below the map. It defaults to OFF and persists as `show_coordinates` alongside the other minimap settings. Coordinates use the player position, including fractional and negative values.
