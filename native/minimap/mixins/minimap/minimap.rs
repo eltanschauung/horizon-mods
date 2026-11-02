@@ -10,7 +10,7 @@ fn minimap_view(game: &crate::game::Game<'_>, minimap: &mut Option<crate::game::
     }
     let settings = m::settings(|key| game.native_setting(m::ID, key));
     COORDINATES.with(|c| *c.borrow_mut() = if settings.show_coordinates {
-        game.native_player().map(|p| format!("XYZ: {:.2} / {:.2} / {:.2}", p.x, p.y, p.z))
+        game.native_player().map(|p| format!("{} {} {}", p.x.floor() as i64, p.y.floor() as i64, p.z.floor() as i64))
     } else { None });
     let (size, blocks_per_pixel) = settings.view();
     *minimap = Some(crate::game::native_hooks::NativeMinimap {
