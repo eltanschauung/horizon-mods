@@ -36,7 +36,7 @@ pub struct Settings {
 }
 
 impl Settings {
-    /// From the stored values; the extra's defaults (top right, medium,
+    /// From the stored values; the fork's defaults (top right, small,
     /// square, 1 block per pixel, north up) for the ones missing.
     pub fn read(get: impl Fn(&str) -> Option<String>) -> Self {
         let get = |key: &str| get(key).map(|v| v.trim().to_owned());
@@ -50,12 +50,12 @@ impl Settings {
         let zooms: Vec<String> = ZOOMS.iter().map(f32::to_string).collect();
         Self {
             corner: find("corner", &corners, 1),
-            size: find("size", &sizes, 1),
+            size: find("size", &sizes, 0),
             round: get("shape").as_deref() == Some("round"),
             zoom: find("zoom", &zooms, 1),
             rotate: get("rotate").as_deref() == Some("true"),
             show_coordinates: get("show_coordinates").as_deref() == Some("true"),
-            outline: find("outline", &["black".into(), "stone".into(), "bamboo".into()], 0),
+            outline: find("outline", &["black".into(), "stone".into(), "bamboo".into()], 1),
         }
     }
     pub fn labels(&self) -> Vec<String> {
@@ -145,7 +145,7 @@ mod tests {
         let s = Settings::read(none);
         assert_eq!(
             (s.corner, s.size, s.round, s.zoom, s.rotate),
-            (1, 1, false, 1, false)
+            (1, 0, false, 1, false)
         );
         let files = [
             ("corner", "bottom_left"),
@@ -166,7 +166,7 @@ mod tests {
                 "Zoom: ½ block per pixel",
                 "Turn with the player: ON",
                 "Show Coordinates: OFF",
-                "Minimap Outline: Black"
+                "Minimap Outline: Stone"
             ]
         );
         s.click(3);
