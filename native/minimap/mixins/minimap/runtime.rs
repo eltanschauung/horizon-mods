@@ -32,6 +32,7 @@ pub struct Settings {
     pub zoom: usize,
     pub rotate: bool,
     pub show_coordinates: bool,
+    pub outline: usize,
 }
 
 impl Settings {
@@ -54,6 +55,7 @@ impl Settings {
             zoom: find("zoom", &zooms, 1),
             rotate: get("rotate").as_deref() == Some("true"),
             show_coordinates: get("show_coordinates").as_deref() == Some("true"),
+            outline: find("outline", &["black".into(), "stone".into(), "bamboo".into()], 0),
         }
     }
     pub fn labels(&self) -> Vec<String> {
@@ -75,11 +77,13 @@ impl Settings {
                 if self.rotate { "ON" } else { "OFF" }
             ),
             format!("Show Coordinates: {}", if self.show_coordinates { "ON" } else { "OFF" }),
+            format!("Minimap Outline: {}", ["Black", "Stone", "Bamboo"][self.outline]),
         ]
     }
     pub fn click(&mut self, i: usize) {
         let next = |i: usize, n: usize| (i + 1) % n;
         if i == 5 { self.show_coordinates = !self.show_coordinates; return; }
+        if i == 6 { self.outline = next(self.outline, 3); return; }
         match i {
             0 => self.corner = next(self.corner, CORNERS.len()),
             1 => self.size = next(self.size, SIZES.len()),
@@ -89,8 +93,9 @@ impl Settings {
             _ => {}
         }
     }
-    pub fn stored(&self) -> [(&'static str, String); 6] {
+    pub fn stored(&self) -> [(&'static str, String); 7] {
         [
+            ("outline", ["black", "stone", "bamboo"][self.outline].to_owned()),
             ("corner", CORNERS[self.corner].0.to_owned()),
             ("size", SIZES[self.size].0.to_string()),
             (
@@ -160,12 +165,13 @@ mod tests {
                 "Shape: Round",
                 "Zoom: ½ block per pixel",
                 "Turn with the player: ON",
-                "Show Coordinates: OFF"
+                "Show Coordinates: OFF",
+                "Minimap Outline: Black"
             ]
         );
         s.click(3);
         s.click(3);
-        assert_eq!(s.stored()[3], ("zoom", "2".to_owned()));
+        assert_eq!(s.stored()[4], ("zoom", "2".to_owned()));
         let round = s.stored();
         let back = Settings::read(|k: &str| round.iter().find(|f| f.0 == k).map(|f| f.1.clone()));
         assert_eq!(back, s);
