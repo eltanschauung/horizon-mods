@@ -21,7 +21,7 @@ header and footer).
 | `/eco take <player> <amount> [reason]`, `/money take ...` | operators of level 3: takes a cheat's gains out of the game, logged with the reason |
 | `/eco stats` | the money supply and where it sits, what the server made and destroyed today, how evenly money is spread |
 | `/ah` | the auction house: a chest menu of listings by category, cheapest a unit first; click one to buy it or bid; your listings (click to take one back) and your mail |
-| `/ah sell <price> [count]` | lists the stack in your hand (or part of it) at a fixed price, for `listing_hours` (48); listing is free |
+| `/ah sell <price> [count]` | lists the stack in your hand (or part of it), whole (enchantments, name, contents...), at a fixed price, for `listing_hours` (48); listing is free |
 | `/ah auction <start> [hours]` | auctions the stack in your hand from a starting bid, for 1 to 24 hours (12) |
 | `/ah bid <listing> <amount>`, `/ah buy <listing>` | bids (the money is held until someone bids more or it ends), buys a fixed-price listing |
 | `/ah cancel <listing>`, `/ah claim`, `/ah search <words>`, `/ah mine`, `/ah mail` | takes back a listing nobody bid on; gives you your mail; the menu on a search, your listings, your mail |
@@ -39,7 +39,7 @@ header and footer).
 | `/casino`, `/casino roulette\|slots\|crash\|blackjack` | the casino's lobby menu, or a game's table (needs `gambling.enabled` and `casino.enabled`) |
 | `/casino help`, `/casino top`, `/casino stats` | every game's odds and house edge and the limits; today's biggest wins; what you bet, won and may still lose today |
 | `/coinflip accept <player>`, `/coinflip cancel`, `/coinflip list` | takes an offer (a fair coin decides, the winner gets both stakes), withdraws yours, lists those waiting |
-| `/spawn` | to the server's spawn; `/setspawn` (operators of level 3) sets it where you stand |
+| `/spawn` | to a safe spot within `places.spawn_radius` of the server's spawn; `/setspawn` (operators of level 3) sets it where you stand |
 | `/home [name]`, `/sethome [name]`, `/delhome [name]`, `/homes` | your homes (`home` when unnamed): go, set or move one where you stand, delete, list |
 | `/warp <name>`, `/warps` | to a warp, the list; `/setwarp <name>`, `/delwarp <name>` for operators of level 3 |
 | `/tpa <player>`, `/tpaccept [player]`, `/tpdeny [player]` | asks to go to a player (60 s to answer); answers a request |
@@ -213,14 +213,15 @@ stays where they are, and `cooldown_seconds` (10) passes between two of one play
 `places.fees` is ignored). `/tpa` takes the
 asker to where the other player is when the warmup ends. Homes grow with the time played on the server since the mod
 was on (`homes`: `[hours, homes]`, by default 1 home, 2 from 5 hours, 3 from 20, 5 from 100). `rules` holds `/rules`'
-lines. Teleports are vanilla's `tp`, run as the server (`execute in <level> run tp`), so they cross levels and land
+lines. `/spawn` lands on a random safe column within `spawn_radius` (250) blocks of the spawn point, like vanilla's `respawn_radius` for a first join or a respawn: after the `tp`, vanilla's `spreadplayers` moves the player off fluid, fire and magma onto solid ground (0: exactly the spawn point; if no column is found the player stays at the spawn point). Teleports are vanilla's `tp`, run as the server (`execute in <level> run tp`), so they cross levels and land
 as any teleport does.
 
 **Claims.** In a claimed chunk, only its owner, the players they trust and operators of level 3 break blocks or right
 click blocks: doors, chests, levers, buttons, placing a block, a bucket or flint on a block. Anyone else's click does
 nothing, and the action bar says whose land it is. The chunks a player may hold grow with the time played here
 (`claims.chunks`: `[hours, chunks]`, by default 4, 16 from 5 hours, 36 from 20, 64 from 100); `claims.enabled`
-turns them off. The world stays out too: no water or lava flows, no fire spreads or burns, and no piston pushes into
+turns them off. `claims.free_radius` (0, none) keeps the land within that many blocks of 0 0, in every dimension, free
+for all: no one claims a chunk that touches it, and claims already there are dropped at start (each logged). The world stays out too: no water or lava flows, no fire spreads or burns, and no piston pushes into
 a claim from land that isn't its owner's (or a player's they trust), and explosions break no claimed block, whoever
 lit them. Buckets are guarded where they fill or empty, and hitting the claim's item frames, armour stands,
 paintings, boats, minecarts and animals does nothing for others (`claims.protected_entities`, entity ids; monsters
@@ -260,8 +261,14 @@ raising one's own only holds the difference, and a bid in the last `snipe_second
 60 seconds away. When an auction ends, the seller is paid the winning bid and the items go to the winner's mail. Sellers
 and outbid players who are offline find a note when they come back. Everything (listings, bids, mail, notes) is
 written in `economy.json` with the balances, in one step: a crash can't keep the money and lose the items, or the
-reverse. Only plain items for now (not worn, named or enchanted); whole stacks with their enchantments wait for
-Horizon's `native_give_stack` to be stamped. Survival and adventure players only. `config.json`'s `auction`:
+reverse. A listing carries the whole stack (since 0.31): its enchantments, name, damage, lore, a shulker box's
+or a bundle's contents and every other component, written as the game writes it in player files, and given back
+exactly so (Horizon's `native_give_stack`) to the buyer, the winner, or the seller when it comes back. `/ah sell
+<price> <count>` lists part of the stack in hand; the rest stays in the hand, the same. The menu shows the stack
+itself (its tooltip), with the listing's price, seller and time under it. A stack is taken only if it would come
+back the same (its data written and read back equal); not market charts (free at `/market`), nor a stack holding
+more than 32 KiB of data (a box of books). Listings and mail from before 0.31 hold plain items and are given back as
+before. Survival and adventure players only. `config.json`'s `auction`:
 `enabled`, `max_listings` (8 a player), `listing_hours` (48), `auction_hours` (12),
 `auction_hours_max` (24), `bid_step_percent` (5: the smallest raise), `snipe_seconds` (60). Ended listings are
 looked at once a second (a pass over the open listings).
