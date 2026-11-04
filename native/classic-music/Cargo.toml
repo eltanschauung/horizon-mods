@@ -1,0 +1,10 @@
+[package]
+name = "horizon-mod-classic-music"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+description = "Classic Minecraft background playlists for Horizon clients"
+
+[lib]
+path = "mixins/classic_music/policy.rs"

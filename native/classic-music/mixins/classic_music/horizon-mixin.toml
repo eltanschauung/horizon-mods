@@ -1,0 +1,49 @@
+[mod]
+id="classic_music"
+version="0.1.0"
+priority=200
+
+[compatibility]
+horizon_revision="19a7b848958a5cfee957172bad4258750fb47c8b"
+
+[[module]]
+id="classic_music_policy"
+file="crates/horizon-client-render/src/sound_events.rs"
+name="classic_music_policy"
+visibility="pub"
+source="policy.rs"
+
+[[module]]
+id="classic_music_registry"
+file="crates/horizon-client-render/src/sound_events.rs"
+name="classic_music_registry"
+visibility="pub"
+source="registry.rs"
+
+[[injection]]
+id="tick"
+kind="HEAD"
+target="horizon_client::game::music::Game<'_>::tick_music"
+helper="tick.rs"
+bindings=[
+ {name="game",ty="&mut crate::game::Game<'_>",value="&mut *self"},
+]
+
+[[injection]]
+id="resolve"
+kind="HEAD"
+target="horizon_client_render::sound_engine::SoundEngine::resolve"
+helper="resolve.rs"
+bindings=[
+ {name="engine",ty="&mut SoundEngine",value="&mut *self"},
+ {name="id",ty="InstanceId",value="id"},
+]
+
+[[injection]]
+id="list"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper="list.rs"
+bindings=[
+ {name="mods",ty="&mut Vec<crate::game::native_hooks::NativeMod>",value="&mut *mods"},
+]

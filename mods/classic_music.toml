@@ -1,0 +1,27 @@
+id = "classic_music"
+kind = "native-mod"
+name = "Classic Music"
+summary = "Classic background music playlists; music discs stay unchanged."
+description = """
+Client-only background-music replacement. The Overworld uses the requested 21 classic songs,
+and the main menu uses Beginning 2, Floating Trees, Moog City 2 and Mutation.
+The Nether uses Concrete Halls, Dead Voxel, Ballad of the Cats and Warmth.
+End, dragon and credits music retain their original tracks. All music discs remain untouched.
+
+Tracks are replaced before playback, so a biome containing only newer background songs gets
+classic music rather than an empty playlist. Existing Minecraft assets are used; no audio is bundled.
+Normal music timing and volume settings remain in use. Disable under Options > Mods to restore the original pools.
+No dedicated-server installation or content registry changes.
+"""
+authors = ["eltanschauung"]
+owners = ["eltanschauung"]
+license = "MIT"
+source = "https://github.com/eltanschauung/horizon-mods/tree/main/native/classic-music"
+
+[[versions]]
+version = "0.1.0"
+published = "2026-11-04"
+game = "26.3"
+file = "classic_music-0.1.0.hnmod"
+sha256 = "7f24eaee5a4f822dd04be7a3fd333f5b14aa3cb01eef30095de4f86b9a709b81"
+changelog = "Classic background playlists with dimension-aware replacements, unchanged discs and cached registry restoration."
