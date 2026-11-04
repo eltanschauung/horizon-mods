@@ -1,6 +1,6 @@
 # Sleep Threshold
 
-Native multiplayer sleep policy. One setting in **Options → Mods → Sleep Threshold → Settings** cycles through **One Player** (default), **>=10%**, **>=25%**, **>=33%**, **>=50%**, **>=75%**, **Vanilla**.
+Native multiplayer sleep policy. One setting in **Options → Mods → Sleep Threshold → Settings** cycles through **One Player**, **>=10%**, **>=25%**, **>=33%** (default), **>=50%**, **>=75%**, **Vanilla**.
 
 Percentages round up to a whole player: 50% of five eligible players requires three. Vanilla delegates to the world's `players_sleeping_percentage` gamerule (normally 100). Disabling the mod restores vanilla behavior. Spectators/ignored-player handling, deep sleep's 100-tick delay, dimension restrictions, time/weather rules and other mods' time-skip hooks are unchanged. A gamerule above 100 still disables night skipping.
 

@@ -1,6 +1,6 @@
 [mod]
 id = "sleep_threshold"
-version = "0.1.0"
+version = "0.1.1"
 priority = 100
 [compatibility]
 horizon_revision = "8dbbde43501924d16497d251e6e9d08f812eafcd"

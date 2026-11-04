@@ -34,7 +34,7 @@ pub fn choice(path: &Path) -> usize {
     let choice = LABELS
         .iter()
         .position(|l| l.eq_ignore_ascii_case(text.trim()))
-        .unwrap_or(0);
+        .unwrap_or(3);
     cache.insert(path.to_owned(), (Instant::now(), choice));
     choice
 }
@@ -68,11 +68,11 @@ mod tests {
         let b = root.join("b");
         std::fs::create_dir_all(&a).unwrap();
         std::fs::create_dir_all(&b).unwrap();
-        assert_eq!(choice(&a), 0);
+        assert_eq!(choice(&a), 3);
         std::fs::write(a.join("threshold"), ">=50%").unwrap();
         invalidate(&a);
         assert_eq!(choice(&a), 4);
-        assert_eq!(choice(&b), 0);
+        assert_eq!(choice(&b), 3);
         std::fs::write(a.join("threshold"), "Vanilla").unwrap();
         invalidate(&a);
         assert_eq!(choice(&a), 6);
