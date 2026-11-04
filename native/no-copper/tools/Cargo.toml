@@ -1,0 +1,16 @@
+[package]
+name="copper-to-coal"
+version="0.1.0"
+edition="2024"
+license="MIT"
+publish=false
+[workspace]
+[[bin]]
+name="copper-to-coal"
+path="convert.rs"
+[dependencies]
+horizon-world={path="../../../../horizon/crates/horizon-world"}
+serde_json="=1.0.151"
+[profile.fast]
+inherits="dev"
+opt-level=2

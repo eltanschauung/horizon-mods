@@ -1,0 +1,20 @@
+id="no_copper"
+kind="native-mod"
+name="No Copper"
+summary="Disables copper ore deposits and large copper veins on the world host."
+description="""
+Disables copper and deepslate copper ore deposits, including large copper veins and their raw-copper blocks.
+Other ores stay unchanged. Runs after worldgen overrides, including Tectonic and data packs.
+Only the world host needs the mod. Includes a separate offline copper-to-coal conversion tool in the source repository.
+"""
+authors=["eltanschauung"]
+owners=["eltanschauung"]
+license="MIT"
+source="https://github.com/eltanschauung/horizon-mods/tree/main/native/no-copper"
+[[versions]]
+version="0.1.0"
+published="2026-11-04"
+game="26.3"
+file="no_copper-0.1.0.hnmod"
+sha256="4618cb86833ff842c9d9f6e0456c6c86016fddf752ec9006e69da0c92602d3d5"
+changelog="Disable copper deposits and ore veins; add an offline Anvil copper-to-coal migration tool."
