@@ -37,7 +37,7 @@ pub struct Settings {
 
 impl Settings {
     /// From the stored values; the fork's defaults (top right, small,
-    /// square, 1 block per pixel, north up) for the ones missing.
+    /// square, 1 block per pixel, north up, coordinates on) for the ones missing.
     pub fn read(get: impl Fn(&str) -> Option<String>) -> Self {
         let get = |key: &str| get(key).map(|v| v.trim().to_owned());
         let find = |key: &str, values: &[String], default: usize| {
@@ -54,7 +54,7 @@ impl Settings {
             round: get("shape").as_deref() == Some("round"),
             zoom: find("zoom", &zooms, 1),
             rotate: get("rotate").as_deref() == Some("true"),
-            show_coordinates: get("show_coordinates").as_deref() == Some("true"),
+            show_coordinates: get("show_coordinates").as_deref().unwrap_or("true") == "true",
             outline: find("outline", &["black".into(), "stone".into(), "bamboo".into()], 1),
         }
     }
