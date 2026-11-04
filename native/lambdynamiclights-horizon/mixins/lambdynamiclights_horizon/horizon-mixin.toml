@@ -1,0 +1,95 @@
+[mod]
+id = "lambdynamiclights_horizon"
+version = "0.1.0"
+priority = 110
+
+[compatibility]
+horizon_revision = "19a7b848958a5cfee957172bad4258750fb47c8b"
+
+[[module]]
+id = "lambdynamiclights"
+file = "crates/horizon-client/src/game.rs"
+name = "lambdynamiclights"
+source = "runtime.rs"
+
+[[module]]
+id = "lambdynamiclights_bridge"
+file = "crates/horizon-client/src/game.rs"
+name = "lambdynamiclights_bridge"
+source = "bridge.rs"
+
+[[injection]]
+id = "sources"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::dynamic_lights::Game<'_>::dynamic_light_sources"
+helper = "sources.rs"
+bindings = [
+ { name="game", ty="&crate::game::Game<'_>", value="&*self" },
+ { name="alpha", ty="f64", value="alpha" },
+]
+
+[[injection]]
+id="list"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper="list.rs"
+bindings=[
+ {name="mods", ty="&mut Vec<crate::game::native_hooks::NativeMod>", value="&mut *mods"},
+]
+
+[[injection]]
+id="settings"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_settings"
+helper="settings.rs"
+bindings=[
+ {name="game", ty="&mut crate::game::Game<'_>", value="&mut *self"},
+ {name="mod_id", ty="&str", value="mod_id"},
+ {name="buttons", ty="&mut Vec<String>", value="&mut *buttons"},
+]
+
+[[injection]]
+id="click"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_settings_click"
+helper="click.rs"
+bindings=[
+ {name="game", ty="&mut crate::game::Game<'_>", value="&mut *self"},
+ {name="mod_id", ty="&str", value="mod_id"},
+ {name="button", ty="usize", value="button"},
+]
+
+[[module]]
+id="display-lights"
+file="crates/horizon-client/src/game/text_displays.rs"
+name="lambdynamiclights_displays"
+visibility="pub(crate)"
+source="displays.rs"
+
+[[module]]
+id="beacon-lights"
+file="crates/horizon-client/src/game/beacon.rs"
+name="lambdynamiclights_beacons"
+visibility="pub(crate)"
+source="beacons.rs"
+
+[[injection]]
+id="commands"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_commands"
+helper="commands.rs"
+bindings=[
+ {name="commands",ty="&mut Vec<&'static str>",value="&mut *commands"},
+]
+
+[[injection]]
+id="command"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_command"
+helper="command.rs"
+bindings=[
+ {name="game",ty="&mut crate::game::Game<'_>",value="&mut *self"},
+ {name="command",ty="&str",value="command"},
+ {name="ran",ty="&mut bool",value="&mut *ran"},
+]

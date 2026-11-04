@@ -1,0 +1,27 @@
+id = "lambdynamiclights_horizon"
+kind = "native-mod"
+name = "LambDynamicLights Horizon"
+summary = "Dynamic lights from held items, fire, creatures and projectiles."
+description = """
+An unofficial native Rust port of LambdAurora’s MIT-licensed LambDynamicLights core for Horizon 26.3.
+
+Held and dropped luminous items, water-sensitive torches, burning entities, naturally luminous mobs,
+projectiles, frames, displays, beacon/guardian beams and firefly/sonic-boom particles use Horizon’s GPU lighting.
+No server installation or extra network packets. Configure it under Options > Mods > LambDynamicLights Horizon.
+
+This port uses the nearest 16 sources and Horizon’s light falloff. It does not implement the newer Java API or arbitrary Java resource-pack predicates.
+Original: https://github.com/LambdAurora/LambDynamicLights
+Reference: aecdeccc27aaaac38995c577b2605476b41d8ba4 (MIT). Original author: LambdAurora.
+"""
+authors = ["LambdAurora", "eltanschauung"]
+owners = ["eltanschauung"]
+license = "MIT"
+source = "https://github.com/eltanschauung/horizon-mods/tree/main/native/lambdynamiclights-horizon"
+
+[[versions]]
+version = "0.1.0"
+published = "2026-11-04"
+game = "26.3"
+file = "lambdynamiclights_horizon-0.1.0.hnmod"
+sha256 = "b6f6da562fd81b2c7aca72abf096ba129e695f746d49216bf82037202c8caf06"
+changelog = "Native Horizon port with cached light rules, GPU rendering, settings, resource-pack overrides and client commands."
