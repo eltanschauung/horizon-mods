@@ -21,6 +21,10 @@ owned by its own authors, not by the Horizon project or its maintainers. A listi
 [mod policy](MOD-POLICY.md): what authors promise when they submit (ports of other mods included), the licences
 whose source reviewers can read, and how to have a project taken down.
 
+## Fork additions
+
+[Sleep Threshold](native/sleep-threshold/) adds a single setting for one-player or percentage-based night skipping. Its source bundle is built locally; it is not an upstream registry listing.
+
 ## Submit
 
 Use the form at [playhorizon.dev/mods/submit](https://playhorizon.dev/mods/submit): sign in with GitHub, pick the file
