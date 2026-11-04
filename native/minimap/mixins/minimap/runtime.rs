@@ -165,7 +165,7 @@ mod tests {
                 "Shape: Round",
                 "Zoom: ½ block per pixel",
                 "Turn with the player: ON",
-                "Show Coordinates: OFF",
+                "Show Coordinates: ON",
                 "Minimap Outline: Stone"
             ]
         );

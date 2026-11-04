@@ -47,4 +47,4 @@ License: MIT.
 
 This fork also hooks `extras_hud::draw_minimap` to reserve and draw the coordinate strip below the map in every corner. The shared drawing module carries the current player-coordinate text from the game hook.
 
-Enable **Show Coordinates** in Minimap settings to display `X Y Z` as whole block coordinates, centered in white shadowed text with no background box below the map. It defaults to OFF and persists as `show_coordinates` alongside the other minimap settings. Coordinates use the player position, floored to block coordinates, including negative positions.
+Enable **Show Coordinates** in Minimap settings to display `X Y Z` as whole block coordinates, centered in white shadowed text with no background box below the map. It defaults to ON in this fork and persists as `show_coordinates` alongside the other minimap settings. Coordinates use the player position, floored to block coordinates, including negative positions.
