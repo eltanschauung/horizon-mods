@@ -1,5 +1,7 @@
 # Horizon mods
 
+Fork maintenance: [features and upstream sync checklist for both forks](https://github.com/eltanschauung/horizon/blob/main/FORK_FEATURES.md).
+
 The registry of what is made for [Horizon](https://github.com/horizon-rust/horizon): mods (`.hmod`), modpacks (`.hpack`)
 and resource packs, each one reviewed before it is published. Browse them at
 [playhorizon.dev/mods](https://playhorizon.dev/mods) or in the launcher (Mods, then Horizon beside Modrinth).
