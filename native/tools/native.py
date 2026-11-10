@@ -71,9 +71,24 @@ def get(url):
 
 
 def latest_nightly():
-    """The commit of the newest Nightly: its permanent nightly-source/<date>-<short> tag."""
+    """The commit of the newest Nightly: its permanent nightly-source/<date>-<short> tag.
+
+    The newest is picked by the tag's date, and a same-date tie by the tagged commit's own
+    date: comparing the ref name alone breaks a tie by the short SHA, which can be an earlier
+    build than the day's latest nightly.
+    """
     refs = json.loads(get(f"https://api.github.com/repos/{REPO}/git/matching-refs/tags/nightly-source/"))
-    newest = max(refs, key=lambda r: r["ref"])
+    def nightly_date(ref):
+        return ref.split("nightly-source/")[1][:10]
+    newest_day = max(nightly_date(r["ref"]) for r in refs)
+    same_day = [r for r in refs if nightly_date(r["ref"]) == newest_day]
+    if len(same_day) == 1:
+        newest = same_day[0]
+    else:
+        def commit_time(r):
+            commit = json.loads(get(f"https://api.github.com/repos/{REPO}/commits/{r['object']['sha']}"))
+            return commit["commit"]["committer"]["date"]
+        newest = max(same_day, key=commit_time)
     return get_commit(newest["ref"].removeprefix("refs/tags/"))
 
 
@@ -159,6 +174,10 @@ def cargo(stage_dir, action):
     jobs = os.environ.get("FLEET_LOAD_JOBS") or os.environ.get("CARGO_BUILD_JOBS")
     command = ["cargo", action, "--locked", "-p", "horizon-client", "--bin", "horizon-client"]
     if action == "build":
+        # Newer Horizon moved the control tool into the reusable client library.
+        library = stage_dir / "crates/horizon-client-lib/Cargo.toml"
+        if library.is_file() and any(b.get("name") == "horizon-ctl" for b in tomllib.loads(library.read_text()).get("bin", [])):
+            command += ["-p", "horizon-client-lib"]
         command += ["--bin", "horizon-ctl", "--profile", "fast"]
     if os.environ.get("NATIVE_NO_DEFAULT_FEATURES"):
         command.append("--no-default-features")
@@ -170,7 +189,8 @@ def cargo(stage_dir, action):
 
 
 def package(m):
-    """A deterministic .hnmod: horizon-native.json, the bundle's .rs and .toml files (its crates' too) and the mod's
+    """A deterministic .hnmod: horizon-native.json, the bundle's .rs and .toml files (its crates' too), its data
+    folders (`data/` and each crate's `data/`, which `native_data!` and `include_bytes!` compile in) and the mod's
     LICENSE as mixins/<id>/LICENSE, so the licence's notice travels with the sources (Horizon's bundle reader
     accepts LICENSE* files there)."""
     manifest = {"schema": 1, "id": m.id, "version": m.version, "game": m.compat["game"],
@@ -180,10 +200,12 @@ def package(m):
     if pinned != m.compat["horizon_revision"]:
         sys.exit(f"{m.id}: horizon-mixin.toml pins {pinned}, compatibility.json {m.compat['horizon_revision']}")
     files = {"horizon-native.json": (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()}
-    # The helpers and modules, and the sources of the bundle's own crates (horizon-mixins 0.6.0).
+    # The helpers and modules, the sources of the bundle's own crates and the data folders (horizon-mixins 0.6.0).
+    data = [Path("data")] + [Path(c["path"]) / "data" for c in m.manifest.get("crate", [])]
     for path in sorted(m.bundle.rglob("*")):
-        if path.is_file() and path.suffix in (".rs", ".toml"):
-            files[f"mixins/{m.id}/{path.relative_to(m.bundle).as_posix()}"] = path.read_bytes()
+        relative = path.relative_to(m.bundle)
+        if path.is_file() and (path.suffix in (".rs", ".toml") or any(relative.is_relative_to(d) for d in data)):
+            files[f"mixins/{m.id}/{relative.as_posix()}"] = path.read_bytes()
     licence = m.root / "LICENSE"
     if licence.is_file():
         files.setdefault(f"mixins/{m.id}/LICENSE", licence.read_bytes())

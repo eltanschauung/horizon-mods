@@ -27,7 +27,7 @@ header and footer).
 | `/ah cancel <listing>`, `/ah claim`, `/ah search <words>`, `/ah mine`, `/ah mail` | takes back a listing nobody bid on; gives you your mail; the menu on a search, your listings, your mail |
 | `/shop` | the market as a chest menu: categories, a click buys one, a shift-click 64, a click on a stack of yours sells it, "Sell all" |
 | `/market [item]` | the moving market as a chest menu: categories, each item's price, its move over 1 h and 24 h and its volume; an item's page buys or sells 1, 16 or 64, sells all you carry, and gives its price chart as a map |
-| `/worth [item]` | an item's price, the same to buy and to sell (the one in your hand without a name), and what you may still sell today |
+| `/worth [item]` | an item's price, the same to buy and to sell (the one in your hand without a name) |
 | `/sell hand [count]`, `/sell <item> [count]`, `/sell all` | sells to the market: the stack in your hand, an item, or everything it buys |
 | `/buy <item> [count]` | buys from the market, only what fits in your inventory |
 | `/trade <player>` | asks a player to trade (60 s to answer) |
@@ -43,6 +43,7 @@ header and footer).
 | `/home [name]`, `/sethome [name]`, `/delhome [name]`, `/homes` | your homes (`home` when unnamed): go, set or move one where you stand, delete, list |
 | `/warp <name>`, `/warps` | to a warp, the list; `/setwarp <name>`, `/delwarp <name>` for operators of level 3 |
 | `/tpa <player>`, `/tpaccept [player]`, `/tpdeny [player]` | asks to go to a player (60 s to answer); answers a request |
+| `/rtp`, `/wild` | to a random safe spot 500 to 10,000 blocks from the spawn, in the Overworld only; once every 5 minutes |
 | `/rules` | the server's rules |
 | `/back` | back to where you died, or where your last teleport took you from (warmup and cooldown as any teleport) |
 | `/afk` | marks you away from the keyboard until you move, turn or run a command |
@@ -50,6 +51,7 @@ header and footer).
 | `/claim`, `/claim info`, `/unclaim` | claims the chunk you stand in (all its height), says whose it is, frees it (operators of level 3: anyone's) |
 | `/claim show` | draws the border of the chunk you stand in for 10 s, for you only: green yours or a trusting owner's, red someone else's, white free |
 | `/claims` | your chunks, how many you may hold, and who you trust |
+| `/pingsound`, `/pingsound on`, `/pingsound off` | whether you hear a ding when someone names you in chat or `/msg`s you; turns it on or off |
 | `/trust <player>`, `/untrust <player>` | lets a player (or no longer) build and use things on all your land |
 | `/nick <name>`, `/nick off`, `/nick` | operators of level 3 (with `ops_only`, the default): another name for you in chat and the Tab list, shown as `~name` (hovering it gives your real one); `/nick off` (anyone with a nickname) takes it off; `/nick` alone says how |
 | `/nick <player> <name\|off>` | operators of level 3: sets or takes off a player's nickname |
@@ -58,12 +60,16 @@ header and footer).
 | `/invsee <player>`, `/endersee <player>` | operators of level 3: the player's inventory (main, hotbar, armour, off hand) or ender chest in a chest menu, on or off the server; click one of theirs to take it, one of yours to give it; every move in `audit.log`, a summary in `staff.log` |
 | `/sidebar off`, `/sidebar on`, `/sidebar` | hides the scoreboard sidebar for you (remembered), shows it again |
 | `/smp status`, `/smp off [part\|all] [reason]`, `/smp on [part\|all]` | operators of level 3: the emergency switches (below) |
+| `/report <player> <reason>` | anyone: tells the staff about a player (a reason is needed; one report every `reports.cooldown_seconds`, 120). Operators of level 3 on read it at once; one who joins later is told how many came in the last 24 hours. Kept in `reports.log` and the server's log |
+| `/reports [page]` | operators of level 3: the reports, newest first (the last 100 kept in memory, read back from `reports.log` at the start) |
+| `/ledger [page]`, `/ledger <player> [page]`, `/ledger minted` | operators of level 3: the coin ledger (`audit.log`): the newest coin movements (who to whom, how much, why, when), one player's, or the coins the server made and destroyed in each of the last 6 hours and what made most of them. Reads the end of the file (1 MB) only when asked |
+| `/smpadmin claims <player>`, `/smpadmin homes <player>`, `/smpadmin lastpos <player>` | operators of level 3: any player's claims (each area of touching chunks: dimension, corners, chunks and size; who they trust), homes, or where they last left the game (kept in `last_positions.json` when each player leaves) and where they stand if on. The player may be offline: found by the server's names (accounts, `usercache.json`) or the name they left with. A click on a home or a position teleports there; on a claim, puts the teleport (at your height) in the chat box. Others get vanilla's unknown command |
 
 The market trades only plain items (not worn, named or enchanted), and only with players in survival or adventure
 mode. Items move first, then money, both logged; a sale the log refuses gives the items back, and a purchase checks the
 money and the room before anything moves.
 
-**No way to get rich from the market.** The market makes money only from what players gather, and only so much a day:
+**No way to get rich from the market.** The market makes money only from what players gather:
 - One price per item, to buy and to sell (since 0.29): a config that still has two (`buy` 400, `sell` 100) gets
   their geometric mean (200) at load, logged ("one price now"); `buy` or `sell` 0 still closes that side. A trade
   of N items is priced along the curve it moves the price on (below), so buying N and selling them back gives back
@@ -76,12 +82,10 @@ money and the room before anything moves.
   copper, diamond, emerald, coal, redstone, lapis, wheat, wood and food chains at each start.
 - Items a recipe links (an ingot and its block, wheat and hay...) share one moving price, the block moving it as
   its 9 ingots do, so crafting never beats the market however prices move; the vanilla-recipe test checks every item
-  at the worst drift (what makes it at 0.6 times its price, it at 1.6) too.
-- Each player sells at most `daily_sell_coins` (2,000 coins) and `daily_sell_items` (640 of each item) a UTC day,
-  `/worth` and the shop show what is left, and `market.json` keeps the day's count across restarts.
-- Money received with `/pay` counts toward the receiver's same `daily_sell_coins`: selling up to the limit on alts
-  and paying it all to a main is refused once the main's limit is reached ("can only receive N more today").
-  Trades (`/trade`) and auction house sales are not counted.
+  at the worst drift (what makes it at 0.2 times its price, it at 1.6) too.
+- There are no daily coin or per-item limits on market sales, or daily limits on `/pay` receipts.
+  The former `daily_sell_coins` and `daily_sell_items` settings and `market.json` counts are ignored,
+  including in existing server files.
 - Amounts are checked: no price above 1,000,000,000,000, no sum that overflows.
 - The coinflip and the lottery give the winner all the stakes: they move money between players and never make any.
 
@@ -114,8 +118,8 @@ the other operators on. Needs horizon#6106 (`native_inventory`, `native_move_sta
 
 **Vanish.** `/vanish` takes an operator of level 3 out of the Tab list and the world of every player below level 3,
 whatever the game mode (survival and creative too), and those players don't read them joining or leaving; operators of
-level 3 or more still see them, and are told who vanished. A vanished operator reads a subtitle the whole time
-(*Vanished: only operators see you*), isn't counted online (the sidebar, the Tab list's footer), doesn't hold the night up, isn't
+level 3 or more still see them, and are told who vanished. A vanished operator reads a line above the hotbar the
+whole time (*Vanished: only operators see you*), isn't counted online (the sidebar, the Tab list's footer), doesn't hold the night up, isn't
 announced as AFK or on a first join, and can't be reached by name by those who don't see them (`/tpa`, `/trade`,
 `/coinflip`, `/playtime`). It lasts over a relog and a restart (`vanish.json`) until `/vanish` again. Needs
 horizon#7003 (`native_hide_player`).
@@ -140,15 +144,19 @@ names), `reserved` (the words above).
 **Moving prices** (`market.dynamic`, on by default since 0.26). Each item has one price: its base price (`items`)
 times a factor that supply and demand move as each trade happens. Every item bought raises the log of the factor by
 `1% / depth`, every item sold lowers it as much, where the depth follows the item's rarity (400 / its price, between
-2 and 400: a diamond moves 50 times faster per item than cobblestone; `depth` overrides it per item). A trade of N is
+2 and 50: a diamond moves 25 times faster per item than cobblestone, and any item reaches the floor within 10,000
+sold; `depth` overrides it per item). A trade of N is
 worth the area under that curve (`price / step × (e^(N × step) - 1)`), rounded up to whole coins when buying and down
 when selling: one diamond at 200 costs 201 and sells for 199, 64 cobblestone at 1 cost 65, and a sale walks back the
 exact path of the purchase. All trades together move an item at most `max_minute_move_percent` (5%) a minute from
 where it started that minute: past that, a purchase is cut short and a sale keeps the rest ("sell them in a
-minute"). The factor goes back to 1 with a half-life of `half_life_hours` (6) and stays within `min_factor` (0.6)
-and `max_factor` (1.6), where the rest of a trade goes at that price. There is no tax on trades (an older config's
-`tax_percent` is ignored): the receipt is the price ("Sold 3 diamond at 198 coins each: 595 coins."). Items a player bought from the market in the last `round_trip_hours` (24) can't be
-sold back to it. (`max_trade_impact_percent` and `max_player_impact_percent` are no longer used: the curve and the
+minute"). The factor goes back to 1 with a half-life of `half_life_hours` (6) and stays within `min_factor` (0.2)
+and `max_factor` (1.6), where the rest of a trade goes at that price. With no daily sale caps (since 0.33), the floor
+is what bounds a farm: selling one item without end takes its price down to a fifth of its base, where it stays while
+the selling goes on; a config with the old floor (0.6) gets 0.2 when it loads. There is no tax on trades (an older config's
+`tax_percent` is ignored): the receipt is the price ("Sold 3 diamond at 198 coins each: 595 coins."). Market purchases can be sold back immediately;
+the former `round_trip_hours` setting and saved purchase receipts are ignored. (`max_trade_impact_percent` and
+`max_player_impact_percent` are no longer used: the curve and the
 minute's band do their work.) History: one point a minute for 24 hours and one an hour for 30 days (the mid price, the
 items traded and those sold), in `market_prices.json`, written by a thread every 5 minutes and when the world closes.
 At the first minute of each UTC day, the day's three biggest risers and fallers (at least 1%) and news from real
@@ -158,7 +166,7 @@ fixed prices of 0.23. For other mods: `Market::spot`, `volume(id, now, hours)`, 
 
 **`/market`.** A 6-row chest menu: the shop's categories and the day's movers; a category's items, each with its
 price, its change over 1 h and 24 h (green ▲, red ▼) and what was traded in 24 h; an item's page with its
-base price and what you may still sell today, buttons to buy or sell 1, 16 and 64 (what they come to
+base price , buttons to buy or sell 1, 16 and 64 (what they come to
 along the curve), sell all of it you carry, and the price chart over 24 hours or 7 days, given as a filled map (128 × 128,
 drawn by the server: the curve green when it rose, red when it fell, the price, the change, the low and high). A
 chart map is drawn again each minute for whoever carries it, and once a minute the open menus follow the prices.
@@ -167,8 +175,8 @@ chart map is drawn again each minute for whoever carries it, and once a minute t
 **The shop.** `/shop` opens a 6-row chest menu on the market's prices: the categories of `config.json`'s `shop` (an
 item in none goes under "Other"), each item named with its prices. A click buys one, a shift-click 64; a click on a
 stack in your own inventory, below the menu, sells it; "Sell all" sells everything the market buys. The bottom row
-shows your balance and today's selling limit. It goes through the market's own rules (survival or adventure only,
-items then money, logged, the daily limits); the items move by the console's `clear` and `give`, measured on the
+shows your balance. It goes through the market's own rules (survival or adventure only,
+items then money, logged); the items move by the console's `clear` and `give`, measured on the
 inventory before and after, so the money follows what really moved.
 
 **Trades.** Once accepted, both players see a 6-row chest menu: their own offer on the left (16 stacks), the other's
@@ -226,6 +234,20 @@ was on (`homes`: `[hours, homes]`, by default 1 home, 2 from 5 hours, 3 from 20,
 lines. `/spawn` lands on a random safe column within `spawn_radius` (250) blocks of the spawn point, like vanilla's `respawn_radius` for a first join or a respawn: after the `tp`, vanilla's `spreadplayers` moves the player off fluid, fire and magma onto solid ground (0: exactly the spawn point; if no column is found the player stays at the spawn point). Teleports are vanilla's `tp`, run as the server (`execute in <level> run tp`), so they cross levels and land
 as any teleport does.
 
+`/rtp` (or `/wild`) draws `rtp_attempts` (6) chunks at random between `rtp_min_distance` (500) and `rtp_max_distance`
+(10000) blocks from the spawn (`/setspawn`'s point, 0 0 without one), uniform over the ring's area and at least 16 blocks
+inside the world border (as last saved in `world_border.dat`), then holds them loaded one after another with vanilla's
+`forceload` while the warmup runs: the game generates them on its worker threads, never on the server tick. Once a
+chunk is loaded, the Overworld's tick reads its 256 columns (`native_read_columns`, the top block below the
+`MOTION_BLOCKING_NO_LEAVES` height and the two above it) and the player lands, still standing still, on a random one
+whose top block is solid ground (no fluid, fire, cactus, magma, powder snow, berry bush or dripstone) with air or grass
+above it, outside another player's claim and still in the ring and the border; with none the next chunk is tried. With
+no spot after the six, or no land loaded `rtp_search_seconds` (30) after the warmup, it says so and nothing is spent.
+A teleport made starts `rtp_cooldown_seconds` (300) for that player, kept in `places.json` over restarts ("Wait 2 min
+before your next /rtp."); a teleport called off (a move, a hit, the game failing it) doesn't. Elsewhere than the
+Overworld it refuses. The chunks it forced are let go 10 s after the landing, or at the next start if the server
+stopped first; a chunk an operator forced already is used and left forced. `/back` returns from it as from any teleport.
+
 **Claims.** In a claimed chunk, only its owner, the players they trust and operators of level 3 break blocks or right
 click blocks: doors, chests, levers, buttons, placing a block, a bucket or flint on a block. Anyone else's click does
 nothing, and the action bar says whose land it is. The chunks a player may hold grow with the time played here
@@ -233,11 +255,24 @@ nothing, and the action bar says whose land it is. The chunks a player may hold 
 turns them off. `claims.free_radius` (0, none) keeps the land within that many blocks of 0 0, in every dimension, free
 for all: no one claims a chunk that touches it, and claims already there are dropped at start (each logged). The world stays out too: no water or lava flows, no fire spreads or burns, and no piston pushes into
 a claim from land that isn't its owner's (or a player's they trust), and explosions break no claimed block, whoever
-lit them. Buckets are guarded where they fill or empty, and hitting the claim's item frames, armour stands,
-paintings, boats, minecarts and animals does nothing for others (`claims.protected_entities`, entity ids; monsters
-and players aren't in it). Not guarded yet: right clicking an entity (rotating a frame's item, an armour stand's
-items, shearing, leads), which waits for Horizon's hook (#4648). The server's `spawn-protection` (vanilla's) guards
+lit them (a TNT cannon, a creeper, a crystal, a bed, a wither skull), nor the claim's animals, paintings and item
+frames. Buckets are guarded where they fill or empty; nothing is placed against a claim's border from outside (a
+block, fire, a spawn egg, an armour stand); a dispenser does nothing to the block in front of it in another's
+claim; lava outside a claim lights none of its blocks (lava 4 or more blocks inside still lights its owner's). A
+projectile of someone not trusted (an arrow, a trident, a snowball, a pearl, a potion, a fire charge) does nothing in
+a claim but to monsters and players: no button pressed, target lit, chorus or pot broken, TNT lit, crystal set off,
+pearl landed or animal hurt; a dispenser's counts as from the land it shot from, a mob's hurts animals only. Hitting
+or right clicking the claim's item frames, armour stands, paintings, boats, minecarts and animals (leads, saddles,
+shears, dyes, buckets, a frame's or a stand's items) does nothing for others (`claims.protected_entities`, entity
+ids; monsters and players aren't in it; villagers and wandering traders still trade; end crystals are always guarded,
+even when a world's list predates them). Not guarded yet, for want of a
+Horizon hook: wind charges bursting outside a claim (they open doors inside), armour stands and vehicles in a blast,
+farmland trampled, a wither's or an enderman's own block changes. The server's `spawn-protection` (vanilla's) guards
 the spawn.
+
+**Chat pings.** A chat line that names an online player (a whole word, any case: `alex`, `@Alex`) plays the
+experience orb pickup sound to that player alone, and so does a `/msg`, `/tell` or `/w` to them; never the sender, at
+most once each 3 s per player. `/pingsound off` turns it off for oneself (`pings.json`), `/pingsound on` back.
 
 **The scoreboard.** A sidebar on the right, titled `board.title` ("Horizon SMP"): your own block first (your name, or
 your nickname; your balance, `125.4k`, `3.2M`; your playtime, `2h 05m`; the players online), then `board.footer`
@@ -327,21 +362,22 @@ folder is untouched until the mod first runs on it; it changes no block and no p
 
 | File | Holds |
 |---|---|
-| `config.json` | `currency` (default `coins`), `starting_balance` (default 0), `market`: `enabled`, `items` (each item's `buy`, what the market asks, and `sell`, what it pays, 0 closing that side), `daily_sell_coins` (2000) and `daily_sell_items` (640), 0 for no limit; `shop`: `enabled`, `title`, `categories` (`name`, `icon`, `items`); `web`: `url` (Kira's `/smp/ingest`) and `token` (empty: nothing is sent), where the pages of `web/` go; written with the defaults the first time, and again when a newer version adds keys (your values kept) |
+| `config.json` | `currency` (default `coins`), `starting_balance` (default 0), `market`: `enabled`, `items` (each item's `buy`, what the market asks, and `sell`, what it pays, 0 closing that side), `shop`: `enabled`, `title`, `categories` (`name`, `icon`, `items`); `web`: `url` (Kira's `/smp/ingest`) and `token` (empty: nothing is sent), where the pages of `web/` go; written with the defaults the first time, and again when a newer version adds keys (your values kept) |
 | `economy.json` | balances by player UUID, with the name last seen; `held`: coinflip stakes and lottery tickets being decided; `pools`: the casino's pot and the auction house's bids; `ext`: other parts' state written in the same step as the money (`auction`: the listings, bids, mail and notes) |
 | `places.json` | the spawn, the warps, each player's homes, and the seconds each player has played (written once a minute) |
 | `nicks.json` | each player's nickname and when they last changed it |
 | `vanish.json` | the vanished operators by UUID, with their name |
+| `reports.log` | one JSON line per `/report`: `time`, `by`/`by_name`, `player`/`player_name`, `reason`, where each stood (`by_at`, `player_at` when on) |
 | `staff.log` | one line per `/invsee` or `/endersee` menu in which something moved: who, whose, what was taken and put |
-| `market.json` | what each player sold today (coins and items), for the daily limits |
-| `market_prices.json` | each item's price factor and history (minutes for 24 h, hours for 30 days: `[time, mid, traded, sold]`), what each player bought in the last day (no selling it back), the day's summary |
+| `market_prices.json` | each item's price factor and history (minutes for 24 h, hours for 30 days: `[time, mid, traded, sold]`), the day's summary |
 | `web/market.json` | for the website (`/hub/market`, through Kira), written by a thread each minute prices move: `schema` 1, `generated`, `currency`, `tax_percent` (always 0, for older readers), `daily_summary` (`day`, `lines`), `items` (`id`, `name`, `category`, `price` (the one price; `buy` and `sell` repeat it on the sides the market trades, for older readers), `mid`, `base`, `change_1h`, `change_24h`, `volume_24h`, `day`: 5-minute points, `month`: hours, each `{step, t, price, volume}`). When `web.token` is set, the same thread POSTs each page of `web/` that changed (gzipped, `Authorization: Bearer <token>`) to `<web.url>/<name>`: Kira keeps the last one and serves it to the site; the server needs no inbound access and Kira no key to it |
 | `presence.json` | the players who have joined (no welcome again), and the day each last got the daily reward |
 | `board.json` | the players who hid the sidebar (`/sidebar off`) |
 | `switches.json` | the parts operators turned off (`/smp off`): by whom, when and why |
 | `casino.json` | the day's ledger: each player's bets, wins and rounds today (the daily loss cap), the day's biggest wins, each game's totals, the pot's last sweep |
+| `pings.json` | the players who turned chat pings off (`/pingsound off`) |
 | `claims.json` | each claimed chunk (`<dimension> <chunk x> <chunk z>`) with its owner, and whom each owner trusts |
-| `audit.log` | one JSON line per change, written before the change: `time` (ms), `kind` (`open`, `pay`, `grant`, `ah_listing_fee`...), `amount`, `from`/`to` with their balance before, `by` for an operator, `to_pool`/`from_pool` with `pool_before` and `reason` for a pool's movement; a trade's line (`trade`: both players, their items and money) comes before its swap, `trade_failed` after one that didn't go through |
+| `audit.log` | one JSON line per change, written before the change: `time` (ms), `kind` (`open`, `pay`, `grant`, `ah_listing_fee`...), `amount`, `from`/`to` with their balance before, `by` for an operator, `to_pool`/`from_pool` with `pool_before` and `reason` for a pool's movement, `flow` (`minted` or `burned`) for money the server made or destroyed (a market sale or purchase, the daily reward, `/eco give` and `take`); a trade's line (`trade`: both players, their items and money) comes before its swap, `trade_failed` after one that didn't go through |
 
 `economy.json` is written whole to a temporary file, flushed and renamed over the old one, at most once a server tick
 and when the world closes: a crash leaves the old file or the new one. If it can't be read, the economy stays off (the

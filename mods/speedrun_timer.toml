@@ -1,0 +1,37 @@
+id = "speedrun_timer"
+kind = "native-mod"
+name = "Speedrun Timer"
+summary = "Speedrun Timer Is a mod made to count the time it took you to beat the Game"
+description = """
+An RTA speedrun timer in a corner of the screen, `HH:MM:SS.mmm` with live milliseconds, as a native mod for
+Horizon.
+
+- **Starts** on your first move after a world loads, and **stops** when you take the exit portal back from the End.
+  Dying is not a finish: the run keeps counting.
+- **Resets** on its own when you leave a world, ready for the next run.
+- **Saves** every finished run, and your personal best, in the mod's data folder; its settings page has a button to
+  open it.
+- `/speedrun`, `/speedrun start`, `/speedrun stop` and `/speedrun reset`.
+
+Pick its corner in Options > Mods > Speedrun Timer > Settings. It hides with F1 and keeps clear of F3."""
+authors = ["Demerobit"]
+owners = ["Demerobit"]
+license = "MIT"
+source = "https://github.com/Demerobit/Speedrun-Timer-Horizon-Rust-Minecraft"
+icon = "icons/speedrun_timer.png"
+categories = ["utility", "minigame"]
+tags = ["speedrun", "timer", "rta", "hud"]
+key = "RWREE8bzxgQZoRDo1MEbx56BjXA/udjM64FBEjMFmXQhhgx1Z6oSrt69"
+
+[[versions]]
+version = "1.0.1"
+published = "2026-11-04"
+game = "26.3"
+file = "speedrun_timer-1.0.1.hnmod"
+sha256 = "884efd123b6e3a99e783603fd18f94b4fe6cf4b2ce6297e8e58fbb81c699c22e"
+signature = """
+untrusted comment: signature from minisign secret key
+RUREE8bzxgQZoSnNYQKsFGHKDXOabxzO/Svz7gImNoBk9aoGEfRrGHq4Q8FEy4gK6kSdppg4BOj+ppW8+xSMZfFUldfYNXmJmwo=
+trusted comment: timestamp:1793811255\tfile:speedrun_timer-1.0.1.hnmod\thashed
+c8UAoVvQRjR97rkLv42ZqaAQkHZfjlICWRV+kEdV3ECDL7yrwICmImSwDTaV7KMl/fQcFouC8yvUbr4fpDWZAQ=="""
+changelog = "This is he first Release of the mod "

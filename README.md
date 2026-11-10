@@ -11,15 +11,16 @@ with no file, network or clock access, and can only do what their page lists.
 Native source mods (`.hnmod`, kind `native-mod`) are built into an isolated game by
 a launcher with native-mod support. They run with the player’s account permissions.
 Their bundles pin the exact Horizon and Horizon Mixins revisions used for the build.
-Other revisions have not been validated. Registry checks inspect the source bundle without
-executing native code; reviewers must also examine the source and pinned-build
-validation. Publishing these requires the native-mod changes to `cargo-horizon-mod`
+Other revisions have not been validated. Registry checks inspect the source bundle and compile it
+on the newest Nightly with the most downloaded native mods (in a job whose token
+can only read) without running it; reviewers must also examine the source and
+pinned-build validation. Publishing these requires the native-mod changes to `cargo-horizon-mod`
 and the launcher to have shipped first.
 
 **Who is responsible.** Except the projects marked Official (made by the Horizon project), everything here is made and
 owned by its own authors, not by the Horizon project or its maintainers. A listing is not an endorsement. See the
 [mod policy](MOD-POLICY.md): what authors promise when they submit (ports of other mods included), the licences
-whose source reviewers can read, and how to have a project taken down.
+it accepts, and how to have a project taken down.
 
 ## Fork additions
 
@@ -69,6 +70,7 @@ why.
 | `.github/workflows/check.yml` | A pull request's checks |
 | `.github/workflows/publish.yml` | On merge: releases, then `index.json` on Pages |
 | `.github/workflows/cleanup.yml` | Weekly: staging files nobody needs any more |
+| `.github/workflows/native-compat.yml` | Native mods on the newest Nightly, as the launcher builds them: a pull request's new version applied and compiled with the most downloaded native mods, its module names against every mod's; daily, every mod's newest version, the ones that don't apply marked `broken_on` in the index (`scripts/native_compat.py`) |
 | `.github/workflows/native.yml` | Horizon's native mods: each changed one's tests, `.hnmod` and game check, all of them together, and weekly on the newest Nightly |
 | `native/<name>/` | Horizon's own native mods (Zoom, FPS Counter, Keystrokes, Minimap, Recipes, Coordinates HUD): the source of their `.hnmod` files |
 | `native/tools/` | Shared by them: apply on Horizon, check, build, package, prove (`native/tools/native.py`) |

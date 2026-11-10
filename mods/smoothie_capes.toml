@@ -1,0 +1,46 @@
+id = "smoothie_capes"
+kind = "native-mod"
+name = "Smoothie Capes"
+summary = "An Wavey Capes inspired mod for Horizon"
+description = """
+Capes that move like cloth, as a native mod for Horizon inspired by Wavey Capes.
+
+It replaces how the game draws capes: each cape becomes a strip of 17 linked segments simulated every frame, so it
+trails out behind you when you run, swings to the side when you strafe or turn, lifts when you fall, and sways gently
+when you stand still. It works on every cape the game draws.
+
+Only how capes look changes; nothing is sent to a server. There are no settings: install it, build, and play."""
+authors = ["Nully"]
+owners = ["dumbnully"]
+owner_ids = [268078454]
+license = "MIT"
+source = "https://github.com/dumbnully/smoothie-capes"
+icon = "icons/smoothie_capes.png"
+categories = ["decoration"]
+tags = ["capes", "cloth", "physics", "animation", "cosmetic"]
+key = "RWRJPBl24rTE23dFezewHWl465FAcgTsmeJnDkANtUPT19YfVmQ1gYCu"
+
+[[versions]]
+version = "0.5.1"
+published = "2026-11-08"
+game = "26.3"
+file = "smoothie_capes-0.5.1.hnmod"
+sha256 = "4d8853561c7a09031057e45f6710be922b9841272fdb1d0d6d328ca6b6168af1"
+signature = """
+untrusted comment: signature from minisign secret key
+RURJPBl24rTE2xNrg5dmD3CU2oph1TxOzLmaZbb0chYWL0h3OQNh1ytCUIbxs3RJRlM/Iajy4kW7iLpI515CvmyV0DO+Ma+GKA4=
+trusted comment: timestamp:1794104792\tfile:Smoothie-Capes-0.5.1.hnmod\thashed
+MhXQX8tCu7dl+5mh1XSqKk5hgCb3lGVEA8DpyGrQIKo+nCVbOJ2mbNj8B1zL5p+us3F6uDusQMjKiHpt84i4AQ=="""
+changelog = "Elytra Animation and some fixes"
+
+[[versions]]
+version = "0.2.0"
+published = "2026-11-02"
+game = "26.3"
+file = "smoothie_capes-0.2.0.hnmod"
+sha256 = "303b88bf5dd2c518ed9f5186252813b5a98716289c42e60838d0cb9846fc6429"
+signature = """
+untrusted comment: signature from minisign secret key
+RURJPBl24rTE247uqvyB1Bh5PIfR4C2XUVWvCx4/lt5jAO8sgDBEgtfs9adTKkv+L89ENRyYUVCLG1c8yptts8AYfcmPEI7bcQs=
+trusted comment: timestamp:1793663973\tfile:smoothie_capes.hnmod\thashed
+f+QyN8EVz5M41RHayEZGX7Fk1Z+FZnhUTv7MwH5Y3GTBYXiNMAHAIMdox4i62RDTx3wQhVUuIOBa3GqJ2H7KAQ=="""

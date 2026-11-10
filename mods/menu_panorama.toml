@@ -18,9 +18,12 @@ The pack only changes `assets/minecraft/textures/gui/title/background/panorama_0
 MIT licensed. Source, the browser generator and the CLI are in the repository."""
 authors = ["form1t"]
 owners = ["form1t"]
+owner_ids = [230844871]
 license = "MIT"
 source = "https://github.com/form1t/menu-panorama"
 icon = "icons/menu_panorama.png"
+categories = ["gui", "themed"]
+tags = ["panorama", "main-menu", "title-screen", "wallpaper", "background"]
 
 [[versions]]
 version = "1.0.0"

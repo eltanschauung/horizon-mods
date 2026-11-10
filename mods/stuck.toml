@@ -1,6 +1,7 @@
 id = "stuck"
 kind = "native-mod"
 owners = ["Vakarux12"]
+owner_ids = [167799729]
 key = "RWS5u/7lEyKbzVHC6uMJRlhM/N7vzKp5fZe2LCDUlHsDK4lvPupxJbqQ"
 name = "Stuck?"
 summary = "/stuck and /escape move you to a safe spot nearby, off the Nether roof too."
@@ -20,6 +21,9 @@ Source: `horizon/` in https://github.com/Vakarux12/Stuck, a fork of the original
 authors = ["adasjusk", "Vakarux12"]
 license = "CC-BY-SA-4.0"
 source = "https://github.com/Vakarux12/Stuck/tree/main/horizon"
+icon = "icons/stuck.png"
+categories = ["utility"]
+tags = ["commands", "teleport", "unstuck", "nether-roof", "port"]
 
 [[versions]]
 version = "1.0.0"

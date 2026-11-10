@@ -36,8 +36,8 @@ pub struct Settings {
 }
 
 impl Settings {
-    /// From the stored values; the fork's defaults (top right, small,
-    /// square, 1 block per pixel, north up, coordinates on) for the ones missing.
+    /// From the stored values; the extra's defaults (top right, medium,
+    /// square, 1 block per pixel, north up) for the ones missing.
     pub fn read(get: impl Fn(&str) -> Option<String>) -> Self {
         let get = |key: &str| get(key).map(|v| v.trim().to_owned());
         let find = |key: &str, values: &[String], default: usize| {
@@ -55,7 +55,11 @@ impl Settings {
             zoom: find("zoom", &zooms, 1),
             rotate: get("rotate").as_deref() == Some("true"),
             show_coordinates: get("show_coordinates").as_deref().unwrap_or("true") == "true",
-            outline: find("outline", &["black".into(), "stone".into(), "bamboo".into()], 1),
+            outline: find(
+                "outline",
+                &["black".into(), "stone".into(), "bamboo".into()],
+                1,
+            ),
         }
     }
     pub fn labels(&self) -> Vec<String> {
@@ -76,14 +80,26 @@ impl Settings {
                 "Turn with the player: {}",
                 if self.rotate { "ON" } else { "OFF" }
             ),
-            format!("Show Coordinates: {}", if self.show_coordinates { "ON" } else { "OFF" }),
-            format!("Minimap Outline: {}", ["Black", "Stone", "Bamboo"][self.outline]),
+            format!(
+                "Show Coordinates: {}",
+                if self.show_coordinates { "ON" } else { "OFF" }
+            ),
+            format!(
+                "Minimap Outline: {}",
+                ["Black", "Stone", "Bamboo"][self.outline]
+            ),
         ]
     }
     pub fn click(&mut self, i: usize) {
         let next = |i: usize, n: usize| (i + 1) % n;
-        if i == 5 { self.show_coordinates = !self.show_coordinates; return; }
-        if i == 6 { self.outline = next(self.outline, 3); return; }
+        if i == 5 {
+            self.show_coordinates = !self.show_coordinates;
+            return;
+        }
+        if i == 6 {
+            self.outline = next(self.outline, 3);
+            return;
+        }
         match i {
             0 => self.corner = next(self.corner, CORNERS.len()),
             1 => self.size = next(self.size, SIZES.len()),
@@ -95,7 +111,6 @@ impl Settings {
     }
     pub fn stored(&self) -> [(&'static str, String); 7] {
         [
-            ("outline", ["black", "stone", "bamboo"][self.outline].to_owned()),
             ("corner", CORNERS[self.corner].0.to_owned()),
             ("size", SIZES[self.size].0.to_string()),
             (
@@ -103,10 +118,14 @@ impl Settings {
                 if self.round { "round" } else { "square" }.to_owned(),
             ),
             ("zoom", ZOOMS[self.zoom].to_string()),
-            ("show_coordinates", self.show_coordinates.to_string()),
             (
                 "rotate",
                 if self.rotate { "true" } else { "false" }.to_owned(),
+            ),
+            ("show_coordinates", self.show_coordinates.to_string()),
+            (
+                "outline",
+                ["black", "stone", "bamboo"][self.outline].to_owned(),
             ),
         ]
     }
@@ -145,7 +164,7 @@ mod tests {
         let s = Settings::read(none);
         assert_eq!(
             (s.corner, s.size, s.round, s.zoom, s.rotate),
-            (1, 0, false, 1, false)
+            (1, 1, false, 1, false)
         );
         let files = [
             ("corner", "bottom_left"),
@@ -171,9 +190,47 @@ mod tests {
         );
         s.click(3);
         s.click(3);
-        assert_eq!(s.stored()[4], ("zoom", "2".to_owned()));
+        assert_eq!(s.stored()[3], ("zoom", "2".to_owned()));
         let round = s.stored();
         let back = Settings::read(|k: &str| round.iter().find(|f| f.0 == k).map(|f| f.1.clone()));
         assert_eq!(back, s);
+    }
+
+    #[test]
+    fn optional_features_keep_the_original_appearance_by_default() {
+        let settings = Settings::read(|_| None);
+        assert_eq!(settings.view(), (96.0, 1.0));
+        assert!(!settings.show_coordinates);
+        assert_eq!(settings.outline, 0);
+        let invalid = Settings::read(|key| match key {
+            "outline" => Some("unknown".into()),
+            "show_coordinates" => Some("invalid".into()),
+            _ => None,
+        });
+        assert_eq!(invalid, settings);
+    }
+
+    #[test]
+    fn coordinates_and_each_outline_toggle_and_round_trip() {
+        let mut settings = Settings::read(|_| None);
+        for expected in ["stone", "bamboo", "black"] {
+            settings.click(5);
+            settings.click(6);
+            let stored = settings.stored();
+            assert_eq!(
+                stored.iter().find(|(key, _)| *key == "outline").unwrap().1,
+                expected
+            );
+            let restored = Settings::read(|key| {
+                stored
+                    .iter()
+                    .find(|(k, _)| *k == key)
+                    .map(|(_, v)| format!("{v}\n"))
+            });
+            assert_eq!(restored, settings);
+        }
+        assert!(settings.show_coordinates);
+        settings.click(5);
+        assert!(!settings.show_coordinates);
     }
 }

@@ -1,6 +1,8 @@
 //! The SMP's rules, as the bundle adds them to the game: each file is a
 //! module of `game` there and of this crate here, under the same name, so
 //! `super::smp_store` reaches the same code in both.
+#[path = "../mixins/smp/smp_admin.rs"]
+pub mod smp_admin;
 #[path = "../mixins/smp/smp_auction.rs"]
 pub mod smp_auction;
 #[path = "../mixins/smp/smp_board.rs"]
@@ -23,6 +25,8 @@ pub mod smp_economy;
 pub mod smp_games;
 #[path = "../mixins/smp/smp_invsee.rs"]
 pub mod smp_invsee;
+#[path = "../mixins/smp/smp_ledger.rs"]
+pub mod smp_ledger;
 #[path = "../mixins/smp/smp_lottery.rs"]
 pub mod smp_lottery;
 #[path = "../mixins/smp/smp_market.rs"]
@@ -35,6 +39,8 @@ pub mod smp_market_menu;
 pub mod smp_market_prices;
 #[path = "../mixins/smp/smp_nick.rs"]
 pub mod smp_nick;
+#[path = "../mixins/smp/smp_ping.rs"]
+pub mod smp_ping;
 #[path = "../mixins/smp/smp_places.rs"]
 pub mod smp_places;
 #[path = "../mixins/smp/smp_presence.rs"]
@@ -43,6 +49,8 @@ pub mod smp_presence;
 pub mod smp_recipes;
 #[path = "../mixins/smp/smp_report.rs"]
 pub mod smp_report;
+#[path = "../mixins/smp/smp_reports.rs"]
+pub mod smp_reports;
 #[path = "../mixins/smp/smp_shop.rs"]
 pub mod smp_shop;
 #[path = "../mixins/smp/smp_store.rs"]

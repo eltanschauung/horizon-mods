@@ -1,0 +1,61 @@
+id = "jade"
+kind = "native-mod"
+name = "Jade"
+summary = "The look-at tooltip: what you're pointing at, its mod, its details and its state."
+description = """
+An unofficial port of [Jade](https://github.com/Snownee/Jade) 26.3.5 by Snownee to Horizon: the look-at overlay for blocks and entities, with its providers, themes, config screens, drag-to-place screen, profiles, keys, the `/jade` and `/jadec` commands and the `jade:max_position_deviation` game rule.
+
+Rewritten in Rust for Horizon's hooks, so no original code runs. Not made or endorsed by Snownee, so please report problems to this project, not to them.
+
+**Missing or not the same:**
+- Java plugins for Jade can't run. Other mods register with this port's own provider functions.
+- The icon style of the energy line shows redstone dust, because Jade's energy sprite isn't in Horizon's atlas.
+- The game rule works through mixins on tables compiled into the game, so it is the part most likely to break on a Horizon update.
+
+**Tested** on Windows, in single player, on LAN with one guest, and on a dedicated server with one client. Other platforms and Jade's mouse binds were not tested.
+
+Licence: CC BY-NC-SA 4.0, noncommercial use only, the same licence as Jade."""
+authors = ["Snownee", "Joeypc6"]
+owners = ["Joeypc6"]
+owner_ids = [35495484]
+license = "CC-BY-NC-SA-4.0"
+source = "https://github.com/Joeypc6/Jade-Horizon"
+icon = "icons/jade.png"
+categories = ["utility"]
+tags = ["tooltip", "hud", "block-info", "waila", "port"]
+
+[[versions]]
+version = "26.3.8"
+published = "2026-11-08"
+game = "26.3"
+file = "jade-26.3.8.hnmod"
+sha256 = "eeb74fbcfbe75e568ecebdc82c8091c482e4f929dcb1f4d7390052d2ef8c5da8"
+changelog = """
+Still a port of Jade 26.3.5; 26.3.8 is this port's own version number, not a Jade release. Built and tested on Horizon commit 6560641.
+
+- Multiplayer security: command block text needs permission level 2, a client can only narrow what it is shown, reach is checked for everyone but a world's owner, and requests have a size and rate limit.
+- The energy line uses Jade's own energy icon.
+- The FE intake line is hidden on AE2's blocks in every mode.
+- The jade:max_position_deviation game rule goes through Horizon's public hooks."""
+
+[[versions]]
+version = "26.3.6"
+published = "2026-11-05"
+game = "26.3"
+file = "jade-26.3.6.hnmod"
+sha256 = "5aa01e83aeda733b60b69d53cfa13fa1c9d4e66f83c54373c5cca4d77fa47087"
+changelog = """
+Still a port of Jade 26.3.5; 26.3.6 is this port's own version number, not a Jade release. Built and tested on Horizon commit 6475f62.
+
+- Jade's sprites in themes, the drag-to-place screen, the config screens, and the sniffer's dig cooldown.
+- `jade:max_position_deviation` is a real game rule.
+- Block aim follows the player's reach and Extended Reach.
+- Tested on a dedicated server."""
+
+[[versions]]
+version = "26.3.5"
+published = "2026-11-04"
+game = "26.3"
+file = "jade-26.3.5.hnmod"
+sha256 = "676a129f55db075284313a39ff4387674c426ebd9be04a8830ffb8955281c7ec"
+changelog = "First Horizon release, a port of Jade 26.3.5. Built and tested on Horizon commit c9d474d."

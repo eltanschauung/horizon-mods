@@ -1,0 +1,32 @@
+id = "invisible_frames"
+kind = "native-mod"
+name = "Invisible Frames"
+summary = "Sneak-right-click a filled frame to hide and lock it, or restore it."
+description = """
+Hide the frame of a filled item frame, so only the item shows, as a native mod for Horizon.
+
+- **Sneak and right-click** a filled item frame or glow item frame: its frame disappears and it is locked, so ordinary
+  right-clicks no longer turn or take the item.
+- **Sneak and right-click it again** to show the frame and unlock it.
+- Empty frames stay visible.
+
+It runs where the world is hosted (single player, or a world you open to LAN) and uses the game's own entity data, so
+players who join need nothing installed. It is not a protection system: breaking the block behind a frame, and
+creative mode, work as usual. Inspired by [InvisibleFrames](https://github.com/ADHDMC/InvisibleFrames); an original
+implementation."""
+authors = ["AltMugen"]
+owners = ["AltMugen"]
+owner_ids = [108084724]
+license = "MIT"
+source = "https://github.com/AltMugen/horizon-invisible-frames"
+icon = "icons/invisible_frames.png"
+categories = ["decoration", "utility"]
+tags = ["item-frames", "invisible", "building", "server-side"]
+
+[[versions]]
+version = "0.1.1"
+published = "2026-11-03"
+game = "26.3"
+file = "invisible_frames-0.1.1.hnmod"
+sha256 = "76128b48ce5c826007379c85634b934ae6bad51c134fbaead7c46b36fecd9274"
+changelog = "Use the acting player's authoritative server sneak input instead of physical keyboard state."
