@@ -164,7 +164,7 @@ mod tests {
         let s = Settings::read(none);
         assert_eq!(
             (s.corner, s.size, s.round, s.zoom, s.rotate),
-            (1, 1, false, 1, false)
+            (1, 0, false, 1, false)
         );
         let files = [
             ("corner", "bottom_left"),
@@ -197,23 +197,24 @@ mod tests {
     }
 
     #[test]
-    fn optional_features_keep_the_original_appearance_by_default() {
+    fn missing_settings_use_the_fork_defaults() {
         let settings = Settings::read(|_| None);
-        assert_eq!(settings.view(), (96.0, 1.0));
-        assert!(!settings.show_coordinates);
-        assert_eq!(settings.outline, 0);
+        assert_eq!(settings.view(), (64.0, 1.0));
+        assert!(settings.show_coordinates);
+        assert_eq!(settings.outline, 1);
         let invalid = Settings::read(|key| match key {
             "outline" => Some("unknown".into()),
             "show_coordinates" => Some("invalid".into()),
             _ => None,
         });
-        assert_eq!(invalid, settings);
+        assert_eq!(invalid.outline, settings.outline);
+        assert!(!invalid.show_coordinates);
     }
 
     #[test]
     fn coordinates_and_each_outline_toggle_and_round_trip() {
         let mut settings = Settings::read(|_| None);
-        for expected in ["stone", "bamboo", "black"] {
+        for expected in ["bamboo", "black", "stone"] {
             settings.click(5);
             settings.click(6);
             let stored = settings.stored();
@@ -229,8 +230,8 @@ mod tests {
             });
             assert_eq!(restored, settings);
         }
-        assert!(settings.show_coordinates);
-        settings.click(5);
         assert!(!settings.show_coordinates);
+        settings.click(5);
+        assert!(settings.show_coordinates);
     }
 }
