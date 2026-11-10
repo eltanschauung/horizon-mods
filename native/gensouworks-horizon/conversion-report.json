@@ -1,0 +1,301 @@
+{
+  "jar_sha256": "94ec44fb393c1492166f1f09fd658a9022d3de58bd3b58264a3b56fda5f7981e",
+  "structures": [
+    "eientei",
+    "kirisame_house",
+    "koumakan",
+    "kourindou",
+    "larva_cave",
+    "margatroid_house",
+    "sanyousei_new_house",
+    "signal_tower"
+  ],
+  "template_sizes": {
+    "data/gensouworks/structures/eientei/entrance.nbt": [
+      15,
+      20,
+      15
+    ],
+    "data/gensouworks/structures/eientei/part_00.nbt": [
+      45,
+      24,
+      36
+    ],
+    "data/gensouworks/structures/eientei/part_01.nbt": [
+      45,
+      24,
+      37
+    ],
+    "data/gensouworks/structures/eientei/part_10.nbt": [
+      45,
+      24,
+      36
+    ],
+    "data/gensouworks/structures/eientei/part_11.nbt": [
+      45,
+      24,
+      37
+    ],
+    "data/gensouworks/structures/kirisame_house.nbt": [
+      26,
+      12,
+      16
+    ],
+    "data/gensouworks/structures/koumakan/basement/bookroom.nbt": [
+      11,
+      7,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/basement/corridor.nbt": [
+      7,
+      8,
+      21
+    ],
+    "data/gensouworks/structures/koumakan/basement/crop_garden.nbt": [
+      11,
+      7,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/basement/cross.nbt": [
+      21,
+      8,
+      21
+    ],
+    "data/gensouworks/structures/koumakan/basement/enchantment.nbt": [
+      11,
+      7,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/basement/garden.nbt": [
+      11,
+      7,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/basement/potion.nbt": [
+      11,
+      7,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/basement/prison.nbt": [
+      11,
+      7,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/basement/tnt.nbt": [
+      11,
+      7,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/basement/treasure.nbt": [
+      11,
+      7,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/basement_core.nbt": [
+      42,
+      24,
+      47
+    ],
+    "data/gensouworks/structures/koumakan/cellar.nbt": [
+      11,
+      5,
+      8
+    ],
+    "data/gensouworks/structures/koumakan/hat.nbt": [
+      15,
+      12,
+      15
+    ],
+    "data/gensouworks/structures/koumakan/part_00.nbt": [
+      40,
+      40,
+      40
+    ],
+    "data/gensouworks/structures/koumakan/part_01.nbt": [
+      40,
+      40,
+      40
+    ],
+    "data/gensouworks/structures/koumakan/part_10.nbt": [
+      40,
+      40,
+      40
+    ],
+    "data/gensouworks/structures/koumakan/part_11.nbt": [
+      40,
+      40,
+      40
+    ],
+    "data/gensouworks/structures/kourindou.nbt": [
+      27,
+      14,
+      17
+    ],
+    "data/gensouworks/structures/larva_cave/basement.nbt": [
+      9,
+      5,
+      9
+    ],
+    "data/gensouworks/structures/larva_cave/shaft.nbt": [
+      3,
+      9,
+      3
+    ],
+    "data/gensouworks/structures/larva_cave/surface.nbt": [
+      3,
+      2,
+      3
+    ],
+    "data/gensouworks/structures/margatroid_house.nbt": [
+      26,
+      18,
+      14
+    ],
+    "data/gensouworks/structures/sanyousei_new_house.nbt": [
+      25,
+      24,
+      25
+    ],
+    "data/gensouworks/structures/signal_tower.nbt": [
+      7,
+      30,
+      8
+    ]
+  },
+  "block_substitutions": {
+    "youkaishomecoming:mangrove_dining_table": "minecraft:mangrove_fence",
+    "youkaishomecoming:dark_oak_dining_table": "minecraft:dark_oak_fence",
+    "youkaishomecoming:dark_oak_dining_chair": "minecraft:dark_oak_stairs",
+    "youkaishomecoming:golden_apple_basket": "minecraft:barrel",
+    "youkaishomecoming:small_iron_pot": "minecraft:cauldron",
+    "waystones:waystone": "minecraft:chiseled_stone_bricks",
+    "youkaishomecoming:fermentation_tank": "minecraft:barrel",
+    "farmersdelight:spruce_cabinet": "minecraft:barrel",
+    "farmersdelight:bamboo_cabinet": "minecraft:barrel",
+    "youkaishomecoming:copper_faucet": "minecraft:flower_pot",
+    "farmersdelight:cutting_board": "minecraft:oak_pressure_plate",
+    "touhou_little_maid:garage_kit": "minecraft:flower_pot",
+    "youkaishomecoming:oak_ingredient_rack": "minecraft:bookshelf",
+    "farmersdelight:carrot_crate": "minecraft:barrel",
+    "farmersdelight:rice_bag": "minecraft:hay_block",
+    "youkaishomecoming:apple_basket": "minecraft:barrel",
+    "youkaishomecoming:carrot_basket": "minecraft:barrel",
+    "youkaishomecoming:mangrove_dining_chair": "minecraft:mangrove_stairs",
+    "farmersdelight:half_tatami_mat": "minecraft:yellow_carpet",
+    "farmersdelight:full_tatami_mat": "minecraft:yellow_carpet",
+    "youkaishomecoming:golden_carrot_basket": "minecraft:barrel",
+    "youkaishomecoming:mushroom_soup": "minecraft:cake",
+    "youkaishomecoming:bamboo_mizuyokan": "minecraft:cake",
+    "youkaishomecoming:tarte_lune": "minecraft:cake",
+    "youkaishomecoming:pot_of_shirayuki": "minecraft:cauldron",
+    "youkaishomecoming:scholar_ginkgo": "minecraft:flower_pot",
+    "youkaishomecoming:kaguya_hime": "minecraft:flower_pot",
+    "youkaishomecoming:cabbage_basket": "minecraft:barrel",
+    "farmersdelight:stove": "minecraft:smoker",
+    "farmersdelight:skillet": "minecraft:cauldron",
+    "youkaishomecoming:oak_sauce_rack": "minecraft:bookshelf",
+    "youkaishomecoming:cuisine_board": "minecraft:flower_pot",
+    "youkaishomecoming:kettle": "minecraft:cauldron",
+    "youkaishomecoming:steamer_pot": "minecraft:cauldron",
+    "farmersdelight:cooking_pot": "minecraft:cauldron",
+    "youkaishomecoming:wood_basin": "minecraft:cauldron",
+    "youkaishomecoming:moon_lantern": "minecraft:lantern",
+    "minecraft:chain": "minecraft:iron_chain",
+    "youkaishomecoming:white_tea_bag": "minecraft:hay_block",
+    "youkaishomecoming:yellow_tea_bag": "minecraft:hay_block",
+    "youkaishomecoming:tea_leaf_bag": "minecraft:hay_block",
+    "youkaishomecoming:white_grape_crate": "minecraft:barrel",
+    "youkaishomecoming:red_grape_crate": "minecraft:barrel",
+    "youkaishomecoming:redbean_bag": "minecraft:hay_block",
+    "youkaishomecoming:pod_crate": "minecraft:barrel",
+    "farmersdelight:rich_soil_farmland": "minecraft:farmland",
+    "youkaishomecoming:cucumber_basket": "minecraft:barrel",
+    "youkaishomecoming:udumbara": "minecraft:flower_pot",
+    "youkaishomecoming:wild_tea": "minecraft:fern",
+    "youkaishomecoming:wild_white_grape": "minecraft:fern",
+    "youkaishomecoming:wild_red_grape": "minecraft:fern",
+    "youkaishomecoming:wild_redbean": "minecraft:fern",
+    "youkaishomecoming:wild_cucumber": "minecraft:fern",
+    "youkaishomecoming:wild_soybean": "minecraft:fern",
+    "youkaishomecoming:drying_rack": "minecraft:bookshelf",
+    "youkaishomecoming:soybean_bag": "minecraft:hay_block",
+    "youkaishomecoming:black_tea_bag": "minecraft:hay_block",
+    "youkaishomecoming:oolong_tea_bag": "minecraft:hay_block",
+    "youkaishomecoming:dark_tea_bag": "minecraft:hay_block",
+    "farmersdelight:straw_bale": "minecraft:hay_block",
+    "youkaishomecoming:green_tea_bag": "minecraft:hay_block",
+    "youkaishomecoming:wild_udumbara": "minecraft:fern",
+    "farmersdelight:wild_beetroots": "minecraft:fern",
+    "farmersdelight:wild_potatoes": "minecraft:cauldron",
+    "farmersdelight:wild_carrots": "minecraft:fern",
+    "farmersdelight:wild_tomatoes": "minecraft:fern",
+    "farmersdelight:wild_onions": "minecraft:fern",
+    "farmersdelight:wild_cabbages": "minecraft:hay_block",
+    "farmersdelight:sandy_shrub": "minecraft:fern",
+    "farmersdelight:canvas_rug": "minecraft:yellow_carpet",
+    "youkaishomecoming:wild_black_grape": "minecraft:fern",
+    "youkaishomecoming:stockpot": "minecraft:cauldron",
+    "youkaishomecoming:short_iron_pot": "minecraft:cauldron",
+    "youkaishomecoming:saucer": "minecraft:flower_pot",
+    "youkaishomecoming:soy_sauce_flask": "minecraft:flower_pot",
+    "youkaishomecoming:mayonnaise_flask": "minecraft:flower_pot",
+    "farmersdelight:bamboo_basket": "minecraft:barrel",
+    "youkaishomecoming:copper_tank": "minecraft:barrel",
+    "youkaishomecoming:spruce_wine_shelf": "minecraft:bookshelf",
+    "farmersdelight:dark_oak_cabinet": "minecraft:barrel",
+    "youkaishomecoming:red_grape_trunk": "minecraft:oak_log",
+    "youkaishomecoming:red_grape_fruits": "minecraft:oak_leaves",
+    "youkaishomecoming:black_grape_fruits": "minecraft:oak_leaves",
+    "youkaishomecoming:black_grape_trunk": "minecraft:oak_log",
+    "youkaishomecoming:white_grape_trunk": "minecraft:oak_log",
+    "youkaishomecoming:red_grape_branches": "minecraft:oak_leaves",
+    "youkaishomecoming:red_grape_vines": "minecraft:oak_leaves",
+    "youkaishomecoming:black_grape_branches": "minecraft:oak_leaves",
+    "youkaishomecoming:black_grape_vines": "minecraft:oak_leaves",
+    "youkaishomecoming:white_grape_branches": "minecraft:oak_leaves",
+    "youkaishomecoming:white_grape_vines": "minecraft:oak_leaves",
+    "touhou_little_maid:keyboard": "minecraft:oak_pressure_plate",
+    "farmersdelight:onion_crate": "minecraft:barrel",
+    "farmersdelight:potato_crate": "minecraft:barrel",
+    "farmersdelight:tatami": "minecraft:yellow_carpet",
+    "farmersdelight:beetroot_crate": "minecraft:barrel",
+    "youkaishomecoming:cumberland_loin": "minecraft:cake",
+    "farmersdelight:honey_glazed_ham_block": "minecraft:cake",
+    "youkaishomecoming:imitation_bear_paw": "minecraft:flower_pot",
+    "youkaishomecoming:borscht": "minecraft:cake",
+    "youkaishomecoming:burgundy_bottle": "minecraft:flower_pot",
+    "youkaishomecoming:sauce_grilled_fish": "minecraft:flower_pot",
+    "youkaishomecoming:signature_mushroom_stew": "minecraft:cake",
+    "youkaishomecoming:stinky_tofu": "minecraft:cake",
+    "youkaishomecoming:red_wine_bottle": "minecraft:flower_pot",
+    "youkaishomecoming:dried_fish": "minecraft:flower_pot",
+    "farmersdelight:roast_chicken_block": "minecraft:cake",
+    "youkaishomecoming:pastitsio": "minecraft:cake",
+    "youkaishomecoming:tofu_burger": "minecraft:cake",
+    "youkaishomecoming:cold_tofu": "minecraft:cake",
+    "youkaishomecoming:seven_colored_yokan": "minecraft:cake",
+    "youkaishomecoming:power_soup": "minecraft:cake",
+    "youkaishomecoming:tomato_sauce_cod": "minecraft:cake",
+    "youkaishomecoming:champagne_bottle": "minecraft:cake",
+    "youkaishomecoming:pot_of_cod_stew": "minecraft:cauldron",
+    "youkaishomecoming:pot_of_tofu_crab_stew": "minecraft:cauldron",
+    "farmersdelight:rope": "minecraft:iron_bars",
+    "youkaishomecoming:spruce_dining_chair": "minecraft:spruce_stairs",
+    "youkaishomecoming:cooking_stockpot": "minecraft:cauldron",
+    "youkaishomecoming:cooking_short_iron_pot": "minecraft:cauldron",
+    "youkaishomecoming:cooking_small_iron_pot": "minecraft:cauldron",
+    "youkaishomecoming:steamer_rack": "minecraft:bookshelf",
+    "touhou_little_maid:gomoku": "minecraft:oak_pressure_plate",
+    "touhou_little_maid:computer": "minecraft:observer",
+    "youkaishomecoming:spruce_dining_table": "minecraft:spruce_fence",
+    "youkaishomecoming:seafood_miso_soup": "minecraft:cake",
+    "youkaishomecoming:oak_dining_chair": "minecraft:oak_stairs",
+    "youkaishomecoming:oak_dining_table": "minecraft:oak_fence"
+  },
+  "counts": {
+    "templates": 30,
+    "loot_fallbacks": 95,
+    "removed_entities": 5
+  },
+  "foreign_items_removed": 39
+}

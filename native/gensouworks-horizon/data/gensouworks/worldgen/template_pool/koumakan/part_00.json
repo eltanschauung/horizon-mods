@@ -1,0 +1,15 @@
+{
+  "name": "gensouworks:koumakan/part_00",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "gensouworks:koumakan/part_00",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      },
+      "weight": 1
+    }
+  ]
+}
