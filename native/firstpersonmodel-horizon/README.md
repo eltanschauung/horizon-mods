@@ -5,8 +5,8 @@ A client-side Horizon recreation of [tr7zw’s FirstPersonModel](https://github.
 Shows your animated character body and armor in first person with its head hidden.
 **Mods → FirstPersonModel Horizon → Settings → Hands** chooses:
 
-- **Vanilla** (default): unchanged first-person hands/items, with body arms, sleeves,
-  arm armor and duplicate world-held items hidden only in first person.
+- **Vanilla** (default): unchanged first-person hands/items, plus visible body arms, sleeves
+  and arm armor. Body-held items are hidden to avoid rendering items twice.
 - **Body**: the original full body arms and held-item rendering, replacing floating hands.
 
 Uses Horizon’s existing poses and character scaling. Third-person views and other

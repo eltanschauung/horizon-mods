@@ -43,11 +43,7 @@ impl Game<'_> {
         let lookup = |name: &str| atlas.sprites.get(name).map(|r|[r.u0,r.v0,r.u1,r.v1]);
         let render = if self.own_body_visible() { horizon_client::mobs::render::render_with }
             else { horizon_client::mobs::render::render_layers };
-        // Scope the pose override to this local body draw, including its armor.
-        // Remote models and inventory/third-person previews keep their own poses.
-        horizon_client::mobs::anim::firstperson_view::with_hidden_arms(self.firstperson_vanilla_hands(), || {
-            render(&m,alpha as f32,camera,&lookup,packed,self.res.mob_data(),&self.player_armor_layers(),out);
-        });
+        render(&m,alpha as f32,camera,&lookup,packed,self.res.mob_data(),&self.player_armor_layers(),out);
         if horizon_client::mobs::render::layers_shown(&m) {
             let chest = self.armor[1].as_ref().map(|s| &*s.item);
             if !self.own_invisible() { self.player_cape_geometry(&m,chest,camera,alpha as f32,packed,out); }
