@@ -33,3 +33,11 @@ published = "2026-10-30"
 game = "26.3"
 file = "worldedit-1.2.1.hnmod"
 sha256 = "b2bb3019ecd4d5392644c54c70a87d6c3277538a6e18d0c311f3a051f7d2f015"
+
+[[versions]]
+version = "1.2.1+fork.1"
+published = "2026-11-11"
+game = "26.3"
+file = "worldedit-native-1.2.1+fork.1.hnmod"
+sha256 = "c87dba74737631523319c152392c70140c24c6f70eeca9cefd555e3ccec16688"
+changelog = "Fork default: source pinned to upstream 7d74ac5; legacy mappings generated locally; validated with the full Lunatic native set."

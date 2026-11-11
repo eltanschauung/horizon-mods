@@ -102,3 +102,5 @@ python3 native/tools/native.py proof zoom --resources /path/to/.local/horizon-cl
 ```
 
 To make your own, start from [horizon-native-mod-template](https://github.com/horizon-rust/horizon-native-mod-template).
+
+WorldEdit is included in our fork default native set. Source and local packaging: [native/worldedit](native/worldedit/). `python3 native/worldedit/tools/build.py --install` regenerates the legacy mapping from the local Horizon checkout, packages and installs it. The Horizon `build modded` workflow refreshes this bundle automatically.

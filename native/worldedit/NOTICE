@@ -1,0 +1,3 @@
+WorldEdit-Horizon by XnotCykoX, MIT license (LICENSE).
+Vendored from https://github.com/XnotCykoX/WorldEdit-Horizon at 7d74ac50cc6d2b3616cf003674064d2452c5b403.
+Fork packaging regenerates legacy numeric block mappings locally from the player-prepared Horizon source table; no generated mapping is committed.
