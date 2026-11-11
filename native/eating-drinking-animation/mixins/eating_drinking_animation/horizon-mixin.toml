@@ -1,0 +1,70 @@
+[mod]
+id="eating_drinking_animation"
+version="0.1.0"
+priority=140
+[[module]]
+id="state"
+file="crates/horizon-client/src/client_lib.rs"
+name="eating_drinking_animation"
+visibility="pub"
+source="state.rs"
+[[module]]
+id="runtime"
+file="crates/horizon-client/src/game.rs"
+name="eating_drinking_animation"
+source="runtime.rs"
+
+[[injection]]
+id="tick"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_client_tick_post"
+helper="tick.rs"
+bindings=[
+ {name="game",ty="&crate::game::Game<'_>",value="&*self"}
+]
+
+[[injection]]
+id="pose"
+kind="RETURN"
+target="horizon_client_lib::mobs::anim::setup"
+helper="pose.rs"
+bindings=[
+ {name="_result",ty="()",value="$value"},
+ {name="m",ty="&Mob",value="m"},
+ {name="s",ty="&State",value="s"},
+ {name="p",ty="&mut Poses",value="&mut *p"}
+]
+
+[[injection]]
+id="particles"
+kind="HEAD"
+target="horizon_client::game::remote::Game<'_>::remote_player_eating"
+helper="particles.rs"
+cancellable=true
+bindings=[
+ {name="game",ty="&mut crate::game::Game<'_>",value="&mut *self"},
+ {name="item",ty="&str",value="item"},
+ {name="ticks",ty="u32",value="ticks"},
+ {name="at",ty="[f64;3]",value="at"}
+]
+
+[[injection]]
+id="list"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper="list.rs"
+bindings=[
+ {name="mods",ty="&mut Vec<crate::game::native_hooks::NativeMod>",value="&mut *mods"}
+]
+
+[[injection]]
+id="local_particles"
+kind="HEAD"
+cancellable=true
+target="horizon_client::game::item_particles::Game<'_>::eat_particles"
+helper="local_particles.rs"
+bindings=[
+ {name="game",ty="&mut crate::game::Game<'_>",value="&mut *self"},
+ {name="stack",ty="&ItemStack",value="stack"},
+ {name="count",ty="u32",value="count"},
+]

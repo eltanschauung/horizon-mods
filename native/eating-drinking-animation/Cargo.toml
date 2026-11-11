@@ -1,0 +1,8 @@
+[package]
+name="eating-drinking-animation-tests"
+version="0.1.0"
+edition="2024"
+license="MIT"
+[workspace]
+[lib]
+path="mixins/eating_drinking_animation/state.rs"

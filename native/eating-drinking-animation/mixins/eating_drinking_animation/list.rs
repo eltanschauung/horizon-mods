@@ -1,0 +1,1 @@
+fn list(mods:&mut Vec<crate::game::native_hooks::NativeMod>) {mods.push(crate::game::native_hooks::NativeMod{id:"eating_drinking_animation".into(),title:"Eating & Drinking Animation 0.1.0".into(),description:"Third-person arm lift, eating/drinking bob and smooth release. Uses synchronized item-use state; no extra packets.".into(),keys:vec![]});}

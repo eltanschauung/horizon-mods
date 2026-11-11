@@ -1,0 +1,1 @@
+fn local_particles(game:&mut crate::game::Game<'_>,stack:&ItemStack,count:u32)->core::ops::ControlFlow<()> {if game.eating_drinking_local_particles(stack,count) {core::ops::ControlFlow::Break(())} else {core::ops::ControlFlow::Continue(())}}

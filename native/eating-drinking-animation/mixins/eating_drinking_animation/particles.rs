@@ -1,0 +1,1 @@
+fn particles(game:&mut crate::game::Game<'_>,item:&str,ticks:u32,at:[f64;3])->core::ops::ControlFlow<()> {if game.eating_drinking_particles(item,ticks,at) {core::ops::ControlFlow::Break(())} else {core::ops::ControlFlow::Continue(())}}
