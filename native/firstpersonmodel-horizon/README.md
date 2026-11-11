@@ -11,3 +11,5 @@ Build: `python3 tools/build.py`. Install the generated `.hnmod` in
 `~/.local/share/horizon/horizon-native-mods/`, enable it, and build the native client.
 MIT; original concept and offset behavior by tr7zw. This is an independent Rust
 recreation, not the original Java mod or its Java compatibility API.
+
+Source: https://github.com/eltanschauung/firstpersonmodel-horizon
