@@ -39,7 +39,7 @@ source = "schem-menu.rs"
 # goes in the library and is `pub`, so the game binary can reach it too.
 [[module]]
 id = "paths"
-file = "crates/horizon-client/src/chat.rs"
+file = "crates/horizon-client-render/src/chat.rs"
 name = "worldedit_paths"
 source = "schem-paths.rs"
 visibility = "pub"
@@ -79,7 +79,7 @@ bindings = [
 id = "chat-suggestions"
 kind = "HEAD"
 cancellable = true
-target = "horizon_client::chat::ChatScreen::update_command_info"
+target = "horizon_client_render::chat::ChatScreen::update_command_info"
 helper = "chat-hook.rs"
 bindings = [
   { name = "screen", ty = "&mut crate::chat::ChatScreen", value = "self" },
@@ -90,7 +90,7 @@ bindings = [
 # The completions' table, staged into chat.rs as `mod worldedit_chat`.
 [[module]]
 id = "chat"
-file = "crates/horizon-client/src/chat.rs"
+file = "crates/horizon-client-render/src/chat.rs"
 name = "worldedit_chat"
 source = "chat-suggestions.rs"
 
