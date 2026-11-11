@@ -89,5 +89,7 @@ with zipfile.ZipFile(a.jar) as z:
  biomes.discard('#minecraft:is_hill')
  put('data/gensouworks/tags/worldgen/biome/has_structure/all.json',{'replace':False,'values':sorted(biomes)})
  put('data/gensouworks/worldgen/structure_set/all.json',{'structures':[{'structure':'gensouworks:'+name,'weight':1}for name in sorted(structures)],'placement':{'type':'minecraft:random_spread','spacing':32,'separation':8,'salt':20260804}})
+from apply_placement import apply
+apply(out)
 put('conversion-report.json',{'jar_sha256':hashlib.sha256(a.jar.read_bytes()).hexdigest(),'structures':sorted(structures),'template_sizes':sizes,'block_substitutions':remaps,'counts':dict(counts),'foreign_items_removed':foreign_items})
 print(json.dumps({'structures':len(structures),'templates':counts['templates'],'block_substitutions':len(remaps),'loot_fallbacks':counts['loot_fallbacks']}))

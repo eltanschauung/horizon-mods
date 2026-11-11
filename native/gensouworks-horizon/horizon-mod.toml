@@ -1,7 +1,7 @@
 id = "gensouworks_horizon"
 name = "Gensouworks Horizon"
-version = "0.1.0"
-description = "Eight Gensou Works structures with equal generation weights and vanilla-only decorations and loot."
+version = "0.1.1"
+description = "Eight Gensou Works structures with biome-specific generation rates and vanilla-only decorations and loot."
 authors = ["ZZY (original structures)", "eltanschauung (Horizon port)"]
 api = "0.2"
 side = "both"

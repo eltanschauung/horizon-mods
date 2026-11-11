@@ -1,0 +1,16 @@
+{
+  "structures": [
+    {
+      "structure": "gensouworks:signal_tower",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 8,
+    "salt": 20260811,
+    "frequency": 0.03,
+    "frequency_reduction_method": "default"
+  }
+}

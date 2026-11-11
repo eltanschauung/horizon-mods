@@ -1,35 +1,7 @@
 {
   "structures": [
     {
-      "structure": "gensouworks:eientei",
-      "weight": 1
-    },
-    {
-      "structure": "gensouworks:kirisame_house",
-      "weight": 1
-    },
-    {
-      "structure": "gensouworks:koumakan",
-      "weight": 1
-    },
-    {
-      "structure": "gensouworks:kourindou",
-      "weight": 1
-    },
-    {
       "structure": "gensouworks:larva_cave",
-      "weight": 1
-    },
-    {
-      "structure": "gensouworks:margatroid_house",
-      "weight": 1
-    },
-    {
-      "structure": "gensouworks:sanyousei_new_house",
-      "weight": 1
-    },
-    {
-      "structure": "gensouworks:signal_tower",
       "weight": 1
     }
   ],
@@ -37,6 +9,8 @@
     "type": "minecraft:random_spread",
     "spacing": 32,
     "separation": 8,
-    "salt": 20260804
+    "salt": 20260804,
+    "frequency": 0.125,
+    "frequency_reduction_method": "default"
   }
 }

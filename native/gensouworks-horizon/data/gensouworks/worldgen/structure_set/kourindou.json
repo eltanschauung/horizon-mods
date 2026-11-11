@@ -1,0 +1,16 @@
+{
+  "structures": [
+    {
+      "structure": "gensouworks:kourindou",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 8,
+    "salt": 20260808,
+    "frequency": 0.06,
+    "frequency_reduction_method": "default"
+  }
+}
