@@ -1,13 +1,27 @@
 // SPDX-License-Identifier: MIT
 use super::Game;
+thread_local! { static VANILLA_HANDS: std::cell::Cell<Option<bool>> = const { std::cell::Cell::new(None) }; }
 pub(super) const ID: &str = "firstpersonmodel_horizon";
 impl Game<'_> {
+    pub(super) fn firstperson_vanilla_hands(&self) -> bool {
+        VANILLA_HANDS.with(|cached| {
+            if let Some(value) = cached.get() { return value; }
+            let value = self.native_setting(ID, "vanilla_hands").as_deref() != Some("false");
+            cached.set(Some(value));
+            value
+        })
+    }
+    pub(super) fn firstperson_toggle_hands(&self) {
+        let value = !self.firstperson_vanilla_hands();
+        self.native_set_setting(ID, "vanilla_hands", if value { "true" } else { "false" });
+        VANILLA_HANDS.with(|cached| cached.set(Some(value)));
+    }
     pub(super) fn firstperson_body_active(&self) -> bool {
         self.native_on(ID) && self.camera_type.first_person() && !self.spectator()
             && self.sleeping.is_none() && self.studio_replay.is_none()
             && self.player.as_ref().is_some_and(|p| !p.health.dead_or_dying())
-            && !self.visible_hand_items().iter().flatten().any(|s|
-                matches!(s.item.as_ref(), "minecraft:filled_map" | "minecraft:spyglass"))
+            && (self.firstperson_vanilla_hands() || !self.visible_hand_items().iter().flatten().any(|s|
+                matches!(s.item.as_ref(), "minecraft:filled_map" | "minecraft:spyglass")))
     }
     pub(super) fn firstperson_body_geometry(&self, camera: glam::DVec3, alpha: f64,
         out: &mut Vec<horizon_client::mesher::Vertex>) {
@@ -29,12 +43,16 @@ impl Game<'_> {
         let lookup = |name: &str| atlas.sprites.get(name).map(|r|[r.u0,r.v0,r.u1,r.v1]);
         let render = if self.own_body_visible() { horizon_client::mobs::render::render_with }
             else { horizon_client::mobs::render::render_layers };
-        render(&m,alpha as f32,camera,&lookup,packed,self.res.mob_data(),&self.player_armor_layers(),out);
+        // Scope the pose override to this local body draw, including its armor.
+        // Remote models and inventory/third-person previews keep their own poses.
+        horizon_client::mobs::anim::firstperson_view::with_hidden_arms(self.firstperson_vanilla_hands(), || {
+            render(&m,alpha as f32,camera,&lookup,packed,self.res.mob_data(),&self.player_armor_layers(),out);
+        });
         if horizon_client::mobs::render::layers_shown(&m) {
             let chest = self.armor[1].as_ref().map(|s| &*s.item);
             if !self.own_invisible() { self.player_cape_geometry(&m,chest,camera,alpha as f32,packed,out); }
             self.player_elytra_geometry(&m,chest,camera,alpha as f32,packed,out);
-            self.held_item_geometry(&m,camera,alpha,packed,true,None,out);
+            if !self.firstperson_vanilla_hands() { self.held_item_geometry(&m,camera,alpha,packed,true,None,out); }
         }
     }
 }
