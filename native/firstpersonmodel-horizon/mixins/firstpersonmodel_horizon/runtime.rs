@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 use super::Game;
 thread_local! { static VANILLA_HANDS: std::cell::Cell<Option<bool>> = const { std::cell::Cell::new(None) }; }
+thread_local! { static AUTO_HIDE: std::cell::Cell<Option<bool>> = const { std::cell::Cell::new(None) }; }
 pub(super) const ID: &str = "firstpersonmodel_horizon";
 impl Game<'_> {
     pub(super) fn firstperson_vanilla_hands(&self) -> bool {
@@ -16,10 +17,25 @@ impl Game<'_> {
         self.native_set_setting(ID, "vanilla_hands", if value { "true" } else { "false" });
         VANILLA_HANDS.with(|cached| cached.set(Some(value)));
     }
+    pub(super) fn firstperson_auto_hide(&self) -> bool {
+        AUTO_HIDE.with(|cached| {
+            if let Some(value) = cached.get() { return value; }
+            let value = self.native_setting(ID, "auto_hide_body").as_deref() != Some("false");
+            cached.set(Some(value));
+            value
+        })
+    }
+    pub(super) fn firstperson_toggle_auto_hide(&self) {
+        let value = !self.firstperson_auto_hide();
+        self.native_set_setting(ID, "auto_hide_body", if value { "true" } else { "false" });
+        AUTO_HIDE.with(|cached| cached.set(Some(value)));
+    }
     pub(super) fn firstperson_body_active(&self) -> bool {
         self.native_on(ID) && self.camera_type.first_person() && !self.spectator()
             && self.sleeping.is_none() && self.studio_replay.is_none()
             && self.player.as_ref().is_some_and(|p| !p.health.dead_or_dying())
+            && !(self.firstperson_auto_hide()
+                && (self.pitch > 80.0 || self.player.as_ref().is_some_and(|p| p.swimming)))
             && (self.firstperson_vanilla_hands() || !self.visible_hand_items().iter().flatten().any(|s|
                 matches!(s.item.as_ref(), "minecraft:filled_map" | "minecraft:spyglass")))
     }

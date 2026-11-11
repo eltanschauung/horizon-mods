@@ -20,3 +20,5 @@ MIT; original concept and offset behavior by tr7zw. This is an independent Rust
 recreation, not the original Java mod or its Java compatibility API.
 
 Source: https://github.com/eltanschauung/firstpersonmodel-horizon
+
+**Auto-hide body** defaults to On. The first-person body hides while swimming or looking down beyond 80° pitch, then returns automatically. This never changes the camera, ordinary third-person rendering, or the vanilla first-person hands. Toggle it under Options → Mods → FirstPersonModel.
