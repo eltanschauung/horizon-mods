@@ -380,7 +380,7 @@ pub(super) fn suggest(screen: &mut ChatScreen, m: &Measure, c: &Commands<'_>) ->
     );
     screen.suggestions = None;
     if screen.allow_suggestions && screen.auto_suggestions {
-        screen.show_suggestions(m);
+        screen.show_suggestions(m, false);
     }
     true
 }
