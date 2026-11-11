@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 fn pose(_result: (), m: &Mob, s:&State, p:&mut Poses) {
  if &*m.kind.id!="minecraft:player" || m.extra.spectator || !m.alive() {return;}
- let arms=crate::eating_drinking_animation::arms(m.id);
+ let arms=crate::eating_drinking_animation::arms(m.join.get());
  let head=*p.get("head");
  for (side,a) in arms.iter().enumerate() {
   let weight=a.old+(a.weight-a.old)*s.partial.clamp(0.0,1.0);

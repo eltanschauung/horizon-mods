@@ -2,8 +2,8 @@
 use std::{cell::RefCell, collections::HashMap};
 #[derive(Clone, Copy, Default)]
 pub struct Arm { pub old: f32, pub weight: f32, pub drink: bool, pub ticks: f32 }
-thread_local! { static ARMS: RefCell<HashMap<u32, [Arm; 2]>> = RefCell::new(HashMap::new()); }
-pub fn update(inputs: &[(u32, Option<(bool, bool, f32)>)]) {
+thread_local! { static ARMS: RefCell<HashMap<u64, [Arm; 2]>> = RefCell::new(HashMap::new()); }
+pub fn update(inputs: &[(u64, Option<(bool, bool, f32)>)]) {
  ARMS.with(|all| {
   let mut all=all.borrow_mut();
   all.retain(|id,_| inputs.iter().any(|(i,_)| i==id));
@@ -19,7 +19,7 @@ pub fn update(inputs: &[(u32, Option<(bool, bool, f32)>)]) {
   }
  });
 }
-pub fn arms(id:u32)->[Arm;2] { ARMS.with(|a|a.borrow().get(&id).copied().unwrap_or_default()) }
+pub fn arms(id:u64)->[Arm;2] { ARMS.with(|a|a.borrow().get(&id).copied().unwrap_or_default()) }
 pub fn rotations(head:[f32;2], drink:bool, ticks:f32, left:bool)->[f32;3] {
  let side=if left {1.0}else{-1.0};
  let bob=(ticks*if drink {0.55}else{1.35}).sin()*if drink {0.025}else{0.065};

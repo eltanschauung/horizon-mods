@@ -19,13 +19,13 @@ impl Game<'_> {
      let drink=self.eating_drinking_kind(&stack)?;
      Some((m.main_arm_left()!=m.extra.using_off_hand,drink,m.extra.using_item as f32))
     }).flatten();
-    inputs.push((m.id,active));
+    inputs.push((m.join.get(),active));
    }
    if let Some(m)=&self.player_model {
     let active=self.using.and_then(|(slot,ticks)| {
      let drink=self.eating_drinking_kind(self.stack_in(slot)?)?;
      Some((self.settings.main_hand_left!=(slot==super::shield::OFFHAND_SLOT),drink,ticks as f32))
-    });inputs.push((m.id,active));
+    });inputs.push((m.join.get(),active));
    }
   }
   anim::update(&inputs);
