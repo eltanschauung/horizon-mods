@@ -10,7 +10,7 @@
     "spacing": 32,
     "separation": 8,
     "salt": 20260809,
-    "frequency": 0.06,
+    "frequency": 0.09,
     "frequency_reduction_method": "default"
   }
 }

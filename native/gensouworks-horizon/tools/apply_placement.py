@@ -2,13 +2,13 @@
 import json
 from pathlib import Path
 RULES = {
-    'koumakan': ('#c:is_plains', 0.03),
-    'eientei': ('#minecraft:is_jungle', 0.03),
-    'margatroid_house': ('#minecraft:is_forest', 0.06),
-    'kourindou': ('#minecraft:is_forest', 0.06),
-    'kirisame_house': ('#minecraft:is_forest', 0.06),
-    'sanyousei_new_house': ('#minecraft:is_forest', 0.04),
-    'signal_tower': ('#minecraft:is_forest', 0.03),
+    'koumakan': ('#c:is_plains', 0.06),
+    'eientei': ('#minecraft:is_jungle', 0.06),
+    'margatroid_house': ('#minecraft:is_forest', 0.09),
+    'kourindou': ('#minecraft:is_forest', 0.09),
+    'kirisame_house': ('#minecraft:is_forest', 0.09),
+    'sanyousei_new_house': ('#minecraft:is_forest', 0.07),
+    'signal_tower': ('#minecraft:is_forest', 0.06),
 }
 def apply(root):
     root = Path(root)
