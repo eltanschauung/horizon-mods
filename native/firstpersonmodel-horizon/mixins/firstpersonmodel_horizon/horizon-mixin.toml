@@ -1,0 +1,60 @@
+[mod]
+id="firstpersonmodel_horizon"
+version="0.1.0"
+priority=120
+
+[[module]]
+id="body"
+file="crates/horizon-client/src/game.rs"
+name="firstpersonmodel"
+source="runtime.rs"
+
+[[injection]]
+id="visible"
+kind="HEAD"
+cancellable=true
+target="horizon_client::game::perspective::Game<'_>::own_body_in_view"
+helper="visible.rs"
+bindings=[
+ {name="game",ty="&crate::game::Game<'_>",value="&*self"},
+]
+
+[[injection]]
+id="geometry"
+kind="HEAD"
+cancellable=true
+target="horizon_client::game::perspective::Game<'_>::player_model_geometry"
+helper="geometry.rs"
+bindings=[
+ {name="game",ty="&crate::game::Game<'_>",value="&*self"},
+ {name="camera",ty="glam::DVec3",value="camera"},
+ {name="alpha",ty="f64",value="alpha"},
+ {name="out",ty="&mut Vec<crate::mesher::Vertex>",value="&mut *out"},
+]
+
+[[injection]]
+id="hands"
+kind="HEAD"
+cancellable=true
+target="horizon_client::game::Game<'_>::hand_geometry"
+helper="hands.rs"
+bindings=[
+ {name="game",ty="&crate::game::Game<'_>",value="&*self"},
+]
+
+[[injection]]
+id="pose"
+kind="RETURN"
+target="horizon_client_lib::mobs::anim::setup"
+helper="pose.rs"
+bindings=[
+ {name="_result",ty="()",value="$value"},
+ {name="m",ty="&Mob",value="m"},
+ {name="p",ty="&mut Poses",value="&mut *p"},
+]
+[[injection]]
+id="list"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper="list.rs"
+bindings=[{name="mods",ty="&mut Vec<crate::game::native_hooks::NativeMod>",value="&mut *mods"}]
