@@ -160,7 +160,7 @@ bindings = [
 id = "wand"
 kind = "HEAD"
 cancellable = true
-target = "horizon_client::game::Game<'_>::play_mouse"
+target = "horizon_client::game::play_input::Game<'_>::play_mouse"
 helper = "wand.rs"
 bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
