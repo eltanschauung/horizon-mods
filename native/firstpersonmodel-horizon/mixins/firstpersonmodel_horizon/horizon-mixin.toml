@@ -1,6 +1,6 @@
 [mod]
 id="firstpersonmodel_horizon"
-version="0.2.2"
+version="0.2.3"
 priority=120
 
 [[module]]
@@ -78,4 +78,22 @@ bindings=[
  {name="game",ty="&mut crate::game::Game<'_>",value="&mut *self"},
  {name="mod_id",ty="&str",value="mod_id"},
  {name="button",ty="usize",value="button"},
+]
+
+[[module]]
+id="arm_visibility"
+file="crates/horizon-client/src/client_lib.rs"
+name="firstperson_arm_visibility"
+visibility="pub"
+source="arm_visibility.rs"
+
+[[injection]]
+id="empty_hand"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_render_hand"
+helper="empty_hand.rs"
+bindings=[
+ {name="game",ty="&crate::game::Game<'_>",value="&*self"},
+ {name="stack",ty="Option<&ItemStack>",value="stack"},
+ {name="canceled",ty="&mut bool",value="&mut *canceled"},
 ]

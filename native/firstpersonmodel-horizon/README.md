@@ -22,3 +22,5 @@ recreation, not the original Java mod or its Java compatibility API.
 Source: https://github.com/eltanschauung/firstpersonmodel-horizon
 
 **Auto-hide body** defaults to On. The first-person body hides while swimming or looking down beyond 80° pitch, then returns automatically. This never changes the camera, ordinary third-person rendering, or the vanilla first-person hands. Toggle it under Options → Mods → FirstPersonModel.
+
+With Auto-hide body enabled, empty first-person arms (including punching fists and their sleeves) are hidden. Item-bearing arms and first-person item animations remain visible. Turning the setting Off restores the empty arms. Other players and third-person views are unaffected.
