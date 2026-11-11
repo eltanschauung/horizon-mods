@@ -1,6 +1,6 @@
 [mod]
 id="firstpersonmodel_horizon"
-version="0.2.3"
+version="0.2.4"
 priority=120
 
 [[module]]
@@ -81,11 +81,11 @@ bindings=[
 ]
 
 [[module]]
-id="arm_visibility"
+id="view_policy"
 file="crates/horizon-client/src/client_lib.rs"
-name="firstperson_arm_visibility"
+name="firstperson_view_policy"
 visibility="pub"
-source="arm_visibility.rs"
+source="view_policy.rs"
 
 [[injection]]
 id="empty_hand"
