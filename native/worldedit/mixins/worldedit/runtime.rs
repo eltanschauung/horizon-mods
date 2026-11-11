@@ -474,7 +474,7 @@ fn wand_stack() -> horizon_client::items::ItemStack {
 /// Whether `stack` is the wand `//wand` handed out.
 fn is_wand(stack: &horizon_client::items::ItemStack) -> bool {
     &*stack.item == WAND_ITEM
-        && matches!(stack.data().and_then(|data| data.custom_name.as_ref()), Some(horizon_world::nbt::Tag::String(name)) if name.as_str() == Some(WAND_NAME))
+        && matches!(stack.data().and_then(|data| data.custom_name.as_ref()), Some(horizon_world::nbt::Tag::String(name)) if name.0.iter().copied().eq(WAND_NAME.encode_utf16()))
 }
 /// `//wand`: the wooden axe, into the inventory.
 fn give_wand(game: &mut Game<'_>) -> bool {
