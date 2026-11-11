@@ -20,9 +20,8 @@ use horizon_world::nbt::{self, Limits, NamedTag, Tag};
 use horizon_world::registry::BlockStateId;
 use std::collections::HashMap;
 use std::path::Path;
-use std::sync::OnceLock;
 
-use super::worldedit_legacy::LEGACY;
+use horizon_world::datafix::worldedit_legacy::legacy_state;
 
 type Pos = [i32; 3];
 
@@ -509,28 +508,6 @@ fn read_mcedit(
         blocks,
         unknown,
     })
-}
-
-/// The 1.12 state `id << 4 | data` as a name and `key=value;...` properties,
-/// from the table generated next to this file.
-fn legacy_state(id: usize) -> (&'static str, &'static str) {
-    static TABLE: OnceLock<Vec<(&'static str, &'static str)>> = OnceLock::new();
-    let table = TABLE.get_or_init(|| {
-        let mut out = vec![("minecraft:air", ""); 4096];
-        for line in LEGACY.lines() {
-            let mut fields = line.split('\t');
-            let Some(id) = fields.next().and_then(|f| f.trim().parse::<usize>().ok()) else {
-                continue;
-            };
-            let name = fields.next().unwrap_or("minecraft:air");
-            let properties = fields.next().unwrap_or("");
-            if let Some(slot) = out.get_mut(id) {
-                *slot = (name, properties);
-            }
-        }
-        out
-    });
-    table.get(id).copied().unwrap_or(("minecraft:air", ""))
 }
 
 /// Shifts blocks so their low corner is at `0, 0, 0`, and reports the box.

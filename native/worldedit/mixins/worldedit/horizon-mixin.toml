@@ -22,12 +22,11 @@ source = "schematic.rs"
 # The 1.12 to 1.13 block table a `.schematic` needs, from gen_legacy.py.
 [[module]]
 id = "legacy"
-file = "crates/horizon-client/src/game.rs"
+file = "crates/horizon-world/src/datafix/mod.rs"
 name = "worldedit_legacy"
 source = "legacy_ids.rs"
+visibility = "pub"
 
-# The schematics menu: `//schem` with no argument, drawn over the pause menu's
-# screen, with its own clicks and keys.
 [[module]]
 id = "menu"
 file = "crates/horizon-client/src/game.rs"
