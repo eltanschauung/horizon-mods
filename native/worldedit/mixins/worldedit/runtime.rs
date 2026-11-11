@@ -468,13 +468,13 @@ fn describe(game: &mut Game<'_>, lo: Pos, hi: Pos, volume: i64) {
 /// The wooden axe `//wand` gives: named, and that name is what marks it.
 fn wand_stack() -> horizon_client::items::ItemStack {
     let mut stack = horizon_client::items::ItemStack::new(WAND_ITEM, 1);
-    stack.data_mut().custom_name = Some(horizon_world::nbt::Tag::String(WAND_NAME.to_owned()));
+    stack.data_mut().custom_name = Some(horizon_world::nbt::Tag::String(WAND_NAME.into()));
     stack
 }
 /// Whether `stack` is the wand `//wand` handed out.
 fn is_wand(stack: &horizon_client::items::ItemStack) -> bool {
     &*stack.item == WAND_ITEM
-        && matches!(stack.data().and_then(|data| data.custom_name.as_ref()), Some(horizon_world::nbt::Tag::String(name)) if name == WAND_NAME)
+        && matches!(stack.data().and_then(|data| data.custom_name.as_ref()), Some(horizon_world::nbt::Tag::String(name)) if name.as_str() == Some(WAND_NAME))
 }
 /// `//wand`: the wooden axe, into the inventory.
 fn give_wand(game: &mut Game<'_>) -> bool {
