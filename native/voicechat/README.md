@@ -103,3 +103,8 @@ Imported from Nirokx/horizon-voice-chat at c60e3fcf052bc73ef7206972bf9495e31fa31
 This fork preserves raw plugin channels for Java servers and uses Horizon's native
 mod transport with our `voicechat-server` relay. Keep both native packages enabled.
 The server uses UDP 24454; the client menu is V and push to talk is Caps Lock.
+
+Our dedicated server requires UDP 24454 in its firewall in addition to the game's
+TCP port. Configuration is `config/voicechat-server.json`; the relay opens UDP
+after the first client asks. `tools/test_relay_e2e.py` verifies two isolated real
+clients authenticate and create/join a group, and captures the connected menu.
