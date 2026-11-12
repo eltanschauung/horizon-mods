@@ -9,7 +9,7 @@ description = """
 - **Place** it where there are two free blocks and name it. A name another gap has gets a number: Home (2), Home (3).
 - **Lock** it in the same window and only you can use it or break it. Unlocked, every player can.
 - **Right-click** any gap for a big screen of every gap you may use, in rows with a scroll bar. Click one to go.
-- **The cost** is a level for each full 500 blocks, at most three, and three to another dimension. Free in creative.
+- **Travel is free**, however far, and to any dimension.
 - **Sneak and right-click** your own gap to rename it or change its lock.
 
 In the world a gap is an eye-gap picture that leans and always turns to face you.
@@ -25,6 +25,14 @@ source = "https://github.com/mxpbxb/yukari-gaps"
 icon = "icons/yukari_gap_native.png"
 categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
+
+[[versions]]
+version = "0.4.1"
+published = "2026-11-12"
+game = "26.3"
+file = "yukari_gap_native-0.4.1.hnmod"
+sha256 = "54145e88575c5aa1e63bfd869034c2a7860093776afade052f5fd6b613b8b810"
+changelog = "Travel is free: no experience cost."
 
 [[versions]]
 version = "0.4.0"
