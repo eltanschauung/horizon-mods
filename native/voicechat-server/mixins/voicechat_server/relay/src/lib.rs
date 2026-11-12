@@ -66,6 +66,8 @@ pub struct Player {
     pub name: String,
     pub dimension: String,
     pub position: [f64; 3],
+    /// Server-authorized non-positional broadcast, independent of voice groups.
+    pub broadcast: bool,
 }
 
 /// A message for a player's client: (player, channel, data).
@@ -598,6 +600,10 @@ impl State {
                 continue;
             }
             let Some(addr) = c.addr else { continue };
+            if at.is_some_and(|p| p.broadcast) {
+                out.push((*uuid, addr, None));
+                continue;
+            }
             if from.group.is_some() && from.group == c.group {
                 out.push((*uuid, addr, None));
                 continue;

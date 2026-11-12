@@ -1,6 +1,6 @@
 [mod]
 id = "voicechat_server"
-version = "1.0.0"
+version = "1.1.0"
 priority = 100
 
 # The commit it was tested on (the official server's engine).

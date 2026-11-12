@@ -36,6 +36,12 @@ fn players(game: &Game<'_>) -> Vec<Player> {
             name: p.name,
             dimension: p.dimension,
             position: p.position,
+            // Optional Lunatic integration: possession in a backpack is not enough.
+            // Only authoritative equipped stacks can enable broadcast; clients cannot request it.
+            broadcast: [horizon_world::player_inventory::EquipmentSlot::MainHand,
+                horizon_world::player_inventory::EquipmentSlot::OffHand].into_iter().any(|slot|
+                game.native_player_equipment(p.uuid, slot)
+                    .is_some_and(|s| s.item.as_ref() == "lunatic:koishi_phone")),
         })
         .collect()
 }

@@ -15,6 +15,7 @@ fn player(uuid: u128, name: &str, dimension: &str, x: f64) -> Player {
         name: name.into(),
         dimension: dimension.into(),
         position: [x, 64.0, 0.0],
+        broadcast: false,
     }
 }
 
@@ -650,4 +651,30 @@ fn repeated_secret_requests_and_group_changes_stay_bounded() {
         .count();
     // Its bucket refilled during the wait: 10 of the 100.
     assert_eq!(joined, OPS_BURST as usize);
+}
+
+#[test]
+fn server_authorized_phone_broadcast_is_global_and_reverts_when_put_away() {
+    let s = server();
+    let voices: Vec<Voice> = [A, B, FAR, NETHER].into_iter()
+        .map(|u| Voice::connect(u, &ask_secret(&s, u))).collect();
+    let [a, b, far, nether] = &voices[..] else { unreachable!() };
+    // An isolated listener still receives a deliberate server-wide phone broadcast.
+    s.message(B, proto::CREATE_GROUP, &Out::default().text("Private").flag(false).short(2).done());
+    let mut people = world(); people[0].broadcast = true; s.tick(people);
+    a.talk(0, false);
+    for listener in [b, far, nether] {
+        let packet = listener.hears().expect("phone reaches all connected listeners");
+        assert_eq!(packet[0], 3, "non-positional audio, including across dimensions/groups");
+        assert_eq!(&packet[1..17], &A.to_be_bytes());
+    }
+    assert_eq!(a.hears(), None, "never relay the sender back to themselves");
+    s.tick(world());
+    a.talk(1, false);
+    assert_eq!(b.hears(), None, "put away restores group isolation");
+    assert_eq!(far.hears(), None, "put away restores proximity range");
+    assert_eq!(nether.hears(), None, "put away restores dimension boundary");
+    let mut people = world(); people[0].broadcast = true; s.tick(people);
+    a.talk(2, true);
+    assert_eq!(far.hears().map(|p|p[0]), Some(3), "phone also carries whispered speech globally");
 }

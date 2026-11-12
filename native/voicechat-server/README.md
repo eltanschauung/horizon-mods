@@ -51,3 +51,7 @@ It needs horizon-mixins 0.6.0 (bundle crates) and hook points API 57. Tests: `ca
 
 Not made with or endorsed by Simple Voice Chat or its author: it speaks the same protocol, written from its packet
 layouts, with none of its code.
+
+## Koishi’s Phone (optional Lunatic integration)
+
+Holding `lunatic:koishi_phone` in either hand broadcasts the speaker to every connected voice-chat listener, across distances, dimensions and groups, using non-positional audio. Putting it away immediately restores ordinary proximity/group routing. The server checks the equipped item every game tick; clients cannot grant themselves broadcast mode. Disabled/deafened listeners and disconnected clients remain excluded. No new protocol messages or client changes are needed. Lunatic is not required when the phone feature is unused.
