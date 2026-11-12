@@ -27,6 +27,14 @@ categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
 
 [[versions]]
+version = "0.5.0"
+published = "2026-11-12"
+game = "26.3"
+file = "yukari_gap_native-0.5.0.hnmod"
+sha256 = "283900a758d2a6e43549746529f9ec2647e41a931516e65f2723e518fd948117"
+changelog = "New eye-gap picture with trailing ends, drawn 3 blocks across and lower. Only the upper block, at the picture, can be clicked or broken."
+
+[[versions]]
 version = "0.4.1"
 published = "2026-11-12"
 game = "26.3"
