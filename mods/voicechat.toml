@@ -44,3 +44,11 @@ game = "26.3"
 file = "voicechat-1.0.0.hnmod"
 sha256 = "7a12ef9e691d10128ea081906a313d597c67f22897380618871477f9dd8eabf1"
 changelog = "First release."
+
+[[versions]]
+version = "1.0.1+fork.1"
+published = "2026-11-12"
+game = "26.3"
+file = "voicechat-1.0.1+fork.1.hnmod"
+sha256 = "df759b7e34713db4a6403d3a6790d15fcb447e43e2fc2c553fda40f83ba79d06"
+changelog = "Nirokx 1.0.1 with Horizon native transport compatibility; source in native/voicechat."

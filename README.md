@@ -26,6 +26,11 @@ it accepts, and how to have a project taken down.
 
 ## Fork additions
 
+[Horizon Voice Chat](native/voicechat/) carries Nirokx's client source and our
+native-transport adapter. Install it with [the server relay](native/voicechat-server/)
+for proximity voice and groups on Horizon servers.
+
+
 [Sleep Threshold](native/sleep-threshold/) adds a single setting for one-player or percentage-based night skipping. Its source bundle is built locally; it is not an upstream registry listing.
 
 ## Submit
