@@ -35,7 +35,7 @@ impl Game<'_> {
             && self.sleeping.is_none() && self.studio_replay.is_none()
             && self.player.as_ref().is_some_and(|p| !p.health.dead_or_dying())
             && !(self.firstperson_auto_hide()
-                && (horizon_client::firstperson_view_policy::above_hide_angle(self.pitch) || self.player.as_ref().is_some_and(|p| p.swimming)))
+                && self.player.as_ref().is_some_and(|p| horizon_client::firstperson_view_policy::hide_body(self.pitch, p.swimming, p.fall_flying)))
             && (self.firstperson_vanilla_hands() || !self.visible_hand_items().iter().flatten().any(|s|
                 matches!(s.item.as_ref(), "minecraft:filled_map" | "minecraft:spyglass")))
     }
