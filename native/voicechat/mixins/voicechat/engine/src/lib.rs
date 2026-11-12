@@ -89,6 +89,7 @@ pub struct Settings {
     pub protocol: Protocol,
     pub hud: bool,
     pub group_labels: bool,
+    pub hide_tooltip: bool,
 }
 
 impl Default for Settings {
@@ -103,6 +104,7 @@ impl Default for Settings {
             protocol: Protocol::Auto,
             hud: true,
             group_labels: true,
+            hide_tooltip: true,
         }
     }
 }
@@ -134,6 +136,7 @@ impl Settings {
             },
             hud: get("hud").as_deref() != Some("false"),
             group_labels: get("group_labels").as_deref() != Some("false"),
+            hide_tooltip: get("hide_tooltip").as_deref() != Some("false"),
         }
     }
 
@@ -153,6 +156,7 @@ impl Settings {
             .into()),
             ("hud", self.hud.to_string()),
             ("group_labels", self.group_labels.to_string()),
+            ("hide_tooltip", self.hide_tooltip.to_string()),
         ]
     }
 
@@ -173,6 +177,7 @@ impl Settings {
             }),
             format!("Status on screen: {}", on_off(self.hud)),
             format!("Group names above players: {}", on_off(self.group_labels)),
+            format!("Hide tooltip: {}", on_off(self.hide_tooltip)),
         ]
     }
 
@@ -193,6 +198,7 @@ impl Settings {
             }
             7 => self.hud = !self.hud,
             8 => self.group_labels = !self.group_labels,
+            9 => self.hide_tooltip = !self.hide_tooltip,
             _ => {}
         }
     }
@@ -868,7 +874,7 @@ pub fn hud(ptt_key: &str) -> Vec<Line> {
     } else if v.shared.transmitting.load(Ordering::Relaxed) {
         let whisper = v.shared.controls.lock().unwrap().whisper;
         lines.push(if whisper { line("Whispering".into(), AQUA) } else { line("Talking".into(), GREEN) });
-    } else if status == Status::Connected {
+    } else if status == Status::Connected && !v.settings.hide_tooltip {
         lines.push(match v.settings.mode {
             Mode::PushToTalk => line(format!("Push to talk: {}", key_label(ptt_key)), GREY),
             Mode::Voice => line(format!("Voice activation ({:.0} dB)", v.shared.level()), GREY),
@@ -1231,6 +1237,10 @@ mod tests {
     #[test]
     fn settings_round_trip_and_cycle() {
         let mut s = Settings::default();
+        assert!(s.hide_tooltip);
+        assert!(Settings::load(&|_| None).hide_tooltip);
+        s.click(9);
+        assert!(!s.hide_tooltip);
         s.click(0);
         s.click(3);
         s.click(6);
