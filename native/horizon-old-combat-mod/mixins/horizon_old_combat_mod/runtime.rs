@@ -6,7 +6,7 @@ thread_local! { static APPLIED: RefCell<HashMap<u128, bool>> = RefCell::new(Hash
 impl Game<'_> {
     pub(super) fn old_combat_tick(&mut self) {
         if self.remote.is_some() { return; }
-        let enabled = self.native_on(ID) && self.gamerules.bool("old_combat");
+        let enabled = self.native_on(ID) && self.ui.rules.bool("old_combat");
         let players = self.native_server_players();
         APPLIED.with_borrow_mut(|cache| cache.retain(|id, _| players.iter().any(|p| &p.uuid == id)));
         let dimension = self.dim.id();
