@@ -27,6 +27,14 @@ categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
 
 [[versions]]
+version = "0.7.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs_native-0.7.0.hnmod"
+sha256 = "a4c04d423d3a9a72752c3cc04b9e2cc324b5eae7cb0abc551c269e063ac8fe45"
+changelog = "The crow tengu and hell raven fly with their original wing animation. A new rare mob, the Old Crow Tengu: the crow tengu at its original speed and full rate of fire, alone and seldom."
+
+[[versions]]
 version = "0.6.0"
 published = "2026-11-13"
 game = "26.3"

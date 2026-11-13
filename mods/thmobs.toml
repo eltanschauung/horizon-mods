@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "mobs", "assets"]
 
 [[versions]]
+version = "0.7.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs-0.7.0.hmod"
+sha256 = "cb98e4543f53291bd1422427aee3c7d39d2d8d2d0f5ce0073e935ff1b490f94a"
+changelog = "The crow tengu and hell raven fly with their original wing animation. A new rare mob, the Old Crow Tengu: the crow tengu at its original speed and full rate of fire, alone and seldom."
+
+[[versions]]
 version = "0.6.0"
 published = "2026-11-13"
 game = "26.3"
