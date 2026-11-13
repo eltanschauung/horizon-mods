@@ -54,3 +54,12 @@ The game hook supplies position and style state. Two additional injections aroun
 ![Stone outline and coordinate strip, shown in a multiplayer game](docs/minimap-outline-coordinates.png)
 
 Screenshot supplied by eltanschauung. It shows the Stone outline and coordinates enabled; those are optional settings, and the other mods visible in the scene are separate from this change.
+
+## Biome colours in the Horizon fork
+
+The fork’s shared minimap renderer resolves grass and water through the terrain
+mesher’s biome colours, seed-based biome lookup and configured blend radius,
+including world data packs, resource colormaps and modded biomes. Colours are
+cached per scanned column, preserving existing slope/water-depth shading and
+untinted block colours. Tiles refresh when biome tables, blend settings or the
+world’s biome seed change; this needs the corresponding Horizon fork update.
