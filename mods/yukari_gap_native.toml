@@ -1,0 +1,51 @@
+id = "yukari_gap_native"
+kind = "native-mod"
+name = "Yukari Gaps Beta"
+summary = "Gaps to travel between: place and name a gap, lock it to yourself if you like, and step to any other."
+description = """
+**This mod has two parts, and you need both.** Install this one, the native part, and [Yukari Gaps Beta (assets)](https://playhorizon.dev/mods/yukari_gap), then press Build.
+
+- **Craft** a Yukari Gap from four amethyst shards, four ender pearls and a gold ingot.
+- **Place** it where there are two free blocks and name it. A name another gap has gets a number: Home (2), Home (3).
+- **Lock** it in the same window and only you can use it or break it. Unlocked, every player can.
+- **Right-click** any gap for a big screen of every gap you may use, in rows with a scroll bar. Click one to go.
+- **Travel is free**, however far, and to any dimension.
+- **Sneak and right-click** your own gap to rename it or change its lock.
+
+In the world a gap is an eye-gap picture that leans and always turns to face you.
+
+Beta: new, and still being tried. Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision.
+
+Inspired by Waystones by BlayTheNinth; no code or assets of it are included. Yukari Yakumo is from the Touhou Project by ZUN: a non-commercial fan work. No Minecraft code or assets are included. MIT licensed."""
+authors = ["mxpbxb"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "MIT"
+source = "https://github.com/mxpbxb/yukari-gaps"
+icon = "icons/yukari_gap_native.png"
+categories = ["transportation", "utility"]
+tags = ["teleport", "waypoints", "touhou", "multiplayer"]
+
+[[versions]]
+version = "0.5.0"
+published = "2026-11-12"
+game = "26.3"
+file = "yukari_gap_native-0.5.0.hnmod"
+sha256 = "283900a758d2a6e43549746529f9ec2647e41a931516e65f2723e518fd948117"
+changelog = "New eye-gap picture with trailing ends, drawn 3 blocks across and lower. Only the upper block, at the picture, can be clicked or broken."
+
+[[versions]]
+version = "0.4.1"
+published = "2026-11-12"
+game = "26.3"
+file = "yukari_gap_native-0.4.1.hnmod"
+sha256 = "54145e88575c5aa1e63bfd869034c2a7860093776afade052f5fd6b613b8b810"
+changelog = "Travel is free: no experience cost."
+
+[[versions]]
+version = "0.4.0"
+published = "2026-11-12"
+game = "26.3"
+file = "yukari_gap_native-0.4.0.hnmod"
+sha256 = "3ae140ae2c69fa9aa1368136cd0badede056e33cbe91ea259c820268e9cc7fda"
+changelog = "First beta: naming, locking, the travel screen and two-block gaps."

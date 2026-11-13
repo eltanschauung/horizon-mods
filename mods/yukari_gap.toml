@@ -1,0 +1,34 @@
+id = "yukari_gap"
+kind = "mod"
+name = "Yukari Gaps Beta (assets)"
+summary = "The block, item, art and recipe of Yukari Gaps Beta. Needs the Yukari Gaps Beta native mod."
+description = """
+**This is one of the two parts of [Yukari Gaps Beta](https://playhorizon.dev/mods/yukari_gap_native), and does nothing alone.** Install both: this one, the assets, and the native part.
+
+It holds the gap block, its item, the eye-gap picture and the recipe. It has no code: what the mod does is described on Yukari Gaps Beta.
+
+The art is original, by mxpbxb. No Minecraft assets are included. MIT licensed."""
+authors = ["mxpbxb"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "MIT"
+source = "https://github.com/mxpbxb/yukari-gaps"
+icon = "icons/yukari_gap.png"
+categories = ["transportation", "library"]
+tags = ["teleport", "waypoints", "touhou", "assets"]
+
+[[versions]]
+version = "0.5.0"
+published = "2026-11-12"
+game = "26.3"
+file = "yukari_gap-0.5.0.hmod"
+sha256 = "e6c8fd9c59501567fa83dfcfbf5ee0cca76b81dd3099d5fe00e8a84bd7fd778a"
+changelog = "New eye-gap picture with trailing ends, drawn 3 blocks across and lower. Only the upper block, at the picture, can be clicked or broken."
+
+[[versions]]
+version = "0.4.0"
+published = "2026-11-12"
+game = "26.3"
+file = "yukari_gap-0.4.0.hmod"
+sha256 = "a43e268e6b59c37d92223e7418bf945b8984e02a56972c9a2151b2694c257fab"
+changelog = "First beta."
