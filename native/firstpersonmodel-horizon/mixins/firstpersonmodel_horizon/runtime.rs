@@ -42,6 +42,7 @@ impl Game<'_> {
     pub(super) fn firstperson_body_geometry(&self, camera: glam::DVec3, alpha: f64,
         out: &mut Vec<horizon_client::mesher::Vertex>) {
         let Some(original) = self.player_model.as_ref() else { return };
+        let geometry_start = out.len();
         let mut m = original.clone();
         // A render-copy-only marker: never changes remote players, inventory
         // previews, player dimensions, position packets or simulation state.
@@ -66,5 +67,6 @@ impl Game<'_> {
             self.player_elytra_geometry(&m,chest,camera,alpha as f32,packed,out);
             if !self.firstperson_vanilla_hands() { self.held_item_geometry(&m,camera,alpha,packed,true,None,out); }
         }
+        super::player_presentation::fade_vertices(&mut out[geometry_start..], self.player_presentation_opacity(&m, camera));
     }
 }
