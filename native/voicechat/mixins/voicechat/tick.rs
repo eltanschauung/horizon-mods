@@ -6,7 +6,7 @@ fn voicechat_tick(game: &mut crate::game::Game<'_>) {
     let Some(r) = game.remote.as_ref() else {
         return;
     };
-    if !game.native_on(vc::ID) || !r.joined || r.reconfiguring.is_some() {
+    if !game.native_on(vc::ID) || !r.joined || r.save_folder.is_some() || r.reconfiguring.is_some() {
         vc::tick(None, &|_| None);
         return;
     }

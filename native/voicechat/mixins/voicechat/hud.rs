@@ -8,7 +8,7 @@ fn voicechat_hud(
 ) {
     use horizon_client::extras::Corner;
     use voicechat_engine as vc;
-    if !game.native_on(vc::ID) || !game.remote.as_ref().is_some_and(|r| r.joined && r.reconfiguring.is_none()) {
+    if !game.native_on(vc::ID) || !game.remote.as_ref().is_some_and(|r| r.joined && r.save_folder.is_none() && r.reconfiguring.is_none()) {
         return;
     }
     if let Some((pos, yaw, pitch, fov)) = game.locator_camera {
