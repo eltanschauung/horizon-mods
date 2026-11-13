@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "mobs", "assets"]
 
 [[versions]]
+version = "0.6.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs-0.6.0.hmod"
+sha256 = "394ae066b5897265d5610854a8e2b4dec04146cbd87eacfc14670ca3cd5b9293"
+changelog = "Named characters (bosses and people) are rare: at most one every five minutes, alone, never two of the same at once. A Touhou mob a vanilla mob hurts fights it back. Using a Yukari gap brings Yukari through once in 2,000."
+
+[[versions]]
 version = "0.5.0"
 published = "2026-11-13"
 game = "26.3"

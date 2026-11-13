@@ -12,7 +12,7 @@ All 30 mobs of three 1.7.10 Touhou mods in one, ported with their creators' perm
 - **People:** Sakuya, Sanae and Rinnosuke wander about; right-click Miko to set the danmaku level.
 - **Summons:** the Cursed Decoy Doll and Yukari's yin-yang orb.
 
-Each mob fires its original danmaku patterns, ported line for line, and is drawn with its original model. They spawn in their original biomes, Biomes O' Plenty's too; every mob's spawning is set in `spawns.cfg` in the mod's config folder. Hostile mobs, but not creepers, go for the Touhou mobs that are attacking.
+Each mob fires its original danmaku patterns, ported line for line, and is drawn with its original model. They spawn in their original biomes, Biomes O' Plenty's too; every mob's spawning is set in `spawns.cfg` in the mod's config folder. Hostile mobs, but not creepers, go for the Touhou mobs that are attacking, and a Touhou mob a vanilla mob hurts fights it back. The bosses and people are rare: about once or twice a night, alone. Coming through a [Yukari gap](https://playhorizon.dev/mods/yukari_gap_native) brings Yukari after you once in 2,000.
 
 Not yet: most bosses' spell cards, lasers, and the people's trades.
 
@@ -25,6 +25,14 @@ source = "https://github.com/mxpbxb/touhou-mobs"
 icon = "icons/thmobs_native.png"
 categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
+
+[[versions]]
+version = "0.6.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs_native-0.6.0.hnmod"
+sha256 = "79063d8271906523fda24de717e5524136bfdf06cfdd4483e8770edacd1eba66"
+changelog = "Named characters (bosses and people) are rare: at most one every five minutes, alone, never two of the same at once. A Touhou mob a vanilla mob hurts fights it back. Using a Yukari gap brings Yukari through once in 2,000."
 
 [[versions]]
 version = "0.5.0"
