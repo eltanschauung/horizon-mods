@@ -1,0 +1,24 @@
+id = "misogynist_unexpansion"
+kind = "mod"
+name = "Minecraft Misogynist Unexpansion (assets)"
+summary = "The recipes and the Potion of Dolphin's Grace of Minecraft Misogynist Unexpansion. Needs its native mod."
+description = """
+**This is one of the two parts of [Minecraft Misogynist Unexpansion](https://playhorizon.dev/mods/misogynist_unexpansion_native), and does little alone.** Install both: this one, the assets, and the native part.
+
+It holds the recipes for honey, honeycomb, glow ink, froglights and fish eggs, and the Potion of Dolphin's Grace."""
+authors = ["mxpbxb"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "MIT"
+source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
+icon = "icons/misogynist_unexpansion.png"
+categories = ["game-mechanics", "library"]
+tags = ["vanilla", "recipes"]
+
+[[versions]]
+version = "0.1.0"
+published = "2026-11-13"
+game = "26.3"
+file = "misogynist_unexpansion-0.1.0.hmod"
+sha256 = "c830756fc72cbd4177936677ffd1d5b5798cfc5dfa4a6af2565f058a0751260f"
+changelog = "First release."
