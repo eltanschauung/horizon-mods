@@ -3,7 +3,7 @@
 // playing, but letting go always counts.
 fn voicechat_key(game: &mut crate::game::Game<'_>, key: &str, pressed: bool) {
     use voicechat_engine as vc;
-    if !game.native_on(vc::ID) {
+    if !game.native_on(vc::ID) || !game.remote.as_ref().is_some_and(|r| r.joined && r.reconfiguring.is_none()) {
         return;
     }
     let menu = game.native_mod_key(vc::ID, vc::KEY_MENU, vc::DEFAULT_MENU);

@@ -1,7 +1,7 @@
 // `/vc …`: the voice chat's own command, answered in the chat.
 fn voicechat_command(game: &mut crate::game::Game<'_>, command: &str, ran: &mut bool) {
     use voicechat_engine as vc;
-    if *ran || !game.native_on(vc::ID) {
+    if *ran || !game.native_on(vc::ID) || !game.remote.as_ref().is_some_and(|r| r.joined && r.reconfiguring.is_none()) {
         return;
     }
     {

@@ -108,3 +108,5 @@ Our dedicated server requires UDP 24454 in its firewall in addition to the game'
 TCP port. Configuration is `config/voicechat-server.json`; the relay opens UDP
 after the first client asks. `tools/test_relay_e2e.py` verifies two isolated real
 clients authenticate and create/join a group, and captures the connected menu.
+
+Voice chat automatically stays inactive in singleplayer: no HUD, voice hotkeys or voice menu. Joining multiplayer restores it using your saved settings.
