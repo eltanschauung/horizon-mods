@@ -1,0 +1,56 @@
+[mod]
+id="horizon_old_combat_mod"
+version="0.1.0"
+priority=130
+[compatibility]
+horizon_revision="bfcd5df83ffa610cb010037e0ea3dfad9c1d3d9e"
+[[module]]
+id="runtime"
+file="crates/horizon-client/src/game.rs"
+name="old_combat"
+source="runtime.rs"
+
+[[injection]]
+id="rules"
+kind="HEAD"
+target="horizon_client_core::gamerules::mod_rules"
+helper="rules.rs"
+bindings=[
+ {name="rules",ty="&mut Vec<Rule>",value="&mut *_rules"},
+]
+
+[[injection]]
+id="tick"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_level_tick_post"
+helper="tick.rs"
+bindings=[
+ {name="game",ty="&mut crate::game::Game<'_>",value="&mut *self"},
+]
+
+[[injection]]
+id="stop"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_server_stopping"
+helper="stop.rs"
+bindings=[
+]
+
+[[injection]]
+id="sprint"
+kind="HEAD"
+target="horizon_client::game::enchant_effects::Game<'_>::stop_sprint_after_extra_knockback"
+helper="sprint.rs"
+cancellable=true
+bindings=[
+ {name="game",ty="&crate::game::Game<'_>",value="&*self"},
+]
+
+[[injection]]
+id="list"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper="list.rs"
+bindings=[
+ {name="mods",ty="&mut Vec<crate::game::native_hooks::NativeMod>",value="&mut *mods"},
+]
