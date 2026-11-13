@@ -7,6 +7,7 @@ description = """
 
 - **Mobs taken out:** dolphins, foxes, sniffers, copper golems, allays, turtles, bees, parrots, husks, strays, polar bears, pandas, camels, llamas, phantoms, frogs, glow squids, striders, camel husks, armadillos, axolotls, happy ghasts, sulfur cubes, nautiluses, trader llamas, zombie nautiluses, bogged, parched, breezes, creakings, tadpoles and goats. Each can be kept again in `removed_mobs.cfg`; nothing else can be removed.
 - **The original farm animals:** cows, pigs and chickens only in their original look, and every baby the redesign changed (villagers, zombies, piglins, farm animals, wolves, cats, horses and more) drawn the old way.
+- **Fishing as it was:** treasure anywhere again, not only in open water, and tropical fish 7 times in 100.
 - **Recipes for what they gave:** honey (slime, sugar, a bottle), honeycomb (smelted honey), glow ink (ink and glowstone), froglights (a light block ringed with slime), fish eggs (nine tropical fish), fish scales (from tropical fish) and a Potion of Dolphin's Grace (crafted).
 
 Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. No Minecraft code or assets are included."""
@@ -18,6 +19,14 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.3.0"
+published = "2026-11-13"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.3.0.hnmod"
+sha256 = "b6165c8e5b7dee66216e13167ae88c2c673601091de349d8c1287406e3248ef5"
+changelog = "Fishing as it was: treasure anywhere again (no open-water rule), and tropical fish 7 times in 100 instead of 2."
 
 [[versions]]
 version = "0.2.0"
