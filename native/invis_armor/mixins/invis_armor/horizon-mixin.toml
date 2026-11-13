@@ -1,0 +1,137 @@
+[mod]
+id="invis_armor"
+version="0.1.0"
+priority=140
+
+[compatibility]
+horizon_revision="db4acd68a9db9e1f08741b93f2e01ddf0e6ba532"
+
+[[module]]
+id="runtime"
+file="crates/horizon-client/src/game.rs"
+name="invis_armor"
+source="runtime.rs"
+
+[[injection]]
+id="opacity"
+kind="RETURN"
+target="horizon_client::game::armor_stands::Game<'_>::equipment_render_opacity"
+helper="opacity.rs"
+bindings=[
+ {name= "_result", ty= "f32", value= "$value"},
+ {name= "game", ty= "&crate::game::Game<'_>", value= "&*self"},
+ {name= "slot", ty= "&str", value= "_slot"},
+]
+
+[[injection]]
+id="list"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper="list.rs"
+bindings=[
+ {name= "mods", ty= "&mut Vec<crate::game::native_hooks::NativeMod>", value= "&mut *mods"},
+]
+
+[[injection]]
+id="settings"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_settings"
+helper="settings.rs"
+bindings=[
+ {name= "mod_id", ty= "&str", value= "mod_id"},
+ {name= "buttons", ty= "&mut Vec<String>", value= "&mut *buttons"},
+]
+
+[[injection]]
+id="click"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_settings_click"
+helper="click.rs"
+bindings=[
+ {name= "game", ty= "&mut crate::game::Game<'_>", value= "&mut *self"},
+ {name= "mod_id", ty= "&str", value= "mod_id"},
+ {name= "button", ty= "usize", value= "button"},
+]
+
+[[injection]]
+id="draw"
+kind="HEAD"
+hook="screen_render_post"
+hook_version=1
+helper="draw.rs"
+bindings=[
+ {name= "game", ty= "&crate::game::Game<'_>", value= "&*self"},
+ {name= "batch", ty= "&mut horizon_client::hud::HudBatch", value= "&mut *batch"},
+ {name= "screen", ty= "&crate::game::native_hooks::NativeScreenView<'_>", value= "&*screen"},
+]
+
+[[injection]]
+id="pressed"
+kind="HEAD"
+hook="screen_mouse_button_pressed_pre"
+hook_version=1
+helper="pressed.rs"
+bindings=[
+ {name= "game", ty= "&crate::game::Game<'_>", value= "&*self"},
+ {name= "screen", ty= "&crate::game::native_hooks::NativeScreenView<'_>", value= "&*screen"},
+ {name= "button", ty= "i32", value= "button"},
+ {name= "canceled", ty= "&mut bool", value= "&mut *canceled"},
+]
+
+[[injection]]
+id="released"
+kind="HEAD"
+hook="screen_mouse_button_released_pre"
+hook_version=1
+helper="released.rs"
+bindings=[
+ {name= "game", ty= "&crate::game::Game<'_>", value= "&*self"},
+ {name= "screen", ty= "&crate::game::native_hooks::NativeScreenView<'_>", value= "&*screen"},
+ {name= "canceled", ty= "&mut bool", value= "&mut *canceled"},
+]
+
+[[injection]]
+id="key"
+kind="HEAD"
+hook="screen_key_pressed_pre"
+hook_version=1
+helper="key.rs"
+bindings=[
+ {name= "game", ty= "&crate::game::Game<'_>", value= "&*self"},
+ {name= "screen", ty= "&crate::game::native_hooks::NativeScreenView<'_>", value= "&*screen"},
+ {name= "key", ty= "&str", value= "key"},
+ {name= "modifiers", ty= "u32", value= "modifiers"},
+ {name= "canceled", ty= "&mut bool", value= "&mut *canceled"},
+]
+
+[[injection]]
+id="frame"
+kind="HEAD"
+hook="frame"
+hook_version=1
+helper="frame.rs"
+bindings=[
+ {name= "game", ty= "&crate::game::Game<'_>", value= "&*self"},
+]
+
+[[injection]]
+id="typed"
+kind="HEAD"
+hook="screen_char_typed_pre"
+hook_version=1
+helper="typed.rs"
+bindings=[
+ {name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+ {name="canceled",ty="&mut bool",value="&mut *canceled"},
+]
+
+[[injection]]
+id="wheel"
+kind="HEAD"
+hook="screen_mouse_scrolled_pre"
+hook_version=1
+helper="wheel.rs"
+bindings=[
+ {name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+ {name="canceled",ty="&mut bool",value="&mut *canceled"},
+]

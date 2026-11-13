@@ -1,0 +1,8 @@
+{
+  "game": "26.3",
+  "horizon_repository": "https://github.com/eltanschauung/horizon",
+  "horizon_revision": "db4acd68a9db9e1f08741b93f2e01ddf0e6ba532",
+  "horizon_mixins_repository": "https://github.com/horizon-rust/horizon-mixins",
+  "horizon_mixins_revision": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "hooks": 411
+}
