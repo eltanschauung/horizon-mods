@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-fn key(
+fn handle_key(
     game: &crate::game::Game<'_>,
     screen: &crate::game::native_hooks::NativeScreenView<'_>,
     key: &str,
