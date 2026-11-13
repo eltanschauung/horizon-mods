@@ -1,0 +1,51 @@
+id = "thmobs_native"
+kind = "native-mod"
+name = "Touhou Mobs"
+summary = "The fairies, youkai, bosses and people of Touhou Items Mod, SPELLCARD PLUS and Journey To Gensokyo, with their danmaku."
+description = """
+**This mod has two parts, and you need both.** Install this one, the native part, and [Touhou Mobs (assets)](https://playhorizon.dev/mods/thmobs), then press Build.
+
+All 30 mobs of three 1.7.10 Touhou mods in one, ported with their creators' permission:
+
+- **Fairies and small youkai:** fairies, sunflower fairies with their familiars, phantoms, the Hanabeeper, ice, Nether and moon fairies, crow tengu and hell ravens.
+- **Bosses** that come back in their next phase when their health runs out: Cirno, Rumia, Soga no Tojiko, Wriggle, Reimu, Wakasagihime, Hina, Marisa and Yukari.
+- **People:** Sakuya, Sanae and Rinnosuke wander about; right-click Miko to set the danmaku level.
+- **Summons:** the Cursed Decoy Doll and Yukari's yin-yang orb.
+
+Each mob fires its original danmaku patterns, ported line for line, and is drawn with its original model. They spawn in their original biomes, Biomes O' Plenty's too; every mob's spawning is set in `spawns.cfg` in the mod's config folder. Hostile mobs, but not creepers, go for the Touhou mobs that are attacking, and a Touhou mob a vanilla mob hurts fights it back. The bosses and people are rare: about once or twice a night, alone. Coming through a [Yukari gap](https://playhorizon.dev/mods/yukari_gap_native) brings Yukari after you once in 2,000.
+
+Not yet: most bosses' spell cards, lasers, and the people's trades.
+
+Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. Touhou Project by ZUN: a non-commercial fan work. The original mods' art and designs are their creators'. No Minecraft code or assets are included."""
+authors = ["kuro-anco, Katrix and the SPELLCARD PLUS author (originals)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "All Rights Reserved"
+source = "https://github.com/mxpbxb/touhou-mobs"
+icon = "icons/thmobs_native.png"
+categories = ["adventure", "game-mechanics"]
+tags = ["touhou", "mobs", "bosses", "danmaku"]
+
+[[versions]]
+version = "0.7.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs_native-0.7.0.hnmod"
+sha256 = "a4c04d423d3a9a72752c3cc04b9e2cc324b5eae7cb0abc551c269e063ac8fe45"
+changelog = "The crow tengu and hell raven fly with their original wing animation. A new rare mob, the Old Crow Tengu: the crow tengu at its original speed and full rate of fire, alone and seldom."
+
+[[versions]]
+version = "0.6.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs_native-0.6.0.hnmod"
+sha256 = "79063d8271906523fda24de717e5524136bfdf06cfdd4483e8770edacd1eba66"
+changelog = "Named characters (bosses and people) are rare: at most one every five minutes, alone, never two of the same at once. A Touhou mob a vanilla mob hurts fights it back. Using a Yukari gap brings Yukari through once in 2,000."
+
+[[versions]]
+version = "0.5.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs_native-0.5.0.hnmod"
+sha256 = "48020ea1d20ae843d6b78510090cfa19cb7c3940e5fb90521ac8775d26ff5976"
+changelog = "First release: all 30 mobs of the three mods, spawning set per mob in spawns.cfg."

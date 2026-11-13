@@ -1,0 +1,40 @@
+id = "thmobs"
+kind = "mod"
+name = "Touhou Mobs (assets)"
+summary = "The mobs, textures and spawn eggs of Touhou Mobs. Needs the Touhou Mobs native mod."
+description = """
+**This is one of the two parts of [Touhou Mobs](https://playhorizon.dev/mods/thmobs_native), and does nothing alone.** Install both: this one, the assets, and the native part.
+
+It holds the 30 mobs' types, their textures and spawn eggs, and the danmaku sheets, from the original mods (Touhou Items Mod by kuro-anco, SPELLCARD PLUS, and Journey To Gensokyo by Katrix), used with their creators' permission."""
+authors = ["kuro-anco, Katrix and the SPELLCARD PLUS author (originals)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "All Rights Reserved"
+source = "https://github.com/mxpbxb/touhou-mobs"
+icon = "icons/thmobs.png"
+categories = ["adventure", "library"]
+tags = ["touhou", "mobs", "assets"]
+
+[[versions]]
+version = "0.7.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs-0.7.0.hmod"
+sha256 = "cb98e4543f53291bd1422427aee3c7d39d2d8d2d0f5ce0073e935ff1b490f94a"
+changelog = "The crow tengu and hell raven fly with their original wing animation. A new rare mob, the Old Crow Tengu: the crow tengu at its original speed and full rate of fire, alone and seldom."
+
+[[versions]]
+version = "0.6.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs-0.6.0.hmod"
+sha256 = "394ae066b5897265d5610854a8e2b4dec04146cbd87eacfc14670ca3cd5b9293"
+changelog = "Named characters (bosses and people) are rare: at most one every five minutes, alone, never two of the same at once. A Touhou mob a vanilla mob hurts fights it back. Using a Yukari gap brings Yukari through once in 2,000."
+
+[[versions]]
+version = "0.5.0"
+published = "2026-11-13"
+game = "26.3"
+file = "thmobs-0.5.0.hmod"
+sha256 = "24e450502d12074bd09988588397da072a321f0df71461ad4095f4e97f537a80"
+changelog = "First release."
