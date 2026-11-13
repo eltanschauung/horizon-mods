@@ -3208,10 +3208,15 @@ thread_local! {
     static SERVER_ITEMS: std::cell::Cell<bool> = const { std::cell::Cell::new(true) };
 }
 
+/// A single client visibility policy; configuration and server providers stay available.
+fn client_active(game: &Game<'_>) -> bool {
+    game.native_on(ID) && (!on(game, "f3_only") || game.debug)
+}
+
 /// `native_hud`: the box, at the top centre as Jade's default places it.
 pub fn hud(game: &mut Game<'_>, batch: &mut HudBatch) {
     ensure_lang();
-    let f3_inactive = on(game, "f3_only") && !game.debug;
+    let f3_inactive = !client_active(game);
     let details = if f3_inactive { false } else { keys(game) };
     // Keep configuration accessible, but suspend target sampling, requests,
     // narration and drawing while F3 Only is enabled outside the debug screen.
@@ -3228,6 +3233,8 @@ pub fn hud(game: &mut Game<'_>, batch: &mut HudBatch) {
             c.say = None;
             c.tts_last.clear();
             c.keys_down.clear();
+            c.hint = None;
+            c.use_profile = None;
         });
     }
 
@@ -3823,12 +3830,12 @@ fn ber_icon(game: &Game<'_>, pos: [i32; 3]) -> Option<ItemStack> {
 
 /// Boss Bar Overlap's Hide Boss Bar: no bars while the box shows.
 pub fn hide_boss_bars(game: &Game<'_>) -> bool {
-    CLIENT.with_borrow(|c| c.showing) && opt(game, "boss_bar_overlap") == "hide_bar"
+    client_active(game) && CLIENT.with_borrow(|c| c.showing) && opt(game, "boss_bar_overlap") == "hide_bar"
 }
 
 /// Mod Name on Item Tooltip: the stack's mod at the end of its tooltip.
 pub fn item_tooltip(game: &Game<'_>, stack: &ItemStack, mut lines: Vec<(horizon_client::text::Text, u32)>) -> Vec<(horizon_client::text::Text, u32)> {
-    if game.native_on(ID) && on(game, "item_mod_name") {
+    if client_active(game) && on(game, "item_mod_name") {
         let ns = stack.item.split_once(':').map_or("minecraft", |(n, _)| n);
         lines.push((horizon_client::text::Text::legacy(&format!("§9§o{}", mod_name(game, ns))), u32::MAX));
     }

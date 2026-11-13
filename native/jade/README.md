@@ -67,3 +67,7 @@ overlay visibility, GUI and player-list preferences still apply.
 Package with `python3 native/tools/native.py package jade` from horizon-mods,
 then install `native/target/jade-26.3.8+fork.1.hnmod` and use the Horizon frozen
 client preflight/build/deploy workflow.
+
+For local installation use `python3 native/jade/tools/package.py --install`.
+This backs up the previous package and records this fork as the GitHub update
+source, so upstream updates cannot silently discard F3 Only. Commit first.
