@@ -3,6 +3,9 @@ id="firstpersonmodel_horizon"
 version="0.2.6"
 priority=120
 
+[compatibility]
+horizon_revision="36f5b83bc6dbc8c19541e55d4625414b095cc446"
+
 [[module]]
 id="body"
 file="crates/horizon-client/src/game.rs"
