@@ -1,0 +1,40 @@
+id = "thkaguyamod"
+kind = "mod"
+name = "Touhou Items (assets)"
+summary = "The items, textures and creative tabs of Touhou Items. Needs the Touhou Items native mod."
+description = """
+**This is one of the two parts of [Touhou Items](https://playhorizon.dev/mods/thkaguyamod_native), and does nothing alone.** Install both: this one, the assets, and the native part.
+
+It holds the 50 items, their textures, the Mochi Hammer's recipe, the sword enchantment tags and the danmaku sheets, from Touhou Items Mod (by kuro-anco) and Grimoire of Alice (by Arekkuusu), used with their creators' permission."""
+authors = ["kuro-anco (Touhou Items Mod)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "All Rights Reserved"
+source = "https://github.com/mxpbxb/touhou-items"
+icon = "icons/thkaguyamod.png"
+categories = ["adventure", "library"]
+tags = ["touhou", "items", "assets"]
+
+[[versions]]
+version = "0.4.2"
+published = "2026-11-15"
+game = "26.3"
+file = "thkaguyamod-0.4.2.hmod"
+sha256 = "6ce38db2d3057b1b296e0075ac4892be7de18579929251876ecc1fa27c982cf0"
+changelog = "The Point item is now the Doll Point; four of Arcadian Dream's Max Point Items craft one."
+
+[[versions]]
+version = "0.4.1"
+published = "2026-11-15"
+game = "26.3"
+file = "thkaguyamod-0.4.1.hmod"
+sha256 = "70bb8d7500125f2d126231c3b02c79a969b9174e0de2a7b9b56a7e0f409fced0"
+changelog = "The Mochi Hammer's recipe is now diamond, brick, diamond on two sticks."
+
+[[versions]]
+version = "0.4.0"
+published = "2026-11-14"
+game = "26.3"
+file = "thkaguyamod-0.4.0.hmod"
+sha256 = "9764ccd996a471fe0375043ae6fff81186279294b88bc8817eaebaef1504b2e3"
+changelog = "First release: 50 items with their art, the Mochi Hammer's recipe, and sword enchantment tags for every weapon."

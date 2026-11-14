@@ -1,0 +1,43 @@
+id = "thkaguyamod_native"
+kind = "native-mod"
+name = "Touhou Items"
+summary = "The weapons, tools, spell cards and point items of Touhou Items Mod and Grimoire of Alice."
+description = """
+**This mod has two parts, and you need both.** Install this one, the native part, and [Touhou Items (assets)](https://playhorizon.dev/mods/thkaguyamod), then press Build.
+
+The items of Touhou Items Mod (Itutu no Nandai MOD+, by kuro-anco) and Grimoire of Alice (by Arekkuusu), ported with their creators' permission:
+
+- **Weapons** that do what they did: Laevateinn sets alight, the Icicle Sword freezes, Hakurouken and Roukanken dash, the Onbashira hits twice, Spear the Gungnir throws light, the Scythe of Death pulls and pushes, the shrine maiden sticks fire amulets and gusts, Yuuka's Parasol lets you float down.
+- **Grimoire of Alice's weapons**, among them the **Mochi Hammer** (two diamonds and a brick on two sticks), which sends what it hits flying and weighs you down while held.
+- **Held and let go:** the Mini-Hakkero's Master Spark, Tengu's Fan, the Nuclear Control Rod.
+- **Right-click items:** amulets and talismans, Yuyuko's Fan, Kappa's Water Pistol, Sakuya's Stopwatch, the Ibuki Gourd.
+- **Point and power items:** Power, Full Power, Extend, Bomb, Star, Faith and more; [Touhou Mobs](https://playhorizon.dev/mods/thmobs_native) drops them.
+- **Nine spell cards**, cast for experience levels.
+
+Every weapon takes the enchantments a sword takes. Only the Mochi Hammer has a recipe; the rest are in the creative tabs.
+
+Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. Touhou Project by ZUN: a non-commercial fan work. The original mods' art and designs are their creators'. No Minecraft code or assets are included."""
+authors = ["kuro-anco (Touhou Items Mod)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "All Rights Reserved"
+source = "https://github.com/mxpbxb/touhou-items"
+icon = "icons/thkaguyamod_native.png"
+categories = ["adventure", "equipment"]
+tags = ["touhou", "weapons", "danmaku", "spell-cards"]
+
+[[versions]]
+version = "0.3.1"
+published = "2026-11-15"
+game = "26.3"
+file = "thkaguyamod_native-0.3.1.hnmod"
+sha256 = "780435052afc6f015ab2e450c92b8944fd931915f7df01d6984afff04a4b929b"
+changelog = "The Mochi Hammer slows you down while you hold it."
+
+[[versions]]
+version = "0.3.0"
+published = "2026-11-14"
+game = "26.3"
+file = "thkaguyamod_native-0.3.0.hnmod"
+sha256 = "ce310bed4a2e42279be413f90e4f93dd71d45ffdce0786b79d9f3f67d3a9be27"
+changelog = "First release: the Touhou Items Mod and Grimoire of Alice weapons and items, the Mini-Hakkero's Master Spark, nine spell cards, point and power items, and sword enchantments on every weapon."
