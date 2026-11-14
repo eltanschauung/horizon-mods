@@ -6,7 +6,7 @@ pub(super) const ID: &str = "firstpersonmodel_horizon";
 impl Game<'_> {
     pub(super) fn firstperson_vanilla_hands(&self) -> bool {
         if self.native_on(ID) && self.firstperson_auto_hide() && self.camera_type.first_person() {
-            return 90.0 - self.pitch < 80.0 || self.player.as_ref().is_some_and(|p| p.swimming || p.fall_flying);
+            return self.player.as_ref().is_some_and(|p| horizon_client::firstperson_view_policy::hide_body(self.pitch, p.swimming, p.fall_flying));
         }
         VANILLA_HANDS.with(|cached| {
             if let Some(value) = cached.get() { return value; }
