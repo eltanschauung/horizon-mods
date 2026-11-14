@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
 
 [[versions]]
+version = "0.4.1"
+published = "2026-11-15"
+game = "26.3"
+file = "thkaguyamod-0.4.1.hmod"
+sha256 = "70bb8d7500125f2d126231c3b02c79a969b9174e0de2a7b9b56a7e0f409fced0"
+changelog = "The Mochi Hammer's recipe is now diamond, brick, diamond on two sticks."
+
+[[versions]]
 version = "0.4.0"
 published = "2026-11-14"
 game = "26.3"
