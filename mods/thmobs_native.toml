@@ -27,6 +27,14 @@ categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
 
 [[versions]]
+version = "0.8.0"
+published = "2026-11-15"
+game = "26.3"
+file = "thmobs_native-0.8.0.hnmod"
+sha256 = "29356756d4f32770d37dd19265aa69f4887807e075691efe735b74d2119b2bb7"
+changelog = "With Touhou Items installed, mobs drop its Point items when they die for good, and power items: a fairy now and then a small one, a boss big ones and sometimes Full Power, an Extend or a Bomb."
+
+[[versions]]
 version = "0.7.0"
 published = "2026-11-13"
 game = "26.3"
