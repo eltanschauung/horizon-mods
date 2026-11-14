@@ -7,6 +7,8 @@ fn minimap_view(
     use horizon_client::extras::Corner;
     use horizon_client::extras_hud::minimap_coordinates::COORDINATES;
     COORDINATES.with(|c| *c.borrow_mut() = None);
+    horizon_client::extras_hud::minimap_coordinates::MARKERS.with_borrow_mut(|v| v.clear());
+    horizon_client::extras_hud::minimap_coordinates::OWN_HEAD.with(|v|v.set(false));
     horizon_client::extras_hud::minimap_coordinates::OUTLINE.with(|s| s.set((0, false)));
     // Turned off in Options > Mods: nothing until the next build leaves it out.
     if minimap.is_some() || !game.native_on(m::ID) {
@@ -30,6 +32,7 @@ fn minimap_view(
     horizon_client::extras_hud::minimap_coordinates::OUTLINE
         .with(|s| s.set((settings.outline, settings.round)));
     let (size, blocks_per_pixel) = settings.view();
+    crate::game::minimap_waypoints::markers(game, settings);
     *minimap = Some(crate::game::native_hooks::NativeMinimap {
         corner: [
             Corner::TopLeft,

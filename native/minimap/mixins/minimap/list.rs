@@ -5,6 +5,6 @@ fn official_minimap_listed(mods: &mut Vec<crate::game::native_hooks::NativeMod>)
         id: m::ID.into(),
         title: format!("{} {}", m::NAME, m::VERSION),
         description: m::DESCRIPTION.into(),
-        keys: Vec::new(),
+        keys: vec![["waypoints_key".into(), "Waypoints".into(), "key.keyboard.u".into()]],
     });
 }

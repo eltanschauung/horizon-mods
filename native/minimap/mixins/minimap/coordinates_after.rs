@@ -5,6 +5,10 @@ fn coordinates_after(
     batch: &mut HudBatch,
     atlas: &HudAtlas,
 ) {
+    let i = Corner::ALL.iter().position(|c| *c == look.corner).unwrap_or(0);
+    let x = if look.corner.left() { 2.0 } else { corners.width - 2.0 - look.size };
+    let y = if look.corner.top() { corners.used[i] - look.size } else { corners.height - corners.used[i] };
+    minimap_coordinates::draw_markers(batch, atlas, x, y, look.size);
     // Draw inside the map's reserved square, so larger frames cannot clip at screen edges.
     minimap_coordinates::OUTLINE.with(|style| {
         let (style, round) = style.get();

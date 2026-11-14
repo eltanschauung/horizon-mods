@@ -1,0 +1,1 @@
+fn handle(game:&crate::game::Game<'_>,screen:&crate::game::native_hooks::NativeScreenView<'_>,character:char,canceled:&mut bool){ crate::game::minimap_waypoints::typed(game,screen,character,canceled); }

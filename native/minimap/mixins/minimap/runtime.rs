@@ -33,6 +33,7 @@ pub struct Settings {
     pub rotate: bool,
     pub show_coordinates: bool,
     pub outline: usize,
+    pub player_head: bool,
 }
 
 impl Settings {
@@ -55,6 +56,7 @@ impl Settings {
             zoom: find("zoom", &zooms, 1),
             rotate: get("rotate").as_deref() == Some("true"),
             show_coordinates: get("show_coordinates").as_deref().unwrap_or("true") == "true",
+            player_head: get("player_head").as_deref() == Some("true"),
             outline: find(
                 "outline",
                 &["black".into(), "stone".into(), "bamboo".into()],
@@ -88,10 +90,12 @@ impl Settings {
                 "Minimap Outline: {}",
                 ["Black", "Stone", "Bamboo"][self.outline]
             ),
+            format!("Your marker: {}", if self.player_head { "Player head" } else { "Arrow" }),
         ]
     }
     pub fn click(&mut self, i: usize) {
         let next = |i: usize, n: usize| (i + 1) % n;
+        if i == 7 { self.player_head = !self.player_head; return; }
         if i == 5 {
             self.show_coordinates = !self.show_coordinates;
             return;
@@ -109,7 +113,7 @@ impl Settings {
             _ => {}
         }
     }
-    pub fn stored(&self) -> [(&'static str, String); 7] {
+    pub fn stored(&self) -> [(&'static str, String); 8] {
         [
             ("corner", CORNERS[self.corner].0.to_owned()),
             ("size", SIZES[self.size].0.to_string()),
@@ -127,6 +131,7 @@ impl Settings {
                 "outline",
                 ["black", "stone", "bamboo"][self.outline].to_owned(),
             ),
+            ("player_head", self.player_head.to_string()),
         ]
     }
     /// What Horizon's minimap draws: (side, blocks per pixel).
@@ -185,7 +190,8 @@ mod tests {
                 "Zoom: ½ block per pixel",
                 "Turn with the player: ON",
                 "Show Coordinates: ON",
-                "Minimap Outline: Stone"
+                "Minimap Outline: Stone",
+                "Your marker: Arrow"
             ]
         );
         s.click(3);

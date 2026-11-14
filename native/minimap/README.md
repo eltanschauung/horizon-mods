@@ -63,3 +63,8 @@ including world data packs, resource colormaps and modded biomes. Colours are
 cached per scanned column, preserving existing slope/water-depth shading and
 untinted block colours. Tiles refresh when biome tables, blend settings or the
 world’s biome seed change; this needs the corresponding Horizon fork update.
+
+
+## Waypoints and player markers
+
+U (rebindable in Mods settings) opens a Xaero-inspired waypoint editor with name/XYZ, color, enable/disable, create, save and delete controls. Waypoints persist independently per server/world and dimension; malformed saved files are preserved. The minimap displays nearby player heads with skin overlays. Settings > Your marker switches your own arrow to your character head. Marker positions use the map's zoom and rotation; waypoints outside the view pin to its edge.

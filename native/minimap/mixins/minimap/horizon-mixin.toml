@@ -6,7 +6,7 @@ priority = 100
 # Tested renderer layout. The map uses a stable hook; its outline/coordinate
 # drawing also injects around extras_hud::draw_minimap.
 [compatibility]
-horizon_revision = "eaa7da4fb1e1c580ed618bc7cfd1758858c0b878"
+horizon_revision="36f5b83bc6dbc8c19541e55d4625414b095cc446"
 
 [[module]]
 id = "runtime"
@@ -85,3 +85,99 @@ file = "crates/horizon-client/src/extras_hud.rs"
 name = "minimap_coordinates"
 visibility = "pub"
 source = "coordinate_state.rs"
+
+[[module]]
+id="waypoints"
+file="crates/horizon-client/src/game.rs"
+name="minimap_waypoints"
+source="waypoints.rs"
+
+[[injection]]
+id="waypoint-key"
+kind="HEAD"
+target="horizon_client::game::native_hooks::Game<'_>::native_key"
+helper="waypoint_key.rs"
+bindings=[{name="game",ty="&mut crate::game::Game<'_>",value="&mut *self"},{name="key",ty="&str",value="key"},{name="pressed",ty="bool",value="pressed"}]
+
+[[injection]]
+id="own-head"
+kind="RETURN"
+target="horizon_client_lib::extras_hud::minimap_player_arrow_visible"
+helper="own_head.rs"
+bindings=[{name="result",ty="bool",value="$value"}]
+
+[[injection]]
+id="waypoint-draw"
+kind="HEAD"
+hook="screen_render_post"
+hook_version=1
+helper="waypoint_draw.rs"
+bindings=[
+{name="game",ty="&crate::game::Game<'_>",value="&*self"},
+{name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+{name="batch",ty="&mut horizon_client::hud::HudBatch",value="&mut *batch"}
+]
+
+[[injection]]
+id="waypoint-press"
+kind="HEAD"
+hook="screen_mouse_button_pressed_pre"
+hook_version=1
+helper="waypoint_press.rs"
+bindings=[
+{name="game",ty="&crate::game::Game<'_>",value="&*self"},
+{name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+{name="button",ty="i32",value="button"},
+{name="canceled",ty="&mut bool",value="&mut *canceled"}
+]
+
+[[injection]]
+id="waypoint-key-ui"
+kind="HEAD"
+hook="screen_key_pressed_pre"
+hook_version=1
+helper="waypoint_input.rs"
+bindings=[
+{name="game",ty="&crate::game::Game<'_>",value="&*self"},
+{name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+{name="key",ty="&str",value="key"},
+{name="modifiers",ty="u32",value="modifiers"},
+{name="canceled",ty="&mut bool",value="&mut *canceled"}
+]
+
+[[injection]]
+id="waypoint-type"
+kind="HEAD"
+hook="screen_char_typed_pre"
+hook_version=1
+helper="waypoint_type.rs"
+bindings=[
+{name="game",ty="&crate::game::Game<'_>",value="&*self"},
+{name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+{name="character",ty="char",value="c"},
+{name="canceled",ty="&mut bool",value="&mut *canceled"}
+]
+
+[[injection]]
+id="waypoint-release"
+kind="HEAD"
+hook="screen_mouse_button_released_pre"
+hook_version=1
+helper="waypoint_release.rs"
+bindings=[
+{name="game",ty="&crate::game::Game<'_>",value="&*self"},
+{name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+{name="canceled",ty="&mut bool",value="&mut *canceled"}
+]
+
+[[injection]]
+id="waypoint-wheel"
+kind="HEAD"
+hook="screen_mouse_scrolled_pre"
+hook_version=1
+helper="waypoint_wheel.rs"
+bindings=[
+{name="game",ty="&crate::game::Game<'_>",value="&*self"},
+{name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+{name="canceled",ty="&mut bool",value="&mut *canceled"}
+]
