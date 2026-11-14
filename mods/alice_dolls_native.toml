@@ -1,0 +1,33 @@
+id = "alice_dolls_native"
+kind = "native-mod"
+name = "Alice Dolls Restringed"
+summary = "Alice's dolls that fight, mine, farm, fish, gather and take photos, with favour levels and evolutions."
+description = """
+**This mod has two parts, and you need both.** Install this one, the native part, and [Alice Dolls Restringed (assets)](https://playhorizon.dev/mods/alice_dolls), then press Build.
+
+A port of Alice's Dolls (1.7.10-kog3, by iwa_yukinoshita), used with permission, restrung for Horizon:
+
+- **Fourteen dolls with jobs:** Shanghai and Goliath fight, Horai mines to ore, Ooedo explodes, Germany fells trees, London finds spawners, Russia and Moscow gather, Marisa and Reimu shoot homing danmaku, Yuuka farms, Wakasagi fishes (with the rod you give her), Aya takes real photos from her own eyes, and Grand Guignol raises skeletons that spare you.
+- **Favour:** feed them, and give them point and power items from [Touhou Items](https://playhorizon.dev/mods/thkaguyamod_native), and they level up, stronger and faster at their work each level. Their name tag shows their level and how far to the next.
+- **Evolutions** every three levels: Shanghai to Goliath to Netherite Goliath, Horai to Diamond and Netherite Horai, Russia to Moscow.
+- They eat food to heal, store experience for you to bottle, and take the heads of the mobs they kill.
+
+Pick a doll up like a shulker box: its item keeps its inventory, favour and experience.
+
+Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. Some art is Touhou Little Maid's (TartaricAcid and others, CC BY-NC-SA 4.0). Touhou Project by ZUN: a non-commercial fan work. No Minecraft code or assets are included."""
+authors = ["iwa_yukinoshita (Alice's Dolls)", "TartaricAcid and others (Touhou Little Maid art)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "All Rights Reserved"
+source = "https://github.com/mxpbxb/alice-dolls-restringed"
+icon = "icons/alice_dolls_native.png"
+categories = ["adventure", "mobs"]
+tags = ["touhou", "dolls", "companions", "automation"]
+
+[[versions]]
+version = "0.28.0"
+published = "2026-11-14"
+game = "26.3"
+file = "alice_dolls_native-0.28.0.hnmod"
+sha256 = "804bb98cd02c0adf7f7916c5cf2424481852b803780e7d656b52494b38e7ae00"
+changelog = "First release: fourteen dolls with their jobs, favour levels on their name tags, evolutions, food, experience, Aya's photos, Wakasagi's rods, and heads from the mobs they kill."
