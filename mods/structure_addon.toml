@@ -1,0 +1,32 @@
+id = "structure_addon"
+kind = "mod"
+name = "Structure Add-on"
+summary = "Old structure mods in one: Underground Biomes stone strata, Recurrent Complex, Ancient Structures, Generatormods walls and cities, Wild Caves."
+description = """
+A data-only mod that brings several old world-generation mods to Horizon:
+
+- **Underground Biomes Constructs:** 56 stones as big strata. Most of the world stays plain stone, but stone biomes (the peaks, windswept hills, stony shores, dripstone caves, and Biomes O' Plenty's crags, volcanoes and highlands) are full of them.
+- **Recurrent Complex:** surface buildings (towers, pyramids, forts, huts) and underground crypts.
+- **Ancient Structures:** German, Japanese and Mayan buildings, villages and temples.
+- **Generatormods:** building templates, Great Walls, walled cities with streets and cellular-automaton ruins, plus underground cities and dungeons.
+- **Wild Caves:** cave decoration and miner camps.
+
+Surface structures are very rare, hundreds of chunks apart; underground ones are more common.
+
+Each source keeps its licence and credit: Ancient Structures (GPL-3.0, TheGoldenWorld), Generatormods (LGPL-3.0, Formivore and GotoLink), Recurrent Complex (MIT, Ivorius), Wild Caves (MIT, DevDyna), Underground Biomes Constructs (Exterminator Jeff and Zeno410; no licence stated). The port is GPL-3.0. No Minecraft code or assets are included."""
+authors = ["TheGoldenWorld", "Formivore", "GotoLink", "Ivorius", "DevDyna", "Exterminator Jeff", "Zeno410", "mxpbxb"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "GPL-3.0-only"
+source = "https://github.com/mxpbxb/structure-addon"
+icon = "icons/structure_addon.png"
+categories = ["worldgen", "adventure"]
+tags = ["structures", "dungeons", "caves", "stone"]
+
+[[versions]]
+version = "0.3.0"
+published = "2026-11-14"
+game = "26.3"
+file = "structure_addon-0.3.0.hmod"
+sha256 = "9a4fc7e255805a2afca404ae6e95922efc28aafc586dab2f68f3dd89bef081c9"
+changelog = "First release."
