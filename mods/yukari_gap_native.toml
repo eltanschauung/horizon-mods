@@ -7,6 +7,7 @@ description = """
 
 - **Craft** a Yukari Gap from four amethyst shards, four ender pearls and a gold ingot.
 - **Place** it where there are two free blocks and name it. A name another gap has gets a number: Home (2), Home (3).
+- **Mine** it with anything, a pickaxe, another tool or your hand, and it drops as its item.
 - **Lock** it in the same window and only you can use it or break it. Unlocked, every player can.
 - **Right-click** any gap for a big screen of every gap you may use, in rows with a scroll bar. Click one to go.
 - **Travel is free**, however far, and to any dimension.
@@ -25,6 +26,14 @@ source = "https://github.com/mxpbxb/yukari-gaps"
 icon = "icons/yukari_gap_native.png"
 categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
+
+[[versions]]
+version = "0.5.1"
+published = "2026-11-15"
+game = "26.3"
+file = "yukari_gap_native-0.5.1.hnmod"
+sha256 = "75f51d5cd27c4eeace4f662bf946ab25c457b0093318fc6dd66cc69fb4828c4d"
+changelog = "A gap drops as its item whatever you mine it with: a pickaxe, another tool or your bare hand. The assets mod is unchanged."
 
 [[versions]]
 version = "0.5.0"
