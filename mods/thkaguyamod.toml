@@ -1,0 +1,24 @@
+id = "thkaguyamod"
+kind = "mod"
+name = "Touhou Items (assets)"
+summary = "The items, textures and creative tabs of Touhou Items. Needs the Touhou Items native mod."
+description = """
+**This is one of the two parts of [Touhou Items](https://playhorizon.dev/mods/thkaguyamod_native), and does nothing alone.** Install both: this one, the assets, and the native part.
+
+It holds the 50 items, their textures, the Mochi Hammer's recipe, the sword enchantment tags and the danmaku sheets, from Touhou Items Mod (by kuro-anco) and Grimoire of Alice (by Arekkuusu), used with their creators' permission."""
+authors = ["kuro-anco (Touhou Items Mod)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "All Rights Reserved"
+source = "https://github.com/mxpbxb/touhou-items"
+icon = "icons/thkaguyamod.png"
+categories = ["adventure", "library"]
+tags = ["touhou", "items", "assets"]
+
+[[versions]]
+version = "0.4.0"
+published = "2026-11-14"
+game = "26.3"
+file = "thkaguyamod-0.4.0.hmod"
+sha256 = "9764ccd996a471fe0375043ae6fff81186279294b88bc8817eaebaef1504b2e3"
+changelog = "First release: 50 items with their art, the Mochi Hammer's recipe, and sword enchantment tags for every weapon."
