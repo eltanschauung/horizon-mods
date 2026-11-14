@@ -1,0 +1,24 @@
+id = "alice_dolls"
+kind = "mod"
+name = "Alice Dolls Restringed (assets)"
+summary = "The doll items, recipes and art of Alice Dolls Restringed. Needs the Alice Dolls Restringed native mod."
+description = """
+**This is one of the two parts of [Alice Dolls Restringed](https://playhorizon.dev/mods/alice_dolls_native), and does nothing alone.** Install both: this one, the assets, and the native part.
+
+It holds the doll items, the Doll Core, the baubles, their recipes, names, sounds and textures, from Alice's Dolls (by iwa_yukinoshita), used with permission. The doll bell, doll anchor and bauble art is Touhou Little Maid's, by TartaricAcid and others, under CC BY-NC-SA 4.0."""
+authors = ["iwa_yukinoshita (Alice's Dolls)", "TartaricAcid and others (Touhou Little Maid art)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "All Rights Reserved"
+source = "https://github.com/mxpbxb/alice-dolls-restringed"
+icon = "icons/alice_dolls.png"
+categories = ["adventure", "library"]
+tags = ["touhou", "dolls", "assets"]
+
+[[versions]]
+version = "0.12.0"
+published = "2026-11-14"
+game = "26.3"
+file = "alice_dolls-0.12.0.hmod"
+sha256 = "b70f6d9d57745508d52121dd9c6c735a9d4df3421812fa6cfa6de481c5bd7ae2"
+changelog = "First release: the doll items, Doll Core, baubles, recipes and art."
