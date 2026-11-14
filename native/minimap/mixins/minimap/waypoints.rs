@@ -1,6 +1,6 @@
 use super::{Game, Screen};
 use horizon_client::{hud::{HudBatch, Rect}, text::Text, ui};
-use std::{cell::RefCell,hash::{Hash,Hasher}};
+use std::cell::RefCell;
 #[derive(Clone,serde::Serialize,serde::Deserialize)]
 struct Waypoint { name:String, position:[f64;3], dimension:String, color:usize, enabled:bool }
 const COLORS:[u32;6]=[0xff5555ff,0xff55ff55,0xffffaa00,0xffff55ff,0xff55ffff,0xffffffff];
@@ -8,8 +8,10 @@ const COLORS:[u32;6]=[0xff5555ff,0xff55ff55,0xffffaa00,0xffff55ff,0xff55ffff,0xf
 struct State { scope:String, points:Vec<Waypoint>, writable:bool, open:bool, selected:Option<usize>, form:[String;4], field:usize, color:usize, page:usize, rects:Vec<[f32;4]>, error:String }
 thread_local! { static STATE:RefCell<State> = RefCell::new(State::default()); }
 fn scope(game:&Game<'_>)->String {
- let source=game.server_address().map(str::to_owned).unwrap_or_else(||format!("{:?}",game.options.world));
- let mut h=std::collections::hash_map::DefaultHasher::new();source.hash(&mut h);format!("waypoints-{:016x}.json",h.finish())
+ let source=if game.integrated.is_none() { game.server_address().map(str::to_owned) } else { None }
+     .unwrap_or_else(||game.save.root.to_string_lossy().into_owned());
+ let hash=source.as_bytes().iter().fold(0xcbf29ce484222325u64,|h,b|(h^u64::from(*b)).wrapping_mul(0x100000001b3));
+ format!("waypoints-{hash:016x}.json")
 }
 fn load(game:&Game<'_>,s:&mut State){
  let key=scope(game);if s.scope==key{return;}
