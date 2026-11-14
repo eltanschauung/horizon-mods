@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
 
 [[versions]]
+version = "0.4.2"
+published = "2026-11-15"
+game = "26.3"
+file = "thkaguyamod-0.4.2.hmod"
+sha256 = "6ce38db2d3057b1b296e0075ac4892be7de18579929251876ecc1fa27c982cf0"
+changelog = "The Point item is now the Doll Point; four of Arcadian Dream's Max Point Items craft one."
+
+[[versions]]
 version = "0.4.1"
 published = "2026-11-15"
 game = "26.3"
