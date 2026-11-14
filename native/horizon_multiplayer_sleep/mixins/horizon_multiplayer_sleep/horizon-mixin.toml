@@ -1,0 +1,26 @@
+[mod]
+id = "horizon_multiplayer_sleep"
+version = "0.1.0"
+priority = 200
+[compatibility]
+horizon_revision="36f5b83bc6dbc8c19541e55d4625414b095cc446"
+
+[[injection]]
+id = "threshold"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::lan_actions::Game<'_>::sleepers_needed"
+helper = "threshold.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "active", ty = "i64", value = "active" },
+]
+
+[[injection]]
+id = "list"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper = "list.rs"
+bindings = [
+  { name = "mods", ty = "&mut Vec<crate::game::native_hooks::NativeMod>", value = "&mut *mods" },
+]

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "features": [
+    {
+      "feature": "biomesoplenty:pink_maple_tree",
+      "placement": []
+    },
+    {
+      "feature": "biomesoplenty:purple_maple_tree",
+      "placement": []
+    },
+    {
+      "feature": "biomesoplenty:magenta_maple_tree",
+      "placement": []
+    }
+  ]
+}

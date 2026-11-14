@@ -1,0 +1,1 @@
+fn list(mods: &mut Vec<crate::game::native_hooks::NativeMod>) { mods.push(crate::game::native_hooks::NativeMod {id:"horizon_multiplayer_sleep".into(),title:"Multiplayer Sleep".into(),description:"Skip night when at least 33% of eligible players sleep.".into(),keys:Vec::new()}); }

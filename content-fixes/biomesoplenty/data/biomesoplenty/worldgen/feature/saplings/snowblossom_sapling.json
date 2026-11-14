@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "features": [
+    {
+      "feature": "biomesoplenty:snowblossom_tree",
+      "placement": []
+    }
+  ]
+}

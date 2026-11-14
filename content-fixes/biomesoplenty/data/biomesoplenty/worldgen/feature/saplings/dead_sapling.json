@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "features": [
+    {
+      "feature": "biomesoplenty:dead_tree_wasteland",
+      "placement": []
+    }
+  ]
+}
