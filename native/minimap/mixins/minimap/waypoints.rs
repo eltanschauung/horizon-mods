@@ -18,7 +18,7 @@ fn load(game:&Game<'_>,s:&mut State){
  let data=game.native_setting(super::official_minimap::ID,&key);
  let parsed=data.as_deref().map(serde_json::from_str::<Vec<Waypoint>>);
  let writable=parsed.as_ref().is_none_or(|r|r.as_ref().is_ok_and(|v|v.len()<=512 && v.iter().all(|p|p.name.chars().count()<=64 && p.position.iter().all(|v|v.is_finite()&&v.abs()<=30_000_000.0))));
- let points=parsed.and_then(Result::ok).filter(|v|v.len()<=512).unwrap_or_default();
+ let points=parsed.and_then(Result::ok).filter(|v|writable && v.len()<=512).unwrap_or_default();
  *s=State {scope:key,points,writable,..State::default()};
  if !writable{s.error="Cannot read waypoint file; original preserved".into();}
 }
@@ -61,7 +61,7 @@ pub(super) fn press(game:&Game<'_>,screen:&super::native_hooks::NativeScreenView
  match i-9 {
  0=>new_point(game,s),
  1=>{let coords=s.form[1..].iter().map(|v|v.parse::<f64>()).collect::<Result<Vec<_>,_>>();if let Ok(c)=coords && c.iter().all(|v|v.is_finite()&&v.abs()<=30_000_000.0) && !s.form[0].trim().is_empty() && s.writable {
- let p=Waypoint{name:s.form[0].trim().into(),position:[c[0],c[1],c[2]],dimension:game.dim.id().into(),color:s.color,enabled:true};if let Some(i)=s.selected{s.points[i]=p;}else if s.points.len()<512{s.points.push(p);s.selected=Some(s.points.len()-1);}save(game,s);s.error.clear();}else{s.error="Enter a name and valid coordinates".into();}},
+ let p=Waypoint{name:s.form[0].trim().into(),position:[c[0],c[1],c[2]],dimension:game.dim.id().into(),color:s.color,enabled:true};if let Some(i)=s.selected{s.points[i]=p;}else if s.points.len()<512{s.points.push(p);s.selected=Some(s.points.len()-1);}s.error.clear();save(game,s);}else{s.error="Enter a name and valid coordinates".into();}},
  2=>{if let Some(i)=s.selected.take(){if s.writable{s.points.remove(i);save(game,s);}}},
  3=>{if let Some(i)=s.selected{if s.writable{s.points[i].enabled=!s.points[i].enabled;save(game,s);}}},
  4=>s.color=(s.color+1)%6,
@@ -76,7 +76,7 @@ pub(super) fn swallow(_game:&Game<'_>,screen:&super::native_hooks::NativeScreenV
 fn skin_rects(game:&Game<'_>,skin:&str)->Option<(Rect,Rect)>{let r=*game.gui.atlas.sprites.get(skin)?;let sub=|x:f32,y:f32|Rect{u0:r.u0+(r.u1-r.u0)*x/64.0,v0:r.v0+(r.v1-r.v0)*y/64.0,u1:r.u0+(r.u1-r.u0)*(x+8.0)/64.0,v1:r.v0+(r.v1-r.v0)*(y+8.0)/64.0,w:8,h:8};Some((sub(8.0,8.0),sub(40.0,8.0)))}
 pub(super) fn markers(game:&Game<'_>,settings:super::official_minimap::Settings){
  use horizon_client::extras_hud::minimap_coordinates::{MARKERS,OWN_HEAD,Marker};
- let Some(p)=game.native_player()else{return;};let (size,bpp)=settings.view();let reach=size/2.0-7.0;let yaw=game.player_model.as_ref().map_or(0.0,|m|m.head_yaw) as f64;let (sin,cos)=yaw.to_radians().sin_cos();
+ let Some(p)=game.native_player()else{return;};let (size,bpp)=settings.view();let reach=size/2.0-7.0;let yaw=game.yaw as f64;let (sin,cos)=yaw.to_radians().sin_cos();
  let project=|x:f64,z:f64,clamp:bool|{let (dx,dz)=((x-p.x)/f64::from(bpp),(z-p.z)/f64::from(bpp));let (x,y)=if settings.rotate{(-cos*dx-sin*dz,sin*dx-cos*dz)}else{(dx,dz)};let (mut x,mut y)=(x as f32,y as f32);let d=if settings.round{x.hypot(y)}else{x.abs().max(y.abs())};if d>reach {if !clamp{return None;}x*=reach/d;y*=reach/d;}Some((x,y))};
  let mut markers=Vec::new();
  for m in game.mobs.iter().filter(|m|m.kind.id.as_str()=="minecraft:player") {if let Some((x,y))=project(m.position.x,m.position.z,false) && let Some((face,hat))=m.skin.as_deref().and_then(|skin|skin_rects(game,skin)){markers.push(Marker{x,y,face:Some(face),hat:Some(hat),color:u32::MAX,label:String::new()});}}
