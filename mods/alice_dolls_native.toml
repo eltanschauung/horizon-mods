@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.30.0"
+published = "2026-11-15"
+game = "26.3"
+file = "alice_dolls_native-0.30.0.hnmod"
+sha256 = "3b79ad76d0398c4a968549ada87c12d31a6c5cd718126a164b5dc7b4f3979f11"
+changelog = "A doll on your head shares its baubles with you (the fire bauble keeps lava off). On respawn, dolls that were following you or on your head come back. Horai digs ancient debris. Netherite Horai waits four seconds before heading to its quarry."
+
+[[versions]]
 version = "0.29.0"
 published = "2026-11-15"
 game = "26.3"
