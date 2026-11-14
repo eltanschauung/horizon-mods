@@ -1,0 +1,31 @@
+id = "corpse_native"
+kind = "native-mod"
+name = "Corpse"
+summary = "Your things stay where you died: death drops go into your corpse, to take back with a right-click."
+description = """
+When you die, everything you drop is gathered into your corpse: your body, lying where you fell, in your own skin.
+
+- **Nothing is left on the ground** to despawn. The chat tells you where your corpse is, and again when you respawn.
+- **Right-click** it to open it: click an item to take it, or the chest to take everything that fits.
+- When it is empty, the body is gone. Corpses don't despawn or take damage, and are saved with the world.
+- Any player can open any corpse.
+
+One file: it needs no content mod, the body is a vanilla mannequin. Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision.
+
+Inspired by [Corpse](https://github.com/henkelmax/corpse) by Max Henkel; written from scratch for Horizon, no code or assets of it are included. No Minecraft code or assets are included. MIT licensed."""
+authors = ["mxpbxb"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "MIT"
+source = "https://github.com/mxpbxb/corpse"
+icon = "icons/corpse_native.png"
+categories = ["utility"]
+tags = ["death", "graves", "items", "multiplayer"]
+
+[[versions]]
+version = "1.0.2-horizon.1"
+published = "2026-11-14"
+game = "26.3"
+file = "corpse_native-1.0.2-horizon.1.hnmod"
+sha256 = "cb20676097bbe00d3ba930f4a67dbcc940fbcb71143cc2fa25db875b3d93b18a"
+changelog = "First release."
