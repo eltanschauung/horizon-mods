@@ -4,7 +4,7 @@ version="0.1.0"
 priority=140
 
 [compatibility]
-horizon_revision="db4acd68a9db9e1f08741b93f2e01ddf0e6ba532"
+horizon_revision="36f5b83bc6dbc8c19541e55d4625414b095cc446"
 
 [[module]]
 id="runtime"
