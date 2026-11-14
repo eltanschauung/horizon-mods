@@ -6,7 +6,11 @@ description = """
 **This mod has two parts, and you need both.** Install this one, the native part, and [Minecraft Misogynist Unexpansion (assets)](https://playhorizon.dev/mods/misogynist_unexpansion), then press Build.
 
 - **Mobs taken out:** dolphins, foxes, sniffers, copper golems, allays, turtles, bees, parrots, husks, strays, polar bears, pandas, camels, llamas, phantoms, frogs, glow squids, striders, camel husks, armadillos, axolotls, happy ghasts, sulfur cubes, nautiluses, trader llamas, zombie nautiluses, bogged, parched, breezes, creakings, tadpoles and goats. Each can be kept again in `removed_mobs.cfg`; nothing else can be removed.
-- **The original farm animals:** cows, pigs and chickens only in their original look, and every baby the redesign changed (villagers, zombies, piglins, farm animals, wolves, cats, horses and more) drawn the old way.
+- **No new looks for old mobs:** cows, pigs and chickens only in their original look, wolves only as the original wolf, and every baby the redesign changed (villagers, zombies, piglins, farm animals, wolves, cats, horses and more) drawn the old way.
+- **No sculk in new terrain:** sculk patches and loose sculk veins no longer generate; sculk is crafted from dirt and a bottle o' enchanting, with recipes for sculk veins, sensors, catalysts and shriekers, and a bottle o' enchanting from any mob head.
+- **No leaf litter, wildflowers or pink petals on the ground:** none generate, those already there disappear as chunks load, and they are smelted instead (leaves, a flower, a pink tulip).
+- **Walk on powder snow** as if you wore leather boots, and **right-click a grown crop** to harvest and replant it.
+- **Key Binds search by key:** the Key Binds search finds a binding by the key it is on.
 - **Fishing as it was:** treasure anywhere again, not only in open water, and tropical fish 7 times in 100.
 - **Recipes for what they gave:** honey (slime, sugar, a bottle), honeycomb (smelted honey), glow ink (ink and glowstone), froglights (a light block ringed with slime), fish eggs (nine tropical fish), fish scales (from tropical fish) and a Potion of Dolphin's Grace (crafted).
 
@@ -19,6 +23,30 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.7.0"
+published = "2026-11-15"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.7.0.hnmod"
+sha256 = "eeb22e00c6b74d938855372009ccc435a8cd66e3ceb73f9f3d8b55ae964429ec"
+changelog = "No leaf litter, wildflowers or pink petals on the ground: none in new terrain, and those already in a world gone as each chunk loads (once per chunk, so ones you place later stay). They are smelted instead: leaf litter from leaves, wildflowers from a flower, pink petals from a pink tulip. The content mod is unchanged."
+
+[[versions]]
+version = "0.6.0"
+published = "2026-11-14"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.6.0.hnmod"
+sha256 = "503e3a8f5d6944c670c2157af4e42b4e71c6499378dc3719865f1b6d07006fbb"
+changelog = "No new looks for old mobs (wolves only the original wolf, cows, pigs and chickens only temperate, checked every two seconds); walk on powder snow; no sculk patches or sculk veins in new terrain, with sculk, its blocks and a bottle o' enchanting (from mob heads) crafted instead; right-click a grown crop to harvest and replant it. The content mod is unchanged."
+
+[[versions]]
+version = "0.4.0"
+published = "2026-11-13"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.4.0.hnmod"
+sha256 = "b6131703b1dafc3731d8bf4e749640db38b10a46360685865bf5b7a15762e6cc"
+changelog = "The Key Binds screen's search finds a binding by its key as well as its name (Controlling's search by key, written anew)."
 
 [[versions]]
 version = "0.3.0"
