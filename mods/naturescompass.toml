@@ -1,0 +1,26 @@
+id = "naturescompass"
+kind = "mod"
+name = "Nature's Compass (assets)"
+summary = "The item, art, names and recipe of Nature's Compass. Needs the Nature's Compass native mod."
+description = """
+**This is one of the two parts of [Nature's Compass](https://playhorizon.dev/mods/naturescompass_native), and does nothing alone.** Install both: this one, the assets, and the native part.
+
+It holds the compass item, its 32 needle frames, its name in 14 languages and its recipe. It has no code: what the mod does is described on Nature's Compass.
+
+The textures and names are from [Nature's Compass](https://github.com/MattCzyr/NaturesCompass) by ChaosTheDude, licensed CC BY-NC-SA 4.0, unchanged; this port is shared under the same licence. No Minecraft assets are included."""
+authors = ["ChaosTheDude", "mxpbxb"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "CC-BY-NC-SA-4.0"
+source = "https://github.com/mxpbxb/natures-compass"
+icon = "icons/naturescompass.png"
+categories = ["utility", "library"]
+tags = ["compass", "biomes", "assets"]
+
+[[versions]]
+version = "1.9.7-horizon.1"
+published = "2026-11-14"
+game = "26.3"
+file = "naturescompass-1.9.7-horizon.1.hmod"
+sha256 = "5cc6936a3d87b226f233bb058f20e9be569ee4ee5248fc1a5f2531c772025345"
+changelog = "First release."

@@ -1,0 +1,36 @@
+id = "naturescompass_native"
+kind = "native-mod"
+name = "Nature's Compass"
+summary = "A compass that finds biomes: pick one, and the needle points to the nearest."
+description = """
+**This mod has two parts, and you need both.** Install this one, the native part, and [Nature's Compass (assets)](https://playhorizon.dev/mods/naturescompass), then press Build.
+
+- **Craft** it from a compass, four logs and four saplings.
+- **Right-click** it for every biome, modded ones included, in a scrolling list showing each biome's mod. Type to filter, sort by name or mod, and double-click one to search for the nearest of it in your dimension.
+- When it is found, the needle **points to it**, and the action bar shows its coordinates and distance. While nothing is found, the needle spins.
+
+A port of [Nature's Compass](https://github.com/MattCzyr/NaturesCompass) by ChaosTheDude, licensed CC BY-NC-SA 4.0; this port is shared under the same licence. Not ported: the info screen and teleporting. Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. No Minecraft code or assets are included."""
+authors = ["ChaosTheDude", "mxpbxb"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "CC-BY-NC-SA-4.0"
+source = "https://github.com/mxpbxb/natures-compass"
+icon = "icons/naturescompass_native.png"
+categories = ["utility"]
+tags = ["compass", "biomes", "exploration"]
+
+[[versions]]
+version = "1.9.7-horizon.2"
+published = "2026-11-14"
+game = "26.3"
+file = "naturescompass_native-1.9.7-horizon.2.hnmod"
+sha256 = "f98622db89fddbeba6bf0fd6254bca30e4cc6522a9c44c72e13d103bcecb69ae"
+changelog = "A biome screen like the original's: a scrolling list with search and sorting, showing each biome's mod. The needle and coordinates now point at the biome the game's locator found (they were often wrong before)."
+
+[[versions]]
+version = "1.9.7-horizon.1"
+published = "2026-11-14"
+game = "26.3"
+file = "naturescompass_native-1.9.7-horizon.1.hnmod"
+sha256 = "c814ee12bda0927c32f7c7d151739aaa0c0e7b092074029fb484af9465e67f1f"
+changelog = "First release."
