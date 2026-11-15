@@ -9,6 +9,8 @@ description = """
 - **No new looks for old mobs:** cows, pigs and chickens only in their original look, wolves only as the original wolf, and every baby the redesign changed (villagers, zombies, piglins, farm animals, wolves, cats, horses and more) drawn the old way.
 - **No sculk in new terrain:** sculk patches and loose sculk veins no longer generate; sculk is crafted from dirt and a bottle o' enchanting, with recipes for sculk veins, sensors, catalysts and shriekers, and a bottle o' enchanting from any mob head.
 - **No leaf litter, wildflowers or pink petals on the ground:** none generate, those already there disappear as chunks load, and they are smelted instead (leaves, a flower, a pink tulip).
+- **Old animal sounds and plain wolves:** classic sounds only, every wolf the original colour.
+- **Enchanting costs half the level asked:** a level 30 enchantment takes 15 levels.
 - **Netherite in an anvil:** a diamond item and a netherite ingot, no smithing template.
 - **Deepslate digs faster:** only 15% slower than stone, not twice as slow (its ores and cobbled and polished kinds alike).
 - **Walk on powder snow** as if you wore leather boots, and **right-click a grown crop** to harvest and replant it.
@@ -25,6 +27,14 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.10.0"
+published = "2026-11-15"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.10.0.hnmod"
+sha256 = "fa352599381b17cc1fc5a0056262f24015935fa5ce8fb470849afc8a99960b74"
+changelog = "Animals make their classic sounds (no sound variants; babies sound as they used to). Every wolf is the original pale one, drawn so even on a server without the mod. Enchanting costs half the level it asks for: a level 30 enchantment takes 15 levels (never less than vanilla's 1 to 3). The content mod is unchanged."
 
 [[versions]]
 version = "0.9.0"
