@@ -28,6 +28,14 @@ categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
 
 [[versions]]
+version = "0.5.2"
+published = "2026-11-15"
+game = "26.3"
+file = "yukari_gap_native-0.5.2.hnmod"
+sha256 = "0aa908733e8a638796d4fcc7881b5c422714a9480e3fd318151d9e842f7ef2bb"
+changelog = "A mined gap always drops itself, whatever it was mined with: the mod makes the item instead of relying on the block's loot, which is only rolled for a pickaxe. In creative nothing drops. The assets mod is unchanged."
+
+[[versions]]
 version = "0.5.1"
 published = "2026-11-15"
 game = "26.3"
