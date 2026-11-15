@@ -9,6 +9,7 @@ description = """
 - **No new looks for old mobs:** cows, pigs and chickens only in their original look, wolves only as the original wolf, and every baby the redesign changed (villagers, zombies, piglins, farm animals, wolves, cats, horses and more) drawn the old way.
 - **No sculk in new terrain:** sculk patches and loose sculk veins no longer generate; sculk is crafted from dirt and a bottle o' enchanting, with recipes for sculk veins, sensors, catalysts and shriekers, and a bottle o' enchanting from any mob head.
 - **No leaf litter, wildflowers or pink petals on the ground:** none generate, those already there disappear as chunks load, and they are smelted instead (leaves, a flower, a pink tulip).
+- **Netherite in an anvil:** a diamond item and a netherite ingot, no smithing template.
 - **Deepslate digs faster:** only 15% slower than stone, not twice as slow (its ores and cobbled and polished kinds alike).
 - **Walk on powder snow** as if you wore leather boots, and **right-click a grown crop** to harvest and replant it.
 - **Key Binds search by key:** the Key Binds search finds a binding by the key it is on.
@@ -24,6 +25,14 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.9.0"
+published = "2026-11-15"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.9.0.hnmod"
+sha256 = "bd1285e356385c451c30ea5689ce391715e783aa679ec16f78f01abe2dcee192"
+changelog = "Netherite in an anvil: a diamond tool, weapon or armour piece and a netherite ingot make its netherite kind (enchantments kept, 1 level), no smithing template. On a server, babies now show their real variant looks for every player, sent from the server (the server needs this version too). The content mod is unchanged."
 
 [[versions]]
 version = "0.8.0"
