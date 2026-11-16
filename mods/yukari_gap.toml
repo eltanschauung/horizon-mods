@@ -18,6 +18,14 @@ categories = ["transportation", "library"]
 tags = ["teleport", "waypoints", "touhou", "assets"]
 
 [[versions]]
+version = "0.6.3"
+published = "2026-11-17"
+game = "26.3"
+file = "yukari_gap-0.6.3.hmod"
+sha256 = "d73c05c8a0141d0c86e55ef87fe8b8d36ae0079807256cf9c0bb2285a15817ad"
+changelog = "The Yukari Umbrella item (drawn as Touhou Items' parasol) and a Yukari Gaps creative tab."
+
+[[versions]]
 version = "0.5.0"
 published = "2026-11-12"
 game = "26.3"

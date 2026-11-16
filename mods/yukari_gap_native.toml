@@ -8,7 +8,8 @@ description = """
 - **Craft** a Yukari Gap from four amethyst shards, four ender pearls and a gold ingot.
 - **Place** it where there are two free blocks and name it. A name another gap has gets a number: Home (2), Home (3).
 - **Mine** it with anything, a pickaxe, another tool or your hand, and it drops as its item.
-- **Lock** it in the same window and only you can use it or break it. Unlocked, every player can.
+- **Lock** it in the same window and only you can use it or break it. While locked, share it with chosen players.
+- **Find** a gap (right-click it once) before you can travel to it, unless its owner made it **global** with a **Yukari Umbrella**, which Yukari (Touhou Mobs) drops and each use takes.
 - **Right-click** any gap for a big screen of every gap you may use, in rows with a scroll bar. Click one to go.
 - **Travel is free**, however far, and to any dimension.
 - **Sneak and right-click** your own gap to rename it or change its lock.
@@ -26,6 +27,14 @@ source = "https://github.com/mxpbxb/yukari-gaps"
 icon = "icons/yukari_gap_native.png"
 categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
+
+[[versions]]
+version = "0.6.3"
+published = "2026-11-17"
+game = "26.3"
+file = "yukari_gap_native-0.6.3.hnmod"
+sha256 = "1ad829564dab48e6919c41f1ca195a9009e37f0dc819d71b1c56410ab47910f9"
+changelog = "A gap must be found (right-click it once) before others travel to it; a locked gap can be shared with chosen players; a Yukari Umbrella, dropped by Yukari (Touhou Mobs), makes your gap global, and each use takes the umbrella. A creative tab. Needs the assets mod 0.6.3."
 
 [[versions]]
 version = "0.5.2"
