@@ -24,6 +24,14 @@ categories = ["worldgen", "adventure"]
 tags = ["structures", "dungeons", "caves", "stone"]
 
 [[versions]]
+version = "0.3.1"
+published = "2026-11-17"
+game = "26.3"
+file = "structure_addon-0.3.1.hmod"
+sha256 = "e3f9878ca8782c69944277c93237a4f87dcb6daa1fc93c6df51187168cfa6ae1"
+changelog = "Fixes surface structures (towers and the like) standing inside a solid block of stone the size of the building: the ground under them is now smoothed up to them, as under a village, not filled through their whole height. Only newly generated structures change."
+
+[[versions]]
 version = "0.3.0"
 published = "2026-11-14"
 game = "26.3"
