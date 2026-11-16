@@ -9,6 +9,7 @@ description = """
 - **No new looks for old mobs:** cows, pigs and chickens only in their original look, wolves only as the original wolf, and every baby the redesign changed (villagers, zombies, piglins, farm animals, wolves, cats, horses and more) drawn the old way.
 - **No sculk in new terrain:** sculk patches and loose sculk veins no longer generate; sculk is crafted from dirt and a bottle o' enchanting, with recipes for sculk veins, sensors, catalysts and shriekers, and a bottle o' enchanting from any mob head.
 - **No leaf litter, wildflowers or pink petals on the ground:** none generate, those already there disappear as chunks load, and they are smelted instead (leaves, a flower, a pink tulip).
+- **Powder snow holds you up, slows you, and freezes you after 15 seconds.**
 - **Kelp only in warm, lukewarm and frozen oceans** (new terrain).
 - **Old animal sounds and plain wolves:** classic sounds only, every wolf the original colour.
 - **Enchanting costs half the level asked:** a level 30 enchantment takes 15 levels.
@@ -28,6 +29,14 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.12.0"
+published = "2026-11-16"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.12.0.hnmod"
+sha256 = "9fa2f5f4b09587599dce8c82b247f2988bd1fbe1f6c56edff5885c7c45560fd8"
+changelog = "Powder snow never sinks you (even landing from high up), slows you as soul sand does, and after 15 seconds standing on it freezes you and deals its damage. The content mod is unchanged."
 
 [[versions]]
 version = "0.11.0"
