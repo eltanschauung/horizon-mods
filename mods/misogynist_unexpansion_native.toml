@@ -31,6 +31,14 @@ categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
 
 [[versions]]
+version = "0.14.0"
+published = "2026-11-17"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.14.0.hnmod"
+sha256 = "68eb61e0fa917e733ffbf63ea9173b2fbdadd801dc910feff8d80c274b35c5cd"
+changelog = "Crossbow firework rockets never hurt the player who shot them (they still hurt everyone else in the blast) and load from anywhere in the inventory, as arrows do, so a crossbow in the off hand needs no rocket in the main hand. Enchanting costs the full level it asks for: a level 30 enchantment takes 30 levels. Shields block 50% of a hit's damage. The content mod is unchanged."
+
+[[versions]]
 version = "0.13.0"
 published = "2026-11-17"
 game = "26.3"
