@@ -2,7 +2,11 @@
   "type": "minecraft:simple_random_selector",
   "features": [
     {
-      "feature": "biomesoplenty:dead_tree_wasteland",
+      "feature": "biomesoplenty:dead_twiglet_tree",
+      "placement": []
+    },
+    {
+      "feature": "biomesoplenty:small_dead_tree",
       "placement": []
     }
   ]
