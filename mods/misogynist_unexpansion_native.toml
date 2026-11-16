@@ -8,7 +8,7 @@ description = """
 - **Mobs taken out:** dolphins, foxes, sniffers, copper golems, allays, turtles, bees, parrots, husks, strays, polar bears, pandas, camels, llamas, phantoms, frogs, glow squids, striders, camel husks, armadillos, axolotls, happy ghasts, sulfur cubes, nautiluses, trader llamas, zombie nautiluses, bogged, parched, breezes, creakings, tadpoles and goats. Each can be kept again in `removed_mobs.cfg`; nothing else can be removed.
 - **No new looks for old mobs:** cows, pigs and chickens only in their original look, wolves only as the original wolf, and every baby the redesign changed (villagers, zombies, piglins, farm animals, wolves, cats, horses and more) drawn the old way.
 - **No sculk in new terrain:** sculk patches and loose sculk veins no longer generate; sculk is crafted from dirt and a bottle o' enchanting, with recipes for sculk veins, sensors, catalysts and shriekers, and a bottle o' enchanting from any mob head.
-- **No leaf litter, wildflowers or pink petals on the ground:** none generate, those already there disappear as chunks load, and they are smelted instead (leaves, a flower, a pink tulip).
+- **No leaf litter, wildflowers or pink petals generate** in new terrain (those already in a world stay); they are crafted instead (leaves; a dandelion and an oxeye daisy; a pink tulip and cherry leaves) or smelted. **Kelp** only in warm, lukewarm and frozen oceans, and crafted from seagrass and bone meal.
 - **Powder snow holds you up, slows you, and freezes you after 15 seconds.**
 - **Kelp only in warm, lukewarm and frozen oceans** (new terrain).
 - **Old animal sounds and plain wolves:** classic sounds only, every wolf the original colour.
@@ -29,6 +29,14 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.13.0"
+published = "2026-11-17"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.13.0.hnmod"
+sha256 = "160611c722d97d5d4ce7331a601156d6b3ffbbd163bbb119b3b7db8571616e9a"
+changelog = "Leaf litter, wildflowers and pink petals already in a world stay (they only stop generating). Crafting recipes: four leaf litter from any leaves, four wildflowers from a dandelion and an oxeye daisy, four pink petals from a pink tulip and cherry leaves, two kelp from seagrass and bone meal. The content mod is unchanged."
 
 [[versions]]
 version = "0.12.1"
