@@ -31,6 +31,14 @@ categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
 
 [[versions]]
+version = "0.12.1"
+published = "2026-11-17"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.12.1.hnmod"
+sha256 = "b647722045b996ab1ada733e7a6c59566bd4d9b30ae83cece55c82eb08c31888"
+changelog = "Fixes worlds crashing when made or opened (\"feature order cycle found\") alongside mods that add ocean features, such as Wild Caves: kelp in warm and frozen oceans now goes just after the seagrass, not at the end. The content mod is unchanged."
+
+[[versions]]
 version = "0.12.0"
 published = "2026-11-16"
 game = "26.3"
