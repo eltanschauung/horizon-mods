@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.31.0"
+published = "2026-11-18"
+game = "26.3"
+file = "alice_dolls_native-0.31.0.hnmod"
+sha256 = "aeb5aafa00cc582b9697d874af93ff6cb4f27ffcf4bb9fd40f2eb9a221d0cb33"
+changelog = "Multiplayer: every player sees the dolls' shots, beams, swings and love, and hears their sounds. Dolls obey and follow only the player who placed them. Germany finds trees again. Every 20 jobs earn love. Wakasagi fishes with Lure III and Luck of the Sea III from level 3. Giga quarry: a netherite pickaxe sends any Horai to dig a 20x20 pit to bedrock. Secret mode digs debris, diamonds, gold and emeralds first and coal last; coal and iron as with Fortune III. The keep-or-void switch works. The doll bell lets you pick which dolls come back. Yuuka: a cactus turns on free bonemeal and bread baking, and she re-tills trampled farmland."
+
+[[versions]]
 version = "0.30.0"
 published = "2026-11-15"
 game = "26.3"
