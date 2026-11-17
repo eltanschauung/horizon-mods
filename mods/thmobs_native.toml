@@ -28,6 +28,14 @@ categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
 
 [[versions]]
+version = "0.9.2"
+published = "2026-11-18"
+game = "26.3"
+file = "thmobs_native-0.9.2.hnmod"
+sha256 = "8743340f2d2f5e0d95d02f5fe56429f03a2bc80ac9e67ea55ec4519663bb57c0"
+changelog = "The mobs drop their loot at last: fairies and crows their Arcadian Dream items, the others Touhou Items' Point and Power items, Yukari her umbrella. Bosses go through their phases and are untouchable at the start of each, and Rinnosuke and Miko answer a right click. The game names modded mobs minecraft:thmobs:..., which the mod didn't recognise. Assets unchanged (0.9.0)."
+
+[[versions]]
 version = "0.9.1"
 published = "2026-11-17"
 game = "26.3"
