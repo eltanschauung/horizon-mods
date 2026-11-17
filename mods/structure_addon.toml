@@ -24,6 +24,14 @@ categories = ["worldgen", "adventure"]
 tags = ["structures", "dungeons", "caves", "stone"]
 
 [[versions]]
+version = "0.3.4"
+published = "2026-11-18"
+game = "26.3"
+file = "structure_addon-0.3.4.hmod"
+sha256 = "045409eaf1568000fb518ec1ba1372cf6745098a47ba9574aa6ce8f98c0ade40"
+changelog = "Generatormods' maze dungeon stays deep underground: it no longer sticks out of low ground as a tall sandstone-coloured tower. The locate tags from 0.3.2 are removed, as locating rare structures with them could stall the server. Every Generatormods structure set spawns 3 times as often (its surface sets at one place in 20; other surface sets stay at one in 60). Only newly generated chunks change."
+
+[[versions]]
 version = "0.3.2"
 published = "2026-11-17"
 game = "26.3"
