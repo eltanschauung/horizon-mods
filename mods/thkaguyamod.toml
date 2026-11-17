@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
 
 [[versions]]
+version = "0.4.4"
+published = "2026-11-17"
+game = "26.3"
+file = "thkaguyamod-0.4.4.hmod"
+sha256 = "b9fdb52639b5162fa10563717f19c301fc18095c901e81541d7fa1ed9bd55dff"
+changelog = "The Mochi Hammer deals 11 damage (was 9), and its recipe takes one ancient debris in place of the brick: two diamonds and an ancient debris over two sticks."
+
+[[versions]]
 version = "0.4.3"
 published = "2026-11-17"
 game = "26.3"
