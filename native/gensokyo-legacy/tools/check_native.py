@@ -27,7 +27,7 @@ if '--tectonic' in sys.argv:
     p=mods/Path(n).relative_to('mixins');p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(z.read(n))
 for p in mods.glob('*/horizon-mixin.toml'):
  text=p.read_text();text=re.sub(r'horizon_revision\s*=\s*"[a-f0-9]+"','horizon_revision = "'+(source/'.horizon-revision').read_text().strip()+'"',text);p.write_text(text)
-transformed=WORK/'transformed' 
+transformed=WORK/'transformed'
 if transformed.exists():shutil.rmtree(transformed)
 subprocess.run([tool,'apply','--workspace',source,'--mods',mods,'--out',transformed],check=True)
 for p in transformed.rglob('*'):
