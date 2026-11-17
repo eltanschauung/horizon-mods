@@ -7,7 +7,7 @@ description = """
 
 It holds the gap block, its item, the eye-gap picture and the recipe. It has no code: what the mod does is described on Yukari Gaps Beta.
 
-The art is original, by mxpbxb. No Minecraft assets are included. MIT licensed."""
+The gap's picture and bows are from pipef0x's Yukari Gap Demo (MIT); the gap item's icon is Touhou Little Maid's wireless IO art by TartaricAcid and others (CC BY-NC-SA 4.0), by way of Alice Dolls Restringed; the rest is by mxpbxb (MIT). No Minecraft assets are included."""
 authors = ["mxpbxb", "pipef0x", "TartaricAcid"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]

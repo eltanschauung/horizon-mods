@@ -19,10 +19,10 @@ In the world a gap is an eye-gap picture that leans and always turns to face you
 Beta: new, and still being tried. Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision.
 
 Inspired by Waystones by BlayTheNinth; no code or assets of it are included. Yukari Yakumo is from the Touhou Project by ZUN: a non-commercial fan work. No Minecraft code or assets are included. MIT licensed."""
-authors = ["mxpbxb", "pipef0x", "TartaricAcid"]
+authors = ["mxpbxb", "pipef0x"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
-license = "MIT AND CC-BY-NC-SA-4.0"
+license = "MIT"
 source = "https://github.com/mxpbxb/yukari-gaps"
 icon = "icons/yukari_gap_native.png"
 categories = ["transportation", "utility"]
