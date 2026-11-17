@@ -31,6 +31,14 @@ categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
 
 [[versions]]
+version = "0.15.0"
+published = "2026-11-17"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.15.0.hnmod"
+sha256 = "2e3c053f92da21d63cc56df5b6276ffced6d4648957eccb9127f8d1dbe3f69f6"
+changelog = "Piercing and Multishot can be on one crossbow together, from the enchanting table, an anvil or /enchant."
+
+[[versions]]
 version = "0.14.0"
 published = "2026-11-17"
 game = "26.3"
