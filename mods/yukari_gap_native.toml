@@ -9,7 +9,7 @@ description = """
 - **Place** it where there are two free blocks and name it. A name another gap has gets a number: Home (2), Home (3).
 - **Mine** it with anything, a pickaxe, another tool or your hand, and it drops as its item.
 - **Lock** it in the same window and only you can use it or break it. While locked, share it with chosen players.
-- **Find** a gap (right-click it once) before you can travel to it, unless its owner made it **global** with a **Yukari Umbrella**, which Yukari (Touhou Mobs) drops and each use takes.
+- **Find** a gap (right-click it once) before you can travel to it, unless its owner made it **global** with a **Yukari Umbrella**, which Yukari (Touhou Mobs) drops 70 times in 100 and each use takes.
 - **Right-click** any gap for a big screen of every gap you may use, in rows with a scroll bar. Click one to go.
 - **Travel is free**, however far, and to any dimension.
 - **Sneak and right-click** your own gap to rename it or change its lock.
@@ -27,6 +27,14 @@ source = "https://github.com/mxpbxb/yukari-gaps"
 icon = "icons/yukari_gap_native.png"
 categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
+
+[[versions]]
+version = "0.6.4"
+published = "2026-11-17"
+game = "26.3"
+file = "yukari_gap_native-0.6.4.hnmod"
+sha256 = "3db38e81b10d458bb9c3c0c3ac8f97b21f755c53f7aeb25736f06094c4c8596d"
+changelog = "Each Yukari Umbrella is good for one use, in Creative too. The umbrella now drops from Touhou Mobs 0.9.0 (Yukari 70 times in 100, Yukari Great Doll always), which sees each boss's last death; this mod no longer drops it. Assets unchanged (0.6.3)."
 
 [[versions]]
 version = "0.6.3"
