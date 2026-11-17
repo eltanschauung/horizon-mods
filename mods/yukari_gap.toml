@@ -8,14 +8,22 @@ description = """
 It holds the gap block, its item, the eye-gap picture and the recipe. It has no code: what the mod does is described on Yukari Gaps Beta.
 
 The art is original, by mxpbxb. No Minecraft assets are included. MIT licensed."""
-authors = ["mxpbxb"]
+authors = ["mxpbxb", "pipef0x", "TartaricAcid"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
-license = "MIT"
+license = "MIT AND CC-BY-NC-SA-4.0"
 source = "https://github.com/mxpbxb/yukari-gaps"
 icon = "icons/yukari_gap.png"
 categories = ["transportation", "library"]
 tags = ["teleport", "waypoints", "touhou", "assets"]
+
+[[versions]]
+version = "0.6.7"
+published = "2026-11-18"
+game = "26.3"
+file = "yukari_gap-0.6.7.hmod"
+sha256 = "4d61c93894aedcf2292d1d26da799526ea5898c6cb8759de447bdc3fd1ce178a"
+changelog = "The gap's picture is pipef0x's Yukari Gap Demo look (MIT): an S-shaped gap that breathes, with drifting fog and eyes, baked into a looping animation, and a bow at each tip. The gap item's icon is Alice Dolls Restringed's animated gap (Touhou Little Maid art, CC BY-NC-SA 4.0). Needs the native mod 0.6.6."
 
 [[versions]]
 version = "0.6.3"
