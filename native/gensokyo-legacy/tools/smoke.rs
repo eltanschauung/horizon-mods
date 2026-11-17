@@ -106,7 +106,7 @@ fn check(a: &[String]) -> horizon_client::Result<()> {
             .unwrap_or_else(|| std::path::PathBuf::from(a[1].clone()))
             .join("config"),
     );
-    ov.set_mods([("tectonic_horizon".into(), a[3] == "true")].into());
+    ov.set_mods([("tectonic_horizon".into(), a[3] == "true"),("lunatic".into(),false)].into());
     ov.activate();
     if let Some(id) = a.get(4) {
         let dimension = serde_json::json!({"type":"minecraft:overworld","generator":{"type":"minecraft:noise","settings":"minecraft:overworld","biome_source":{"type":"minecraft:fixed","biome":id}}});

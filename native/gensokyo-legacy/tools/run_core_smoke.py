@@ -9,7 +9,7 @@ for n in ['horizon_world','horizon_core','serde_json']:
  p=max(deps.glob('lib'+n+'-*.rlib'),key=lambda p:p.stat().st_mtime);a+=['--extern',n+'='+str(p)]
 for p in (launcher/'fork-native/target/fast/build').glob('*/out'):a+=['-L','native='+str(p)]
 subprocess.run(a,check=True)
-resources=Path((work/'combined-root.txt').read_text().strip()) if '--combined' in __import__('sys').argv else max((work/'world/cache/mod-content').iterdir(),key=lambda p:p.stat().st_mtime)
+resources=Path((work/'all-mods-root.txt').read_text().strip()) if '--all-mods' in __import__('sys').argv else (Path((work/'combined-root.txt').read_text().strip()) if '--combined' in __import__('sys').argv else max((work/'world/cache/mod-content').iterdir(),key=lambda p:p.stat().st_mtime))
 biomes=json.loads((ROOT/'inventory.json').read_text())['biomes']
 if '--natural' in __import__('sys').argv:biomes=['--natural']
 if os.environ.get('GENSOKYO_TEST_BIOME'):biomes=[os.environ['GENSOKYO_TEST_BIOME']]

@@ -4,6 +4,9 @@
 - All 17 biomes: direct terrain generation and decoration, first in isolation and
   then with BOP and Tectonic; zero unsupported or failed feature roots.
 - Combined natural sampling: all 17 biomes reached across 196,608 climate samples.
+- Full frozen package set: all 17 biomes generate with zero failed/unsupported
+  roots; all 17 remain naturally reachable. Client chunks save/reopen correctly
+  for all 17 forced biomes.
 - All imported models load; original grass, foliage, water, sky and fog tints match.
 - 15 focused engine tests passed, including native write/error bounds, seeded
   placement queries, live patch suffixes, guarded climates and stable tier sizes.

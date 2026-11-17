@@ -8,7 +8,7 @@ for name in ['horizon_core','horizon_world','horizon_mods','horizon_client_lib',
  p=max(deps.glob('lib'+name+'-*.rlib'),key=lambda p:p.stat().st_mtime);a+=['--extern',name+'='+str(p)]
 for p in (launcher/'fork-native/target/fast/build').glob('*/out'):a+=['-L','native='+str(p)]
 subprocess.run(a,check=True)
-base=launcher/'fork-versions/native-15c088f-2478a12b4ac8/.local/horizon-client/26.3'
+base=max((p/'.local/horizon-client/26.3' for p in (launcher/'fork-versions').iterdir() if (p/'.local/horizon-client/26.3/facts.json').exists()),key=lambda p:p.stat().st_mtime)
 pack=ROOT/'content/target/horizon-mod/horizon_gensokyo_legacy.hmod'
 biomes=json.loads((ROOT/'inventory.json').read_text())['biomes']
 if os.environ.get('GENSOKYO_PREPARE_ONLY'):biomes=biomes[:1]
