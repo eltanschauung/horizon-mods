@@ -1,0 +1,32 @@
+{
+  "type": "horizon_gensokyo_legacy:demonic_miasma_mushroom",
+  "cap_provider": {
+    "type": "minecraft:simple",
+    "state": {
+      "id": "horizon_gensokyo_legacy:demonic_miasma_mushroom_block",
+      "properties": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    }
+  },
+  "foliage_radius": 2,
+  "stem_provider": {
+    "type": "minecraft:simple",
+    "state": {
+      "id": "horizon_gensokyo_legacy:red_mushroom_stem",
+      "properties": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    }
+  }
+}

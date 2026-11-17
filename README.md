@@ -109,3 +109,5 @@ python3 native/tools/native.py proof zoom --resources /path/to/.local/horizon-cl
 To make your own, start from [horizon-native-mod-template](https://github.com/horizon-rust/horizon-native-mod-template).
 
 WorldEdit is included in our fork default native set. Source and local packaging: [native/worldedit](native/worldedit/). `python3 native/worldedit/tools/build.py --install` packages and installs it. Legacy schematic mappings are read from Horizon at runtime. The Horizon `build modded` workflow refreshes this bundle automatically.
+
+Gensokyo Legacy's 17 Overworld biomes and their natural blocks are maintained in [native/gensokyo-legacy](native/gensokyo-legacy/). This fork port requires both its content and native bundles; `python3 native/gensokyo-legacy/tools/build.py --install` packages and installs them locally before a frozen native game build. Original project attribution and LGPL notices are retained.

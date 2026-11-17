@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "horizon_gensokyo_legacy:block/blue_fir_wood_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "horizon_gensokyo_legacy:block/blue_fir_wood"
+    },
+    "axis=z": {
+      "model": "horizon_gensokyo_legacy:block/blue_fir_wood_horizontal",
+      "x": 90
+    }
+  }
+}

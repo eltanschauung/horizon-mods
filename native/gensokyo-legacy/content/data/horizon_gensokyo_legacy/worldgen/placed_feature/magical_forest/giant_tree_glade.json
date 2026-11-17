@@ -1,0 +1,263 @@
+{
+  "feature": {
+    "type": "horizon_gensokyo_legacy:template",
+    "footprint_radius": 4,
+    "ground": "#minecraft:dirt",
+    "max_slope": 4,
+    "post_features": [
+      {
+        "feature": {
+          "type": "minecraft:disk",
+          "half_height": 2,
+          "radius": {
+            "type": "minecraft:uniform",
+            "max_inclusive": 5,
+            "min_inclusive": 3
+          },
+          "state_provider": {
+            "fallback": {
+              "type": "minecraft:weighted",
+              "entries": [
+                {
+                  "data": {
+                    "id": "minecraft:podzol",
+                    "properties": {
+                      "snowy": "false"
+                    }
+                  },
+                  "weight": 4
+                },
+                {
+                  "data": {
+                    "id": "minecraft:coarse_dirt"
+                  },
+                  "weight": 1
+                },
+                {
+                  "data": {
+                    "id": "minecraft:rooted_dirt"
+                  },
+                  "weight": 1
+                }
+              ]
+            },
+            "rules": [],
+            "type": "minecraft:rule_based"
+          },
+          "target": {
+            "type": "minecraft:matching_blocks",
+            "blocks": [
+              "minecraft:grass_block",
+              "minecraft:dirt"
+            ]
+          }
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "minecraft:sequence",
+          "features": [
+            {
+              "feature": {
+                "type": "minecraft:sequence",
+                "features": [
+                  {
+                    "feature": {
+                      "type": "minecraft:simple_block",
+                      "to_place": {
+                        "type": "minecraft:weighted",
+                        "entries": [
+                          {
+                            "data": {
+                              "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                              "properties": {
+                                "facing": "north",
+                                "layers": "1"
+                              }
+                            },
+                            "weight": 3
+                          },
+                          {
+                            "data": {
+                              "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                              "properties": {
+                                "facing": "north",
+                                "layers": "2"
+                              }
+                            },
+                            "weight": 1
+                          },
+                          {
+                            "data": {
+                              "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                              "properties": {
+                                "facing": "east",
+                                "layers": "1"
+                              }
+                            },
+                            "weight": 3
+                          },
+                          {
+                            "data": {
+                              "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                              "properties": {
+                                "facing": "east",
+                                "layers": "2"
+                              }
+                            },
+                            "weight": 1
+                          },
+                          {
+                            "data": {
+                              "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                              "properties": {
+                                "facing": "south",
+                                "layers": "1"
+                              }
+                            },
+                            "weight": 3
+                          },
+                          {
+                            "data": {
+                              "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                              "properties": {
+                                "facing": "south",
+                                "layers": "2"
+                              }
+                            },
+                            "weight": 1
+                          },
+                          {
+                            "data": {
+                              "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                              "properties": {
+                                "facing": "west",
+                                "layers": "1"
+                              }
+                            },
+                            "weight": 3
+                          },
+                          {
+                            "data": {
+                              "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                              "properties": {
+                                "facing": "west",
+                                "layers": "2"
+                              }
+                            },
+                            "weight": 1
+                          }
+                        ]
+                      }
+                    },
+                    "placement": [
+                      {
+                        "type": "minecraft:block_predicate_filter",
+                        "predicate": {
+                          "type": "minecraft:all_of",
+                          "predicates": [
+                            {
+                              "type": "minecraft:matching_blocks",
+                              "blocks": "minecraft:air"
+                            },
+                            {
+                              "type": "minecraft:matching_block_tag",
+                              "offset": [
+                                0,
+                                -1,
+                                0
+                              ],
+                              "tag": "minecraft:dirt"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "placement": [
+                {
+                  "type": "minecraft:count",
+                  "count": 64
+                },
+                {
+                  "type": "minecraft:offset",
+                  "x": {
+                    "type": "minecraft:trapezoid",
+                    "min": -7,
+                    "max": 7,
+                    "plateau": 0
+                  },
+                  "y": {
+                    "type": "minecraft:trapezoid",
+                    "min": -3,
+                    "max": 3,
+                    "plateau": 0
+                  },
+                  "z": {
+                    "type": "minecraft:trapezoid",
+                    "min": -7,
+                    "max": 7,
+                    "plateau": 0
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "placement": []
+      }
+    ],
+    "root_depth": 6,
+    "templates": [
+      {
+        "data": "horizon_gensokyo_legacy:magical_forest/tree/blue_fir_giant_1",
+        "weight": 1
+      },
+      {
+        "data": "horizon_gensokyo_legacy:magical_forest/tree/blue_fir_giant_2",
+        "weight": 1
+      }
+    ]
+  },
+  "placement": [
+    {
+      "type": "horizon_gensokyo_legacy:jittered_grid",
+      "value": {
+        "cell": 28,
+        "chance": 0.4,
+        "margin": 5,
+        "salt": 7310001
+      }
+    },
+    {
+      "type": "horizon_gensokyo_legacy:noise_band",
+      "max": -0.4,
+      "noise": "horizon_gensokyo_legacy:magical_forest_type"
+    },
+    {
+      "type": "horizon_gensokyo_legacy:noise_band",
+      "max": 0.6,
+      "noise": "horizon_gensokyo_legacy:magical_forest_clearing"
+    },
+    {
+      "type": "horizon_gensokyo_legacy:avoid_structures",
+      "margin": 13,
+      "structures": [
+        "horizon_gensokyo_legacy:marisa_house",
+        "horizon_gensokyo_legacy:morichika_shop",
+        "horizon_gensokyo_legacy:hakurei_shrine",
+        "horizon_gensokyo_legacy:alice_house"
+      ]
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "MOTION_BLOCKING_NO_LEAVES"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

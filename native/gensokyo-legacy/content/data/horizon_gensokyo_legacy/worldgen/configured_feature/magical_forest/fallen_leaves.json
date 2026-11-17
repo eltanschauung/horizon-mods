@@ -1,0 +1,152 @@
+{
+  "type": "minecraft:sequence",
+  "features": [
+    {
+      "feature": {
+        "type": "minecraft:sequence",
+        "features": [
+          {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "to_place": {
+                "type": "minecraft:weighted",
+                "entries": [
+                  {
+                    "data": {
+                      "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                      "properties": {
+                        "facing": "north",
+                        "layers": "1"
+                      }
+                    },
+                    "weight": 3
+                  },
+                  {
+                    "data": {
+                      "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                      "properties": {
+                        "facing": "north",
+                        "layers": "2"
+                      }
+                    },
+                    "weight": 1
+                  },
+                  {
+                    "data": {
+                      "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                      "properties": {
+                        "facing": "east",
+                        "layers": "1"
+                      }
+                    },
+                    "weight": 3
+                  },
+                  {
+                    "data": {
+                      "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                      "properties": {
+                        "facing": "east",
+                        "layers": "2"
+                      }
+                    },
+                    "weight": 1
+                  },
+                  {
+                    "data": {
+                      "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                      "properties": {
+                        "facing": "south",
+                        "layers": "1"
+                      }
+                    },
+                    "weight": 3
+                  },
+                  {
+                    "data": {
+                      "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                      "properties": {
+                        "facing": "south",
+                        "layers": "2"
+                      }
+                    },
+                    "weight": 1
+                  },
+                  {
+                    "data": {
+                      "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                      "properties": {
+                        "facing": "west",
+                        "layers": "1"
+                      }
+                    },
+                    "weight": 3
+                  },
+                  {
+                    "data": {
+                      "id": "horizon_gensokyo_legacy:cedar_fallen_leaves",
+                      "properties": {
+                        "facing": "west",
+                        "layers": "2"
+                      }
+                    },
+                    "weight": 1
+                  }
+                ]
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:block_predicate_filter",
+                "predicate": {
+                  "type": "minecraft:all_of",
+                  "predicates": [
+                    {
+                      "type": "minecraft:matching_blocks",
+                      "blocks": "minecraft:air"
+                    },
+                    {
+                      "type": "minecraft:matching_block_tag",
+                      "offset": [
+                        0,
+                        -1,
+                        0
+                      ],
+                      "tag": "minecraft:dirt"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "placement": [
+        {
+          "type": "minecraft:count",
+          "count": 40
+        },
+        {
+          "type": "minecraft:offset",
+          "x": {
+            "type": "minecraft:trapezoid",
+            "min": -6,
+            "max": 6,
+            "plateau": 0
+          },
+          "y": {
+            "type": "minecraft:trapezoid",
+            "min": -3,
+            "max": 3,
+            "plateau": 0
+          },
+          "z": {
+            "type": "minecraft:trapezoid",
+            "min": -6,
+            "max": 6,
+            "plateau": 0
+          }
+        }
+      ]
+    }
+  ]
+}

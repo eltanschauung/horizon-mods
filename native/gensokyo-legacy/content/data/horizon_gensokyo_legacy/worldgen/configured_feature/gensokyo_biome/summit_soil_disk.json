@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:disk",
+  "half_height": 0,
+  "radius": {
+    "type": "minecraft:uniform",
+    "max_inclusive": 4,
+    "min_inclusive": 2
+  },
+  "state_provider": {
+    "fallback": {
+      "type": "minecraft:simple",
+      "state": {
+        "id": "minecraft:grass_block",
+        "properties": {
+          "snowy": "false"
+        }
+      }
+    },
+    "rules": [],
+    "type": "minecraft:rule_based"
+  },
+  "target": {
+    "type": "minecraft:matching_block_tag",
+    "tag": "minecraft:base_stone_overworld"
+  }
+}

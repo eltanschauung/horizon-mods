@@ -1,0 +1,108 @@
+{
+  "feature": {
+    "type": "minecraft:sequence",
+    "features": [
+      {
+        "feature": {
+          "type": "minecraft:sequence",
+          "features": [
+            {
+              "feature": {
+                "type": "minecraft:simple_block",
+                "to_place": {
+                  "type": "minecraft:weighted",
+                  "entries": [
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:ghost_fire_mushroom"
+                      },
+                      "weight": 2
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:dream_mushroom"
+                      },
+                      "weight": 2
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:demonic_miasma_mushroom"
+                      },
+                      "weight": 1
+                    }
+                  ]
+                }
+              },
+              "placement": [
+                {
+                  "type": "minecraft:block_predicate_filter",
+                  "predicate": {
+                    "type": "minecraft:all_of",
+                    "predicates": [
+                      {
+                        "type": "minecraft:matching_blocks",
+                        "blocks": "minecraft:air"
+                      },
+                      {
+                        "type": "minecraft:matching_block_tag",
+                        "offset": [
+                          0,
+                          -1,
+                          0
+                        ],
+                        "tag": "minecraft:dirt"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "placement": [
+          {
+            "type": "minecraft:count",
+            "count": 32
+          },
+          {
+            "type": "minecraft:offset",
+            "x": {
+              "type": "minecraft:trapezoid",
+              "min": -7,
+              "max": 7,
+              "plateau": 0
+            },
+            "y": {
+              "type": "minecraft:trapezoid",
+              "min": -3,
+              "max": 3,
+              "plateau": 0
+            },
+            "z": {
+              "type": "minecraft:trapezoid",
+              "min": -7,
+              "max": 7,
+              "plateau": 0
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 2
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "MOTION_BLOCKING_NO_LEAVES"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "horizon_gensokyo_legacy:block/ghost_fire_mushroom_1"
+      },
+      {
+        "model": "horizon_gensokyo_legacy:block/ghost_fire_mushroom_2"
+      },
+      {
+        "model": "horizon_gensokyo_legacy:block/ghost_fire_mushroom_3"
+      }
+    ]
+  }
+}

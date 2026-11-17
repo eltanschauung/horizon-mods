@@ -1,0 +1,51 @@
+{
+  "template": "minecraft:stone",
+  "state_properties": {
+    "half": {
+      "type": "enum",
+      "values": [
+        "bottom",
+        "top"
+      ]
+    }
+  },
+  "properties": {
+    "occludes": false
+  },
+  "shapes": {
+    "properties": [
+      "half"
+    ],
+    "values": {
+      "bottom": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.96875,
+          1.0
+        ]
+      ],
+      "top": []
+    }
+  },
+  "collision_shapes": {
+    "properties": [
+      "half"
+    ],
+    "values": {
+      "bottom": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.96875,
+          1.0
+        ]
+      ],
+      "top": []
+    }
+  }
+}

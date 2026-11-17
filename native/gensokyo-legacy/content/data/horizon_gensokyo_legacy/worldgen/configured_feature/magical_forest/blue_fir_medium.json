@@ -1,0 +1,17 @@
+{
+  "type": "horizon_gensokyo_legacy:template",
+  "footprint_radius": 2,
+  "ground": "#minecraft:dirt",
+  "max_slope": 3,
+  "root_depth": 4,
+  "templates": [
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/tree/blue_fir_medium_1",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/tree/blue_fir_medium_2",
+      "weight": 1
+    }
+  ]
+}

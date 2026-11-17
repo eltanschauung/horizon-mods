@@ -1,0 +1,128 @@
+{
+  "template": "minecraft:stone",
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ]
+    },
+    "half": {
+      "type": "enum",
+      "values": [
+        "bottom",
+        "top"
+      ]
+    }
+  },
+  "properties": {
+    "occludes": false
+  },
+  "shapes": {
+    "properties": [
+      "facing",
+      "half"
+    ],
+    "values": {
+      "east,bottom": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.4375,
+          1.0
+        ]
+      ],
+      "east,top": [],
+      "north,bottom": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.4375,
+          1.0
+        ]
+      ],
+      "north,top": [],
+      "south,bottom": [
+        [
+          -0.0,
+          0.0,
+          -0.0,
+          1.0,
+          1.4375,
+          1.0
+        ]
+      ],
+      "south,top": [],
+      "west,bottom": [
+        [
+          -0.0,
+          0.0,
+          -0.0,
+          1.0,
+          1.4375,
+          1.0
+        ]
+      ],
+      "west,top": []
+    }
+  },
+  "collision_shapes": {
+    "properties": [
+      "facing",
+      "half"
+    ],
+    "values": {
+      "east,bottom": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.4375,
+          1.0
+        ]
+      ],
+      "east,top": [],
+      "north,bottom": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.4375,
+          1.0
+        ]
+      ],
+      "north,top": [],
+      "south,bottom": [
+        [
+          -0.0,
+          0.0,
+          -0.0,
+          1.0,
+          1.4375,
+          1.0
+        ]
+      ],
+      "south,top": [],
+      "west,bottom": [
+        [
+          -0.0,
+          0.0,
+          -0.0,
+          1.0,
+          1.4375,
+          1.0
+        ]
+      ],
+      "west,top": []
+    }
+  }
+}

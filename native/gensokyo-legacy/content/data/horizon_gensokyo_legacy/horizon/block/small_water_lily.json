@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:lily_pad",
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ]
+    }
+  },
+  "properties": {
+    "occludes": false
+  }
+}

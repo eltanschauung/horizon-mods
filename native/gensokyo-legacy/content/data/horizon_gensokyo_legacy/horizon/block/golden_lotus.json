@@ -1,0 +1,28 @@
+{
+  "template": "minecraft:short_grass",
+  "state_properties": {
+    "part": {
+      "type": "enum",
+      "values": [
+        "lower",
+        "single",
+        "upper"
+      ]
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "0",
+        "1",
+        "2"
+      ]
+    }
+  },
+  "properties": {
+    "occludes": false
+  },
+  "default_state": {
+    "part": "single",
+    "size": "0"
+  }
+}

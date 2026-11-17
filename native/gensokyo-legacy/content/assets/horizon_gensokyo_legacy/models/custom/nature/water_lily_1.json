@@ -1,0 +1,7 @@
+{
+	"parent": "horizon_gensokyo_legacy:custom/nature/water_lily",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"all": "horizon_gensokyo_legacy:block/nature/water_lily_1"
+	}
+}

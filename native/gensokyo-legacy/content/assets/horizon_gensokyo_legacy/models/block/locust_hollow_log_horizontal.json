@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "horizon_gensokyo_legacy:block/wood/locust_hollow_log_side",
+    "side": "horizon_gensokyo_legacy:block/wood/locust_hollow_log_side"
+  }
+}

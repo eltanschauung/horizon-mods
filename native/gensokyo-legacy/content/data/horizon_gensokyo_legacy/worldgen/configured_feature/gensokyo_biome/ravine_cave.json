@@ -1,0 +1,19 @@
+{
+  "type": "horizon_gensokyo_legacy:ravine_cave",
+  "depth": 5,
+  "floor": {
+    "id": "minecraft:basalt",
+    "properties": {
+      "axis": "y"
+    }
+  },
+  "gap": 5,
+  "height": 8,
+  "pool": {
+    "id": "minecraft:water",
+    "properties": {
+      "level": "0"
+    }
+  },
+  "width": 7
+}

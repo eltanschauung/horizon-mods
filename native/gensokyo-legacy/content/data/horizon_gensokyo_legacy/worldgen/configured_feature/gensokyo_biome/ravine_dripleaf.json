@@ -1,0 +1,12 @@
+{
+  "type": "horizon_gensokyo_legacy:dripleaf_scatter",
+  "ground": {
+    "id": "minecraft:mud"
+  },
+  "stone": {
+    "id": "minecraft:basalt",
+    "properties": {
+      "axis": "y"
+    }
+  }
+}

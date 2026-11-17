@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_single_face",
+  "textures": {
+    "texture": "horizon_gensokyo_legacy:block/mushroom/cyan_mushroom_stem"
+  }
+}

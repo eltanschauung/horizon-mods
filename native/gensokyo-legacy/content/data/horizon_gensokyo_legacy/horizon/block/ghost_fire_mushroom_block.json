@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:brown_mushroom_block",
+  "state_properties": {},
+  "properties": {
+    "light": 8
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "horizon_gensokyo_legacy:template",
+  "footprint_radius": 1,
+  "ground": "#minecraft:dirt",
+  "max_slope": 2,
+  "root_depth": 2,
+  "templates": [
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/bush/azalea_1",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/bush/azalea_2",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/bush/azalea_3",
+      "weight": 1
+    }
+  ]
+}

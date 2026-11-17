@@ -1,0 +1,29 @@
+{
+  "type": "horizon_gensokyo_legacy:template",
+  "footprint_radius": 0,
+  "ground": "#minecraft:dirt",
+  "max_slope": 0,
+  "root_depth": 3,
+  "templates": [
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/tree/locust_1",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/tree/locust_2",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/tree/locust_3",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/tree/locust_4",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/tree/locust_5",
+      "weight": 1
+    }
+  ]
+}

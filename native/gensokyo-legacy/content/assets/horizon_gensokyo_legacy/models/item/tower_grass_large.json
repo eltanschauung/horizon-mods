@@ -1,0 +1,15 @@
+{
+  "base": {
+    "parent": "horizon_gensokyo_legacy:block/tower_grass_large"
+  },
+  "gui_light": "front",
+  "loader": "forge:separate_transforms",
+  "perspectives": {
+    "gui": {
+      "parent": "horizon_gensokyo_legacy:custom/nature/tower_grass_icon",
+      "textures": {
+        "plant": "horizon_gensokyo_legacy:block/nature/tower_grass_large"
+      }
+    }
+  }
+}

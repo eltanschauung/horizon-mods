@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:tall_grass",
+  "state_properties": {},
+  "properties": {
+    "occludes": false
+  }
+}

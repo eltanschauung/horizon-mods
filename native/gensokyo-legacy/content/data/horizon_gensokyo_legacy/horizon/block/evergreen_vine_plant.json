@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:hanging_roots",
+  "state_properties": {},
+  "properties": {
+    "occludes": false
+  }
+}

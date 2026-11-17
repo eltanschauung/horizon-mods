@@ -1,0 +1,10 @@
+{
+  "values": [
+    "minecraft:cherry_grove",
+    "horizon_gensokyo_legacy:sakura_forest",
+    {
+      "id": "youkaisfeasts:sakura_forest",
+      "required": false
+    }
+  ]
+}

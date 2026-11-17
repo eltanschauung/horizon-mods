@@ -1,0 +1,6 @@
+/upstream/
+/content/target/
+/target/
+/.local/
+__pycache__/
+*.log

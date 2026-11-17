@@ -1,0 +1,8 @@
+{
+  "parent": "horizon_gensokyo_legacy:custom/deco/gravestone",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "all": "horizon_gensokyo_legacy:block/deco/gravestone",
+    "particle": "horizon_gensokyo_legacy:block/deco/gravestone"
+  }
+}

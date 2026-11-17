@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "horizon_gensokyo_legacy:custom/nature/water_lily_small",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "horizon_gensokyo_legacy:custom/nature/water_lily_small"
+    },
+    "facing=south": {
+      "model": "horizon_gensokyo_legacy:custom/nature/water_lily_small",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "horizon_gensokyo_legacy:custom/nature/water_lily_small",
+      "y": 270
+    }
+  }
+}

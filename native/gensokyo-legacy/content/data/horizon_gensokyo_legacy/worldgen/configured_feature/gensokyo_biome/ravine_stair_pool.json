@@ -1,0 +1,17 @@
+{
+  "type": "horizon_gensokyo_legacy:stair_pool",
+  "fill": {
+    "id": "minecraft:water",
+    "properties": {
+      "level": "0"
+    }
+  },
+  "heightmap": "MOTION_BLOCKING_NO_LEAVES",
+  "reach": 7,
+  "stair": {
+    "id": "minecraft:basalt",
+    "properties": {
+      "axis": "y"
+    }
+  }
+}

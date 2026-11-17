@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:brown_mushroom",
+  "state_properties": {},
+  "properties": {
+    "occludes": false
+  }
+}

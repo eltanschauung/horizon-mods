@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "north": {
+          "cullface": "north",
+          "texture": "#texture"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "shade": false,
+      "to": [
+        16,
+        16,
+        0
+      ]
+    }
+  ],
+  "textures": {
+    "particle": "horizon_gensokyo_legacy:block/mushroom/ghost_fire_mushroom_block",
+    "texture": "horizon_gensokyo_legacy:block/mushroom/ghost_fire_mushroom_block"
+  }
+}

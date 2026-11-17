@@ -1,0 +1,7 @@
+{
+  "source": "https://github.com/Signifier-Dollhouse/GensokyoLegacy",
+  "reference_revision": "6850df3c1103aa540572bd95e85919ab2f1f49c4",
+  "jar_sha256": "645c1f3cfc6407e94892997305fad9c217e1f523f5a93b655eb2dbf8dfb35fe2",
+  "license": "LGPL-2.1",
+  "port_id": "horizon_gensokyo_legacy"
+}

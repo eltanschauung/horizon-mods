@@ -1,0 +1,162 @@
+{
+  "feature": {
+    "type": "minecraft:random_selector",
+    "default": {
+      "feature": {
+        "type": "horizon_gensokyo_legacy:template",
+        "footprint_radius": 0,
+        "ground": "#minecraft:dirt",
+        "max_slope": 0,
+        "processors": {
+          "processors": [
+            {
+              "processor_type": "horizon_gensokyo_legacy:template_replace",
+              "replacements": {
+                "horizon_gensokyo_legacy:red_maple_fallen_leaves": "horizon_gensokyo_legacy:yellow_maple_fallen_leaves",
+                "horizon_gensokyo_legacy:red_maple_leaves": "horizon_gensokyo_legacy:yellow_maple_leaves"
+              }
+            }
+          ]
+        },
+        "root_depth": 3,
+        "templates": [
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_01",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_02",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_03",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_04",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_05",
+            "weight": 1
+          }
+        ]
+      },
+      "placement": []
+    },
+    "features": [
+      {
+        "chance": 0.33333334,
+        "feature": {
+          "feature": {
+            "type": "horizon_gensokyo_legacy:template",
+            "footprint_radius": 0,
+            "ground": "#minecraft:dirt",
+            "max_slope": 0,
+            "processors": {
+              "processors": [
+                {
+                  "processor_type": "horizon_gensokyo_legacy:template_replace",
+                  "replacements": {
+                    "horizon_gensokyo_legacy:red_maple_fallen_leaves": "horizon_gensokyo_legacy:red_maple_fallen_leaves",
+                    "horizon_gensokyo_legacy:red_maple_leaves": "horizon_gensokyo_legacy:red_maple_leaves"
+                  }
+                }
+              ]
+            },
+            "root_depth": 3,
+            "templates": [
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_01",
+                "weight": 1
+              },
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_02",
+                "weight": 1
+              },
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_03",
+                "weight": 1
+              },
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_04",
+                "weight": 1
+              },
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_05",
+                "weight": 1
+              }
+            ]
+          },
+          "placement": []
+        }
+      },
+      {
+        "chance": 0.5,
+        "feature": {
+          "feature": {
+            "type": "horizon_gensokyo_legacy:template",
+            "footprint_radius": 0,
+            "ground": "#minecraft:dirt",
+            "max_slope": 0,
+            "processors": {
+              "processors": [
+                {
+                  "processor_type": "horizon_gensokyo_legacy:template_replace",
+                  "replacements": {
+                    "horizon_gensokyo_legacy:red_maple_fallen_leaves": "horizon_gensokyo_legacy:orange_maple_fallen_leaves",
+                    "horizon_gensokyo_legacy:red_maple_leaves": "horizon_gensokyo_legacy:orange_maple_leaves"
+                  }
+                }
+              ]
+            },
+            "root_depth": 3,
+            "templates": [
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_01",
+                "weight": 1
+              },
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_02",
+                "weight": 1
+              },
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_03",
+                "weight": 1
+              },
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_04",
+                "weight": 1
+              },
+              {
+                "data": "horizon_gensokyo_legacy:magical_forest/tree/maple_tree_05",
+                "weight": 1
+              }
+            ]
+          },
+          "placement": []
+        }
+      }
+    ]
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 6
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:surface_water_depth_filter",
+      "max_water_depth": 0
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "WORLD_SURFACE_WG"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

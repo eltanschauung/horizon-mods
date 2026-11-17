@@ -1,0 +1,90 @@
+{
+  "carvers": [],
+  "downfall": 0.8,
+  "effects": {
+    "foliage_color": 5149797,
+    "grass_color": 4296291,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    },
+    "water_color": 4943789
+  },
+  "features": [
+    [],
+    [
+      "horizon_gensokyo_legacy:magical_forest/lake"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:ore_coal_upper",
+      "minecraft:ore_coal_lower",
+      "minecraft:ore_iron_upper",
+      "minecraft:ore_iron_middle",
+      "minecraft:ore_iron_small",
+      "minecraft:ore_gold",
+      "minecraft:ore_gold_lower",
+      "minecraft:ore_redstone",
+      "minecraft:ore_redstone_lower",
+      "minecraft:ore_diamond",
+      "minecraft:ore_diamond_large",
+      "minecraft:ore_diamond_buried",
+      "minecraft:ore_lapis",
+      "minecraft:ore_lapis_buried",
+      "minecraft:ore_copper",
+      "minecraft:underwater_magma",
+      "horizon_gensokyo_legacy:magical_forest_disk_coarse_dirt",
+      "horizon_gensokyo_legacy:magical_forest_disk_podzol",
+      "horizon_gensokyo_legacy:magical_forest_disk_mycelium"
+    ],
+    [],
+    [],
+    [
+      "horizon_gensokyo_legacy:magical_forest/giant_tree_mixed",
+      "horizon_gensokyo_legacy:magical_forest/giant_tree_old_growth",
+      "horizon_gensokyo_legacy:magical_forest/giant_tree_glade",
+      "horizon_gensokyo_legacy:magical_forest/large_tree_mixed",
+      "horizon_gensokyo_legacy:magical_forest/large_tree_old_growth",
+      "horizon_gensokyo_legacy:magical_forest/mushroom_large_glade",
+      "horizon_gensokyo_legacy:magical_forest/mushroom_large",
+      "horizon_gensokyo_legacy:magical_forest/medium_tree",
+      "horizon_gensokyo_legacy:magical_forest/mushroom_medium_glade",
+      "horizon_gensokyo_legacy:magical_forest/mushroom_medium",
+      "horizon_gensokyo_legacy:magical_forest/bush",
+      "horizon_gensokyo_legacy:magical_forest/mushroom_small_glade",
+      "horizon_gensokyo_legacy:magical_forest/mushroom_small",
+      "horizon_gensokyo_legacy:magical_forest/fallen_leaves",
+      "horizon_gensokyo_legacy:magical_forest/grass",
+      "horizon_gensokyo_legacy:magical_forest/grass_forest",
+      "horizon_gensokyo_legacy:magical_forest/grass_taiga",
+      "horizon_gensokyo_legacy:magical_forest/large_fern",
+      "horizon_gensokyo_legacy:magical_forest/flowers",
+      "horizon_gensokyo_legacy:magical_forest/mushrooms"
+    ]
+  ],
+  "has_precipitation": true,
+  "temperature": 0.7,
+  "attributes": {
+    "minecraft:visual/sky_color": 4681921,
+    "minecraft:visual/fog_color": 9415923,
+    "minecraft:visual/water_fog_color": 329011,
+    "minecraft:gameplay/natural_mob_spawns": {
+      "spawns_by_category": {
+        "ambient": [],
+        "axolotls": [],
+        "creature": [],
+        "misc": [],
+        "monster": [],
+        "underground_water_creature": [],
+        "water_ambient": [],
+        "water_creature": []
+      },
+      "spawn_costs": {}
+    }
+  }
+}

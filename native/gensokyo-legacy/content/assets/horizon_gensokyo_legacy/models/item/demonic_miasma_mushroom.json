@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "horizon_gensokyo_legacy:block/mushroom/demonic_miasma_mushroom_1"
+  }
+}

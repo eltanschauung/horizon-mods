@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:oak_leaves",
+  "state_properties": {},
+  "properties": {
+    "occludes": false
+  }
+}

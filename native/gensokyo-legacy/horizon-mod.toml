@@ -1,0 +1,8 @@
+id = "horizon_gensokyo_legacy"
+name = "Gensokyo Legacy – Horizon"
+version = "0.1.0"
+description = "Gensokyo's forests, fields, lakes and Youkai Mountain biomes in the Overworld."
+authors = ["lcy0x1", "Signifier-Dollhouse", "eltanschauung (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]

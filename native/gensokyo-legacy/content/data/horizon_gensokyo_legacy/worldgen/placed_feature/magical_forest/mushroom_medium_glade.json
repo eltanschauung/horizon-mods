@@ -1,0 +1,145 @@
+{
+  "feature": {
+    "type": "minecraft:random_selector",
+    "default": {
+      "feature": {
+        "type": "horizon_gensokyo_legacy:template",
+        "footprint_radius": 1,
+        "ground": "#minecraft:dirt",
+        "max_slope": 2,
+        "post_features": [
+          {
+            "feature": {
+              "type": "minecraft:disk",
+              "half_height": 2,
+              "radius": {
+                "type": "minecraft:uniform",
+                "max_inclusive": 3,
+                "min_inclusive": 2
+              },
+              "state_provider": {
+                "fallback": {
+                  "type": "minecraft:simple",
+                  "state": {
+                    "id": "minecraft:mycelium",
+                    "properties": {
+                      "snowy": "false"
+                    }
+                  }
+                },
+                "rules": [],
+                "type": "minecraft:rule_based"
+              },
+              "target": {
+                "type": "minecraft:matching_blocks",
+                "blocks": [
+                  "minecraft:grass_block",
+                  "minecraft:dirt"
+                ]
+              }
+            },
+            "placement": []
+          }
+        ],
+        "root_depth": 3,
+        "templates": [
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/mushroom/ghost_fire_medium_1",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/mushroom/ghost_fire_medium_2",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/mushroom/demonic_miasma_medium_1",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/mushroom/demonic_miasma_medium_2",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/mushroom/dream_medium_1",
+            "weight": 1
+          },
+          {
+            "data": "horizon_gensokyo_legacy:magical_forest/mushroom/dream_medium_2",
+            "weight": 1
+          }
+        ]
+      },
+      "placement": []
+    },
+    "features": [
+      {
+        "chance": 0.08,
+        "feature": {
+          "feature": "minecraft:huge_brown_mushroom",
+          "placement": []
+        }
+      },
+      {
+        "chance": 0.08,
+        "feature": {
+          "feature": "minecraft:huge_red_mushroom",
+          "placement": []
+        }
+      }
+    ]
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 2
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "horizon_gensokyo_legacy:noise_band",
+      "max": -0.4,
+      "noise": "horizon_gensokyo_legacy:magical_forest_type"
+    },
+    {
+      "type": "horizon_gensokyo_legacy:grid_exclusion",
+      "layers": [
+        {
+          "distance": 5,
+          "layer": {
+            "cell": 28,
+            "chance": 0.85,
+            "margin": 5,
+            "salt": 7310001
+          }
+        },
+        {
+          "distance": 4,
+          "layer": {
+            "cell": 18,
+            "chance": 0.95,
+            "margin": 3,
+            "salt": 7310002
+          }
+        }
+      ]
+    },
+    {
+      "type": "horizon_gensokyo_legacy:avoid_structures",
+      "margin": 4,
+      "structures": [
+        "horizon_gensokyo_legacy:marisa_house",
+        "horizon_gensokyo_legacy:morichika_shop",
+        "horizon_gensokyo_legacy:hakurei_shrine",
+        "horizon_gensokyo_legacy:alice_house"
+      ]
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "MOTION_BLOCKING_NO_LEAVES"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "horizon_gensokyo_legacy:block/mushroom/dream_mushroom_block"
+  }
+}

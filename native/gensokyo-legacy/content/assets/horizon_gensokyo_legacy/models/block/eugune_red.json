@@ -1,0 +1,7 @@
+{
+  "parent": "horizon_gensokyo_legacy:custom/nature/eugune",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "all": "horizon_gensokyo_legacy:block/nature/eugune_red"
+  }
+}

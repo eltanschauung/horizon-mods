@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:disk",
+  "half_height": 1,
+  "radius": {
+    "type": "minecraft:uniform",
+    "max_inclusive": 4,
+    "min_inclusive": 2
+  },
+  "state_provider": {
+    "fallback": {
+      "type": "minecraft:simple",
+      "state": {
+        "id": "minecraft:mud"
+      }
+    },
+    "rules": [],
+    "type": "minecraft:rule_based"
+  },
+  "target": {
+    "type": "minecraft:matching_blocks",
+    "blocks": [
+      "minecraft:grass_block",
+      "minecraft:dirt"
+    ]
+  }
+}

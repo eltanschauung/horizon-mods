@@ -1,0 +1,21 @@
+{
+  "values": [
+    "minecraft:chest",
+    "minecraft:barrel",
+    "minecraft:bookshelf",
+    "minecraft:chiseled_bookshelf",
+    "minecraft:furnace",
+    "minecraft:blast_furnace",
+    "minecraft:smoker",
+    "minecraft:brewing_stand",
+    "minecraft:enchanting_table",
+    "minecraft:lectern",
+    "minecraft:loom",
+    "minecraft:cartography_table",
+    "minecraft:smithing_table",
+    "minecraft:cauldron",
+    "minecraft:lantern",
+    "minecraft:soul_lantern",
+    "minecraft:campfire"
+  ]
+}

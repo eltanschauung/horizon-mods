@@ -1,0 +1,17 @@
+{
+  "values": [
+    "minecraft:chest",
+    "minecraft:barrel",
+    "minecraft:ender_chest",
+    "minecraft:bookshelf",
+    "minecraft:brewing_stand",
+    "minecraft:furnace",
+    "minecraft:smoker",
+    "minecraft:campfire",
+    "minecraft:crafting_table",
+    "minecraft:bell",
+    "minecraft:lantern",
+    "minecraft:composter",
+    "minecraft:beehive"
+  ]
+}

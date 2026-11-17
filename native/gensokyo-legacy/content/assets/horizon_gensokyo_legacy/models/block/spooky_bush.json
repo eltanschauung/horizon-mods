@@ -1,0 +1,8 @@
+{
+  "parent": "horizon_gensokyo_legacy:custom/nature/spooky_bush",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "1": "horizon_gensokyo_legacy:block/nature/spooky_bush",
+    "particle": "horizon_gensokyo_legacy:block/nature/spooky_bush"
+  }
+}

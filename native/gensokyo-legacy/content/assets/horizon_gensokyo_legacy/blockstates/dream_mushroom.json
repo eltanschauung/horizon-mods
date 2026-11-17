@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "horizon_gensokyo_legacy:block/dream_mushroom_1"
+      },
+      {
+        "model": "horizon_gensokyo_legacy:block/dream_mushroom_2"
+      },
+      {
+        "model": "horizon_gensokyo_legacy:block/dream_mushroom_3"
+      }
+    ]
+  }
+}

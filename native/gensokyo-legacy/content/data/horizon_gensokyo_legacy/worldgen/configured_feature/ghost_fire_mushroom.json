@@ -1,0 +1,32 @@
+{
+  "type": "horizon_gensokyo_legacy:ghost_fire_mushroom",
+  "cap_provider": {
+    "type": "minecraft:simple",
+    "state": {
+      "id": "horizon_gensokyo_legacy:ghost_fire_mushroom_block",
+      "properties": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "true",
+        "west": "true"
+      }
+    }
+  },
+  "foliage_radius": 0,
+  "stem_provider": {
+    "type": "minecraft:simple",
+    "state": {
+      "id": "horizon_gensokyo_legacy:cyan_mushroom_stem",
+      "properties": {
+        "down": "false",
+        "east": "true",
+        "north": "true",
+        "south": "true",
+        "up": "false",
+        "west": "true"
+      }
+    }
+  }
+}

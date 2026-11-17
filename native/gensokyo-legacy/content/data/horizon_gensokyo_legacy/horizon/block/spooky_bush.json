@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:short_grass",
+  "state_properties": {},
+  "properties": {
+    "occludes": false
+  }
+}

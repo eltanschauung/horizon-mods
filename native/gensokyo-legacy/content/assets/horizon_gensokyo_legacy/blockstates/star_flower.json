@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "horizon_gensokyo_legacy:block/star_flower"
+      },
+      {
+        "model": "horizon_gensokyo_legacy:block/star_flower_2"
+      },
+      {
+        "model": "horizon_gensokyo_legacy:block/star_flower_3"
+      }
+    ]
+  }
+}

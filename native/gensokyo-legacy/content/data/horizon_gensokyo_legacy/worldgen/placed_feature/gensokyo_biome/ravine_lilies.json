@@ -1,0 +1,392 @@
+{
+  "feature": {
+    "type": "minecraft:sequence",
+    "features": [
+      {
+        "feature": {
+          "type": "minecraft:sequence",
+          "features": [
+            {
+              "feature": {
+                "type": "minecraft:simple_block",
+                "to_place": {
+                  "type": "minecraft:weighted",
+                  "entries": [
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:small_water_lily",
+                        "properties": {
+                          "facing": "north"
+                        }
+                      },
+                      "weight": 3
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:small_water_lily",
+                        "properties": {
+                          "facing": "east"
+                        }
+                      },
+                      "weight": 3
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:small_water_lily",
+                        "properties": {
+                          "facing": "south"
+                        }
+                      },
+                      "weight": 3
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:small_water_lily",
+                        "properties": {
+                          "facing": "west"
+                        }
+                      },
+                      "weight": 3
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "north",
+                          "variant": "0"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "north",
+                          "variant": "1"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "north",
+                          "variant": "2"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "north",
+                          "variant": "3"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "north",
+                          "variant": "4"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "north",
+                          "variant": "5"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "north",
+                          "variant": "6"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "east",
+                          "variant": "0"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "east",
+                          "variant": "1"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "east",
+                          "variant": "2"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "east",
+                          "variant": "3"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "east",
+                          "variant": "4"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "east",
+                          "variant": "5"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "east",
+                          "variant": "6"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "south",
+                          "variant": "0"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "south",
+                          "variant": "1"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "south",
+                          "variant": "2"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "south",
+                          "variant": "3"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "south",
+                          "variant": "4"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "south",
+                          "variant": "5"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "south",
+                          "variant": "6"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "west",
+                          "variant": "0"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "west",
+                          "variant": "1"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "west",
+                          "variant": "2"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "west",
+                          "variant": "3"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "west",
+                          "variant": "4"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "west",
+                          "variant": "5"
+                        }
+                      },
+                      "weight": 1
+                    },
+                    {
+                      "data": {
+                        "id": "horizon_gensokyo_legacy:large_water_lily",
+                        "properties": {
+                          "facing": "west",
+                          "variant": "6"
+                        }
+                      },
+                      "weight": 1
+                    }
+                  ]
+                }
+              },
+              "placement": [
+                {
+                  "type": "minecraft:block_predicate_filter",
+                  "predicate": {
+                    "type": "minecraft:matching_blocks",
+                    "blocks": "minecraft:air"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "placement": [
+          {
+            "type": "minecraft:count",
+            "count": 10
+          },
+          {
+            "type": "minecraft:offset",
+            "x": {
+              "type": "minecraft:trapezoid",
+              "min": -7,
+              "max": 7,
+              "plateau": 0
+            },
+            "y": {
+              "type": "minecraft:trapezoid",
+              "min": -3,
+              "max": 3,
+              "plateau": 0
+            },
+            "z": {
+              "type": "minecraft:trapezoid",
+              "min": -7,
+              "max": 7,
+              "plateau": 0
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 4
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "WORLD_SURFACE_WG"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

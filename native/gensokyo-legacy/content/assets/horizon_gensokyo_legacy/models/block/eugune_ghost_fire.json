@@ -1,0 +1,7 @@
+{
+  "parent": "horizon_gensokyo_legacy:custom/nature/eugune_emissive",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "all": "horizon_gensokyo_legacy:block/nature/eugune_ghost_fire"
+  }
+}

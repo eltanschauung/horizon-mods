@@ -1,0 +1,1033 @@
+{
+  "preset": "minecraft:overworld",
+  "group": "horizon_gensokyo_legacy:overworld",
+  "weight": 4,
+  "selector": "weirdness",
+  "biomes": [
+    {
+      "biome": "horizon_gensokyo_legacy:myouren_temple_barrens",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          -0.15
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:plain_of_the_past",
+      "parameters": {
+        "temperature": [
+          -0.15000000000000002,
+          0.15
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:sunflower_plains",
+      "parameters": {
+        "temperature": [
+          0.14999999999999997,
+          0.44999999999999996
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:muenzuka",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          -0.15
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:sakura_forest",
+      "parameters": {
+        "temperature": [
+          -0.15000000000000002,
+          0.15
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:hill_of_the_nameless",
+      "parameters": {
+        "temperature": [
+          0.14999999999999997,
+          0.44999999999999996
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:magical_forest",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          -0.15
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:bamboo_forest_of_the_lost",
+      "parameters": {
+        "temperature": [
+          -0.15000000000000002,
+          0.15
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:youkai_mountain_foothills",
+      "parameters": {
+        "temperature": [
+          0.14999999999999997,
+          0.44999999999999996
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:untrodden_valley",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -0.4,
+          0.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:genbu_ravine",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -0.4,
+          0.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:sanctuary",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -0.4,
+          0.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:tengu_settlement",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -1.0,
+          -0.4
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:secret_heaven_cliff",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -1.0,
+          -0.4
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:youkai_mountain_summit",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -1.0,
+          -0.4
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:misty_lake",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.45,
+          -0.19
+        ],
+        "erosion": [
+          -1,
+          1
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:misty_lake_shore",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.19,
+          0.0
+        ],
+        "erosion": [
+          -1,
+          1
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:myouren_temple_barrens",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          -0.15
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:plain_of_the_past",
+      "parameters": {
+        "temperature": [
+          -0.15000000000000002,
+          0.15
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:sunflower_plains",
+      "parameters": {
+        "temperature": [
+          0.14999999999999997,
+          0.44999999999999996
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:muenzuka",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          -0.15
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:sakura_forest",
+      "parameters": {
+        "temperature": [
+          -0.15000000000000002,
+          0.15
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:hill_of_the_nameless",
+      "parameters": {
+        "temperature": [
+          0.14999999999999997,
+          0.44999999999999996
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:magical_forest",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          -0.15
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:bamboo_forest_of_the_lost",
+      "parameters": {
+        "temperature": [
+          -0.15000000000000002,
+          0.15
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:youkai_mountain_foothills",
+      "parameters": {
+        "temperature": [
+          0.14999999999999997,
+          0.44999999999999996
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.0,
+          1.0
+        ],
+        "erosion": [
+          0.0,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:untrodden_valley",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -0.4,
+          0.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:genbu_ravine",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -0.4,
+          0.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:sanctuary",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -0.4,
+          0.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:tengu_settlement",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1.0,
+          -0.33333333333333337
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -1.0,
+          -0.4
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:secret_heaven_cliff",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -0.33333333333333337,
+          0.33333333333333326
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -1.0,
+          -0.4
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:youkai_mountain_summit",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          0.33333333333333326,
+          1.0
+        ],
+        "continentalness": [
+          0.2,
+          1.0
+        ],
+        "erosion": [
+          -1.0,
+          -0.4
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:misty_lake",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.45,
+          -0.19
+        ],
+        "erosion": [
+          -1,
+          1
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:misty_lake_shore",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.19,
+          0.0
+        ],
+        "erosion": [
+          -1,
+          1
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    }
+  ],
+  "region_order": 5,
+  "region_zooms": 3,
+  "vanilla_weight": 10,
+  "region_min_quarts": 192,
+  "climate_guard": true
+}

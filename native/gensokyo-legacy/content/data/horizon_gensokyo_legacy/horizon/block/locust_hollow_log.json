@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:oak_log",
+  "state_properties": {},
+  "properties": {
+    "occludes": false
+  }
+}
