@@ -17,6 +17,13 @@ def main():
     # Resource models recursively retain their original parents and texture references.
     todo=[f'assets/{NS}/blockstates/{b}.json' for b in inv['blocks']]
     todo += [f'assets/{NS}/models/item/{b}.json' for b in inv['blocks'] if (ROOT/f'upstream/assets/{NS}/models/item/{b}.json').exists()]
+    for color in ('pink', 'purple'):
+        particle = f'assets/{NS}/particles/{color}_cherry_blossom.json'
+        definition = json.loads((ROOT/'upstream'/particle).read_text())
+        definition['horizon:behaviour'] = {'falling_petal': True}
+        write(OUT/particle, definition)
+        for sprite in definition['textures']:
+            todo.append(f"assets/{NS}/textures/particle/{sprite.split(':', 1)[1]}.png")
     done=set()
     def refs(v):
         if isinstance(v,str) and v.startswith(NS+':'):yield v.split(':',1)[1]
@@ -41,7 +48,8 @@ def main():
         v=json.loads(p.read_text());v={k:x for k,x in v.items() if k.startswith(('block.','biome.'))}
         write(OUT/f'assets/{NS}/lang/{p.name}',v)
     for b in inv['blocks']:
-        if b.endswith('_leaves'):template='oak_leaves'
+        if b.endswith('_cherry_fallen_leaves'):template='moss_carpet'
+        elif b.endswith('_leaves'):template='oak_leaves'
         elif b.endswith(('_log','_wood')) or b=='locust_hollow_log':template='oak_log'
         elif b.endswith('_fallen_leaves'):template='moss_carpet'
         elif b.endswith(('_mushroom_block','_mushroom_stem')):template='brown_mushroom_block'
@@ -77,6 +85,7 @@ def main():
             if b.startswith('eugune_'):decl['collision_shapes']={'default':[]}
             elif bounds:decl['collision_shapes']=bounds
         if b.endswith('_fallen_leaves'):decl['collision_shapes']={'default':[]}
+        if b in ('pink_cherry_leaves', 'purple_cherry_leaves'):decl['properties']['random_ticks']=True
         if b=='locust_hollow_log':decl['properties']['occludes']=False
         if b=='large_water_lily':decl['shapes']={'default':[[1/16,9/16,1/16,15/16,10.5/16,15/16]]}
         if b in ('ghost_fire_mushroom','ghost_fire_mushroom_block','eugune_ghost_fire'):decl['properties']['light']=8

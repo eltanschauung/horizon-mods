@@ -1,5 +1,5 @@
 {
-  "template": "minecraft:oak_leaves",
+  "template": "minecraft:moss_carpet",
   "state_properties": {
     "facing": {
       "type": "enum",

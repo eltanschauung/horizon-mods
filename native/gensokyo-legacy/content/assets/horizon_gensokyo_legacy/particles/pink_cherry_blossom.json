@@ -1,0 +1,17 @@
+{
+  "textures": [
+    "horizon_gensokyo_legacy:pink_cherry_blossom_01",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_02",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_03",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_04",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_05",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_06",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_07",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_08",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_09",
+    "horizon_gensokyo_legacy:pink_cherry_blossom_10"
+  ],
+  "horizon:behaviour": {
+    "falling_petal": true
+  }
+}
