@@ -28,6 +28,14 @@ categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
 
 [[versions]]
+version = "0.9.1"
+published = "2026-11-17"
+game = "26.3"
+file = "thmobs_native-0.9.1.hnmod"
+sha256 = "8c78c834f6b96fcac498f5395a85015d7e227fc993755407586fb496d7d53996"
+changelog = "The fairies and crow tengu drop what Arcadian Dream's fairies drop (its power and point items, sometimes a bomb, extend, star or the Fairy Playground disc) and sound like its fairies (a bat's voice). Yukari Great Doll is half her size and her danmaku flies at half speed. A boss killed with /kill now dies for good and drops its loot, umbrellas included. Assets unchanged (0.9.0)."
+
+[[versions]]
 version = "0.9.0"
 published = "2026-11-17"
 game = "26.3"
