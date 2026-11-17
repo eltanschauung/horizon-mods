@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "mobs", "assets"]
 
 [[versions]]
+version = "0.9.0"
+published = "2026-11-17"
+game = "26.3"
+file = "thmobs-0.9.0.hmod"
+sha256 = "3af3a9cc2a3d37ffe2d0d400c2f89392129a4b3c71843bf345c3c156c05c60fc"
+changelog = "The classic bosses' and Yukari Great Doll's mob types and spawn eggs. Needs the native mod 0.9.0."
+
+[[versions]]
 version = "0.7.0"
 published = "2026-11-13"
 game = "26.3"
