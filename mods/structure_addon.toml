@@ -24,6 +24,14 @@ categories = ["worldgen", "adventure"]
 tags = ["structures", "dungeons", "caves", "stone"]
 
 [[versions]]
+version = "0.3.2"
+published = "2026-11-17"
+game = "26.3"
+file = "structure_addon-0.3.2.hmod"
+sha256 = "4a403fbf085cd3950283ac36622d3dbefe02a203eab9b1a88ce5021d50c061f4"
+changelog = "Surface structures are 60 times rarer. Find the underground dungeons and cities with /locate structure #structure_addon:dungeons (or #structure_addon:underground_cities)."
+
+[[versions]]
 version = "0.3.1"
 published = "2026-11-17"
 game = "26.3"
