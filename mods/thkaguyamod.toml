@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
 
 [[versions]]
+version = "0.4.3"
+published = "2026-11-17"
+game = "26.3"
+file = "thkaguyamod-0.4.3.hmod"
+sha256 = "0b1fcfd2dd17dcb0459fa8928d327bc171a6046db2b6baa9ddecfc78c8f3b1a2"
+changelog = "The Mochi Hammer deals 1 more damage: 9 instead of 8."
+
+[[versions]]
 version = "0.4.2"
 published = "2026-11-15"
 game = "26.3"
