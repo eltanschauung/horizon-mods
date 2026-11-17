@@ -1,0 +1,26 @@
+id = "torchmaster"
+kind = "mod"
+name = "Torchmaster (assets)"
+summary = "The blocks, art, names and recipe of Torchmaster. Needs the Torchmaster native mod."
+description = """
+**This is one of the two parts of [Torchmaster](https://playhorizon.dev/mods/torchmaster_native), and does nothing alone.** Install both: this one, the assets, and the native part.
+
+It holds the Mega Torch block and item, its art, names, loot and recipe. It has no code: what the mod does is described on Torchmaster.
+
+The art and names are from [Torchmaster](https://github.com/Xalcon/TorchMaster) by Xalcon, MIT licensed. No Minecraft assets are included."""
+authors = ["Xalcon (Torchmaster)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "MIT"
+source = "https://github.com/mxpbxb/torchmaster"
+icon = "icons/torchmaster.png"
+categories = ["utility", "library"]
+tags = ["torch", "assets"]
+
+[[versions]]
+version = "21.1.13-horizon.2"
+published = "2026-11-17"
+game = "26.3"
+file = "torchmaster-21.1.13-horizon.2.hmod"
+sha256 = "2963af43751f8c51398c7b7afe17b22df054eab3e74199078a282b365b2963fd"
+changelog = "First release."

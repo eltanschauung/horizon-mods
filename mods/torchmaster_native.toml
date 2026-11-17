@@ -1,0 +1,31 @@
+id = "torchmaster_native"
+kind = "native-mod"
+name = "Torchmaster"
+summary = "The Mega Torch: hostile mobs don't spawn within 64 blocks of it."
+description = """
+**This mod has two parts, and you need both.** Install this one, the native part, and [Torchmaster (assets)](https://playhorizon.dev/mods/torchmaster), then press Build.
+
+- **Place a Mega Torch** and no hostile mob spawns naturally within 64 blocks of it in each direction (a cube). No phantoms come there, and no zombie sieges hit a village inside it.
+- **Right-click** a Mega Torch with an empty hand to see its range.
+- **Craft** it from four of Arcadian Dream's Max Point Items in the corners, two diamonds, two logs and a torch. Without Arcadian Dream it can't be crafted.
+- Settings in `config/torchmaster-horizon.toml`, with Torchmaster's names and defaults.
+
+The Dread Lamp, Feral Flare Lantern and Frozen Pearl are turned off in this version.
+
+A port of [Torchmaster](https://github.com/Xalcon/TorchMaster) by Xalcon, MIT licensed. Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. No Minecraft code or assets are included."""
+authors = ["Xalcon (Torchmaster)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "MIT"
+source = "https://github.com/mxpbxb/torchmaster"
+icon = "icons/torchmaster_native.png"
+categories = ["utility"]
+tags = ["torch", "mob-spawning", "lighting"]
+
+[[versions]]
+version = "21.1.13-horizon.2"
+published = "2026-11-17"
+game = "26.3"
+file = "torchmaster_native-21.1.13-horizon.2.hnmod"
+sha256 = "e42cbf3ad950d7a0b2eff1763d3b2b82e920c07fea6ef09d037cbb1f64758146"
+changelog = "First release: the Mega Torch. Needs the assets mod 21.1.13-horizon.2."
