@@ -1,7 +1,20 @@
 {
   "variants": {
-    "": {
-      "model": "horizon_magic_brooms:block/broom_rack"
+    "facing=north": {
+      "model": "horizon_magic_brooms:block/broom_rack",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "horizon_magic_brooms:block/broom_rack",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "horizon_magic_brooms:block/broom_rack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "horizon_magic_brooms:block/broom_rack",
+      "y": 270
     }
   }
 }

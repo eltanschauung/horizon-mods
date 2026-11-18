@@ -13,6 +13,7 @@ NS = 'horizon_magic_brooms'
 FAMILIES = ('magic', 'fire', 'ice', 'lightning', 'ender', 'grove', 'tide')
 CATALYSTS = ('blaze_powder', 'packed_ice', 'redstone', 'chorus_fruit', 'vine', 'prismarine')
 WORKSTATIONS = ('broom_workbench', 'scroll_table', 'broom_rack')
+FACING_ROTATIONS = {'north': 0, 'east': 90, 'south': 180, 'west': 270}
 
 
 def write(root, path, value):
@@ -156,9 +157,13 @@ def assemble(source, root):
                  if block == 'broom_workbench' else
                  {'stage': {'type': 'enum', 'values': ['empty', 'paper', *FAMILIES[1:]]}}
                  if block == 'scroll_table' else {})
-        write(root, f'{data}/horizon/block/{block}.json', {
+        block_decl = {
             'template': 'minecraft:crafting_table', 'state_properties': state,
-        })
+        }
+        if block == 'broom_rack':
+            # Loom's horizontal placement faces the block toward its placer.
+            block_decl.update(template='minecraft:loom', default_state={'facing': 'north'})
+        write(root, f'{data}/horizon/block/{block}.json', block_decl)
         def station_model(path, geometry, sprite):
             mesh = models/f'{geometry}.obj'
             if not mesh.exists():
@@ -188,7 +193,10 @@ def assemble(source, root):
         else:
             sprite = 'block/scroll_table/base' if block == 'scroll_table' else 'block/broom_rack'
             texture(sprite+'.png')
-            variants = {'': station_model(block, block, sprite)}
+            model = station_model(block, block, sprite)
+            variants = ({f'facing={facing}': dict(model, y=degrees)
+                         for facing, degrees in FACING_ROTATIONS.items()}
+                        if block == 'broom_rack' else {'': model})
         write(root, f'{assets}/blockstates/{block}.json', {'variants': variants})
         write(root, f'{assets}/items/{block}.json', {
             'model': {'type': 'minecraft:model', 'model': f'{NS}:block/{block}'},

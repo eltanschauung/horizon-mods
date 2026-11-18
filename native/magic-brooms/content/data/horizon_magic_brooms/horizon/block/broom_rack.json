@@ -1,4 +1,7 @@
 {
-  "template": "minecraft:crafting_table",
-  "state_properties": {}
+  "template": "minecraft:loom",
+  "state_properties": {},
+  "default_state": {
+    "facing": "north"
+  }
 }
