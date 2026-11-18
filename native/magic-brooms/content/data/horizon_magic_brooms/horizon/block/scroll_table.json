@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:crafting_table",
+  "state_properties": {
+    "stage": {
+      "type": "enum",
+      "values": [
+        "empty",
+        "paper",
+        "fire",
+        "ice",
+        "lightning",
+        "ender",
+        "grove",
+        "tide"
+      ]
+    }
+  }
+}

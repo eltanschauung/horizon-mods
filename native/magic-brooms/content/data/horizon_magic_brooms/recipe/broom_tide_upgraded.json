@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "horizon_magic_brooms:broom_tide",
+    "horizon_magic_brooms:tide_scroll",
+    "minecraft:heart_of_the_sea"
+  ],
+  "result": {
+    "count": 1,
+    "id": "horizon_magic_brooms:broom_tide_upgraded"
+  }
+}

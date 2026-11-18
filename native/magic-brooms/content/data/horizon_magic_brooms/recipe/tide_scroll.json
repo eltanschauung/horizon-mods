@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:paper",
+    "minecraft:prismarine"
+  ],
+  "result": {
+    "id": "horizon_magic_brooms:tide_scroll",
+    "count": 1
+  }
+}

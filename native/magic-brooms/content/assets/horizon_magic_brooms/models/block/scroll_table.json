@@ -1,0 +1,23 @@
+{
+  "loader": "neoforge:obj",
+  "flip_v": true,
+  "model": "horizon_magic_brooms:models/scroll_table.obj",
+  "textures": {
+    "surface": "horizon_magic_brooms:block/scroll_table/base",
+    "particle": "horizon_magic_brooms:block/scroll_table/base"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    }
+  }
+}

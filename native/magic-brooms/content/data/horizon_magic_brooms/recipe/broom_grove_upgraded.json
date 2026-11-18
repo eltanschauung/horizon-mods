@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "horizon_magic_brooms:broom_grove",
+    "horizon_magic_brooms:grove_scroll",
+    "minecraft:emerald"
+  ],
+  "result": {
+    "count": 1,
+    "id": "horizon_magic_brooms:broom_grove_upgraded"
+  }
+}

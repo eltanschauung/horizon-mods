@@ -1,0 +1,23 @@
+{
+  "loader": "neoforge:obj",
+  "flip_v": true,
+  "model": "horizon_magic_brooms:models/workbench_complete.obj",
+  "textures": {
+    "surface": "horizon_magic_brooms:block/workbench/ender",
+    "particle": "horizon_magic_brooms:block/workbench/ender"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    }
+  }
+}

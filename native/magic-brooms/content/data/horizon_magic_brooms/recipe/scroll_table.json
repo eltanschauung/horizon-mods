@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    " B ",
+    "T T"
+  ],
+  "key": {
+    "S": "#minecraft:wooden_slabs",
+    "B": "minecraft:book",
+    "T": "minecraft:stick"
+  },
+  "result": {
+    "count": 1,
+    "id": "horizon_magic_brooms:scroll_table"
+  }
+}

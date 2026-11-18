@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  X",
+    " B ",
+    "Y  "
+  ],
+  "key": {
+    "Y": "minecraft:stick",
+    "X": "minecraft:ender_pearl",
+    "B": "minecraft:end_rod"
+  },
+  "result": {
+    "count": 1,
+    "id": "horizon_magic_brooms:broom_ender_upgraded"
+  }
+}

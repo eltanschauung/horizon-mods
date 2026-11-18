@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "stage=empty": {
+      "model": "horizon_magic_brooms:block/broom_workbench"
+    },
+    "stage=handle": {
+      "model": "horizon_magic_brooms:block/broom_workbench_handle"
+    },
+    "stage=bristles": {
+      "model": "horizon_magic_brooms:block/broom_workbench_bristles"
+    },
+    "stage=fire": {
+      "model": "horizon_magic_brooms:block/broom_workbench_fire"
+    },
+    "stage=ice": {
+      "model": "horizon_magic_brooms:block/broom_workbench_ice"
+    },
+    "stage=lightning": {
+      "model": "horizon_magic_brooms:block/broom_workbench_lightning"
+    },
+    "stage=ender": {
+      "model": "horizon_magic_brooms:block/broom_workbench_ender"
+    },
+    "stage=grove": {
+      "model": "horizon_magic_brooms:block/broom_workbench_grove"
+    },
+    "stage=tide": {
+      "model": "horizon_magic_brooms:block/broom_workbench_tide"
+    },
+    "stage=magic_upgraded": {
+      "model": "horizon_magic_brooms:block/broom_workbench_magic_upgraded"
+    },
+    "stage=fire_upgraded": {
+      "model": "horizon_magic_brooms:block/broom_workbench_fire_upgraded"
+    },
+    "stage=ice_upgraded": {
+      "model": "horizon_magic_brooms:block/broom_workbench_ice_upgraded"
+    },
+    "stage=lightning_upgraded": {
+      "model": "horizon_magic_brooms:block/broom_workbench_lightning_upgraded"
+    },
+    "stage=ender_upgraded": {
+      "model": "horizon_magic_brooms:block/broom_workbench_ender_upgraded"
+    },
+    "stage=grove_upgraded": {
+      "model": "horizon_magic_brooms:block/broom_workbench_grove_upgraded"
+    },
+    "stage=tide_upgraded": {
+      "model": "horizon_magic_brooms:block/broom_workbench_tide_upgraded"
+    }
+  }
+}

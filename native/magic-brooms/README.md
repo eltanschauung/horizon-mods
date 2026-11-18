@@ -1,11 +1,12 @@
 # Magic Brooms for Horizon
 
-The Horizon port uses the supplied Iced Fox Studios Magic Brooms Forge 1.18.2
-3.0.0 archive. Its metadata reserves all rights. Keep the archive and generated
-assets private.
+**Original mod and assets by Iced Fox Studios.** This port uses Magic Brooms
+3.0.0 for Minecraft Forge 1.18.2. The converted assets are included with
+permission. See [NOTICE](NOTICE) for attribution.
 
-Run `python3 tools/assemble.py /path/to/magic-brooms-forge-1.18.2-3.0.0.jar`.
-Build the generated `content/` folder with `cargo-horizon-mod build`.
+Run `cargo-horizon-mod build` from `content/` to package the checked-in assets.
+To regenerate the content from the original JAR, run
+`python3 tools/assemble.py /path/to/magic-brooms-forge-1.18.2-3.0.0.jar`.
 The resulting package registers as `horizon_magic_brooms` and requires a
 Horizon build that includes the Magic Brooms engine integration.
 

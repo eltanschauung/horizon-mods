@@ -1,0 +1,29 @@
+{
+  "title": "Magic Brooms",
+  "icon": "horizon_magic_brooms:broom_magic",
+  "items": [
+    "horizon_magic_brooms:broom_magic",
+    "horizon_magic_brooms:broom_fire",
+    "horizon_magic_brooms:broom_ice",
+    "horizon_magic_brooms:broom_lightning",
+    "horizon_magic_brooms:broom_ender",
+    "horizon_magic_brooms:broom_grove",
+    "horizon_magic_brooms:broom_tide",
+    "horizon_magic_brooms:broom_magic_upgraded",
+    "horizon_magic_brooms:broom_fire_upgraded",
+    "horizon_magic_brooms:broom_ice_upgraded",
+    "horizon_magic_brooms:broom_lightning_upgraded",
+    "horizon_magic_brooms:broom_ender_upgraded",
+    "horizon_magic_brooms:broom_grove_upgraded",
+    "horizon_magic_brooms:broom_tide_upgraded",
+    "horizon_magic_brooms:fire_scroll",
+    "horizon_magic_brooms:ice_scroll",
+    "horizon_magic_brooms:lightning_scroll",
+    "horizon_magic_brooms:ender_scroll",
+    "horizon_magic_brooms:grove_scroll",
+    "horizon_magic_brooms:tide_scroll",
+    "horizon_magic_brooms:broom_workbench",
+    "horizon_magic_brooms:scroll_table",
+    "horizon_magic_brooms:broom_rack"
+  ]
+}

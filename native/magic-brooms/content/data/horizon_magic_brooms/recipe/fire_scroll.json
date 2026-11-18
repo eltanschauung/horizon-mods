@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:paper",
+    "minecraft:blaze_powder"
+  ],
+  "result": {
+    "id": "horizon_magic_brooms:fire_scroll",
+    "count": 1
+  }
+}

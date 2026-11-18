@@ -1,0 +1,26 @@
+{
+  "template": "minecraft:crafting_table",
+  "state_properties": {
+    "stage": {
+      "type": "enum",
+      "values": [
+        "empty",
+        "handle",
+        "bristles",
+        "fire",
+        "ice",
+        "lightning",
+        "ender",
+        "grove",
+        "tide",
+        "magic_upgraded",
+        "fire_upgraded",
+        "ice_upgraded",
+        "lightning_upgraded",
+        "ender_upgraded",
+        "grove_upgraded",
+        "tide_upgraded"
+      ]
+    }
+  }
+}

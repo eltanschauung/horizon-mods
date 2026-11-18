@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  X",
+    " B ",
+    "Y  "
+  ],
+  "key": {
+    "Y": "minecraft:stick",
+    "X": "minecraft:blaze_powder",
+    "B": "minecraft:blaze_rod"
+  },
+  "result": {
+    "count": 1,
+    "id": "horizon_magic_brooms:broom_fire_upgraded"
+  }
+}

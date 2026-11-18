@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "N N",
+    "PPP",
+    "L L"
+  ],
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "P": "minecraft:oak_planks",
+    "L": "minecraft:oak_log"
+  },
+  "result": {
+    "count": 1,
+    "id": "horizon_magic_brooms:broom_rack"
+  }
+}

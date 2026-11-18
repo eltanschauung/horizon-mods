@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build private Horizon content from the supplied Magic Brooms 3.0.0 JAR."""
+"""Build Horizon content from the supplied Magic Brooms 3.0.0 JAR."""
 import argparse
 import hashlib
 import json
@@ -225,6 +225,9 @@ def main():
     with ZipFile(args.jar) as z:
         assemble(z, root)
     shutil.copyfile(ROOT/'horizon-mod.toml', root/'horizon-mod.toml')
+    notice = root/f'assets/{NS}/licenses/notice.txt'
+    notice.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ROOT/'NOTICE', notice)
 
 
 ORIGINAL_SHA256 = '2606a566f7d3fe77e0e280ca3b04c34145452423caed59c68ba8a8a5a656301c'
