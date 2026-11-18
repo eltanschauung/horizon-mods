@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.35.8"
+published = "2026-11-19"
+game = "26.3"
+file = "alice_dolls_native-0.35.8.hnmod"
+sha256 = "33f920c2896a8bd8e2bc6be147b01dd04297ca8f1a1e42978ddce577e9bffeb5"
+changelog = "Dolls eat rotten flesh. A Netherite Horai earns a whole love level for each giga quarry she finishes, and 10 love for each diamond she digs out of a quarry. Needs the assets 0.14.1."
+
+[[versions]]
 version = "0.35.6"
 published = "2026-11-19"
 game = "26.3"
