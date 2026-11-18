@@ -248,6 +248,36 @@
       "biome": "horizon_gensokyo_legacy:magical_forest",
       "parameters": {
         "temperature": [
+          -0.45,
+          -0.15
+        ],
+        "humidity": [
+          -0.33,
+          0.38
+        ],
+        "continentalness": [
+          -0.19,
+          1.0
+        ],
+        "erosion": [
+          -0.35,
+          0.5
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:magical_forest",
+      "parameters": {
+        "temperature": [
           -0.15,
           0.2
         ],
@@ -256,12 +286,42 @@
           0.3
         ],
         "continentalness": [
-          -0.11,
+          -0.19,
           1.0
         ],
         "erosion": [
+          -0.35,
+          0.5
+        ],
+        "depth": [
           0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
           1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:magical_forest",
+      "parameters": {
+        "temperature": [
+          0.2,
+          0.55
+        ],
+        "humidity": [
+          -0.33,
+          0.38
+        ],
+        "continentalness": [
+          -0.19,
+          1.0
+        ],
+        "erosion": [
+          -0.35,
+          0.5
         ],
         "depth": [
           0.0,
@@ -2795,36 +2855,6 @@
       }
     },
     {
-      "biome": "horizon_gensokyo_legacy:genbu_ravine",
-      "parameters": {
-        "temperature": [
-          -0.45,
-          0.55
-        ],
-        "humidity": [
-          -0.33333333333333337,
-          0.33333333333333326
-        ],
-        "continentalness": [
-          0.2,
-          1.0
-        ],
-        "erosion": [
-          -0.4,
-          0.0
-        ],
-        "depth": [
-          0.0,
-          0.0
-        ],
-        "weirdness": [
-          -1.0,
-          1.0
-        ],
-        "offset": 0.0
-      }
-    },
-    {
       "biome": "horizon_gensokyo_legacy:sanctuary",
       "parameters": {
         "temperature": [
@@ -2945,6 +2975,96 @@
       }
     },
     {
+      "biome": "horizon_gensokyo_legacy:genbu_ravine",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.25
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.15,
+          1.0
+        ],
+        "erosion": [
+          0.5,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -1.0,
+          -0.9
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:genbu_ravine",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.25
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.15,
+          1.0
+        ],
+        "erosion": [
+          0.5,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          -0.43,
+          0.43
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:genbu_ravine",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.25
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.15,
+          1.0
+        ],
+        "erosion": [
+          0.5,
+          1.0
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          0.9,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
       "biome": "horizon_gensokyo_legacy:misty_lake",
       "parameters": {
         "temperature": [
@@ -2999,6 +3119,36 @@
         ],
         "weirdness": [
           -1.0,
+          -0.05
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:misty_lake_shore",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.19,
+          0.0
+        ],
+        "erosion": [
+          -1,
+          1
+        ],
+        "depth": [
+          0.0,
+          0.0
+        ],
+        "weirdness": [
+          0.05,
           1.0
         ],
         "offset": 0.0
@@ -3248,6 +3398,36 @@
       "biome": "horizon_gensokyo_legacy:magical_forest",
       "parameters": {
         "temperature": [
+          -0.45,
+          -0.15
+        ],
+        "humidity": [
+          -0.33,
+          0.38
+        ],
+        "continentalness": [
+          -0.19,
+          1.0
+        ],
+        "erosion": [
+          -0.35,
+          0.5
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:magical_forest",
+      "parameters": {
+        "temperature": [
           -0.15,
           0.2
         ],
@@ -3256,12 +3436,42 @@
           0.3
         ],
         "continentalness": [
-          -0.11,
+          -0.19,
           1.0
         ],
         "erosion": [
-          0.0,
+          -0.35,
+          0.5
+        ],
+        "depth": [
+          1.0,
           1.0
+        ],
+        "weirdness": [
+          -1.0,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:magical_forest",
+      "parameters": {
+        "temperature": [
+          0.2,
+          0.55
+        ],
+        "humidity": [
+          -0.33,
+          0.38
+        ],
+        "continentalness": [
+          -0.19,
+          1.0
+        ],
+        "erosion": [
+          -0.35,
+          0.5
         ],
         "depth": [
           1.0,
@@ -5795,36 +6005,6 @@
       }
     },
     {
-      "biome": "horizon_gensokyo_legacy:genbu_ravine",
-      "parameters": {
-        "temperature": [
-          -0.45,
-          0.55
-        ],
-        "humidity": [
-          -0.33333333333333337,
-          0.33333333333333326
-        ],
-        "continentalness": [
-          0.2,
-          1.0
-        ],
-        "erosion": [
-          -0.4,
-          0.0
-        ],
-        "depth": [
-          1.0,
-          1.0
-        ],
-        "weirdness": [
-          -1.0,
-          1.0
-        ],
-        "offset": 0.0
-      }
-    },
-    {
       "biome": "horizon_gensokyo_legacy:sanctuary",
       "parameters": {
         "temperature": [
@@ -5945,6 +6125,96 @@
       }
     },
     {
+      "biome": "horizon_gensokyo_legacy:genbu_ravine",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.25
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.15,
+          1.0
+        ],
+        "erosion": [
+          0.5,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -1.0,
+          -0.9
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:genbu_ravine",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.25
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.15,
+          1.0
+        ],
+        "erosion": [
+          0.5,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          -0.43,
+          0.43
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:genbu_ravine",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.25
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.15,
+          1.0
+        ],
+        "erosion": [
+          0.5,
+          1.0
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          0.9,
+          1.0
+        ],
+        "offset": 0.0
+      }
+    },
+    {
       "biome": "horizon_gensokyo_legacy:misty_lake",
       "parameters": {
         "temperature": [
@@ -5999,6 +6269,36 @@
         ],
         "weirdness": [
           -1.0,
+          -0.05
+        ],
+        "offset": 0.0
+      }
+    },
+    {
+      "biome": "horizon_gensokyo_legacy:misty_lake_shore",
+      "parameters": {
+        "temperature": [
+          -0.45,
+          0.55
+        ],
+        "humidity": [
+          -1,
+          1
+        ],
+        "continentalness": [
+          -0.19,
+          0.0
+        ],
+        "erosion": [
+          -1,
+          1
+        ],
+        "depth": [
+          1.0,
+          1.0
+        ],
+        "weirdness": [
+          0.05,
           1.0
         ],
         "offset": 0.0
