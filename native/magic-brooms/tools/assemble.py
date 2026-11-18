@@ -129,7 +129,7 @@ def assemble(source, root):
             texture(f'item/{name}.png')
             texture(f'entity/{name}.png')
             write(root, f'{assets}/models/item/{name}_mount.json', {
-                'loader': 'neoforge:obj', 'model': f'{NS}:models/{geo_name}.obj',
+                'loader': 'neoforge:obj', 'flip_v': True, 'model': f'{NS}:models/{geo_name}.obj',
                 'textures': {'surface': f'{NS}:entity/{name}', 'particle': f'{NS}:entity/{name}'},
             })
             write(root, f'{data}/horizon/entity_type/{name}.json', {
@@ -160,7 +160,7 @@ def assemble(source, root):
                 geo = json.loads(source.read(f'assets/brooms/geo/{geometry}.geo.json'))['minecraft:geometry'][0]
                 mesh.write_text(entity_model(geo, mounted=False))
             write(root, f'{assets}/models/block/{path}.json', {
-                'loader': 'neoforge:obj', 'model': f'{NS}:models/{geometry}.obj',
+                'loader': 'neoforge:obj', 'flip_v': True, 'model': f'{NS}:models/{geometry}.obj',
                 'textures': {'surface': f'{NS}:{sprite}', 'particle': f'{NS}:{sprite}'},
                 'display': {'gui': {'rotation': [30, 225, 0], 'scale': [0.65] * 3}},
             })
