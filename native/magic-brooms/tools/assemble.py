@@ -43,7 +43,12 @@ def entity_model(geometry, mounted=True):
             w, h, d = cube['size']
             box_uv = cube['uv']
             u, v = box_uv if isinstance(box_uv, list) else (0, 0)
-            corners = [(x + a*w, y + b*h, z + c*d)
+            # The bristle layers have different negative inflation values so
+            # their top and bottom faces never occupy the same depth.
+            inflate = cube.get('inflate', bone.get('inflate', 0))
+            corners = [(x - inflate + a*(w + 2*inflate),
+                        y - inflate + b*(h + 2*inflate),
+                        z - inflate + c*(d + 2*inflate))
                        for c in range(2) for b in range(2) for a in range(2)]
             for point in corners:
                 posed = rotate(point, cube.get('pivot', [0, 0, 0]), cube.get('rotation', [0, 0, 0]))
