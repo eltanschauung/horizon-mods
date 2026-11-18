@@ -124,7 +124,7 @@ def main():
             decl['properties']['random_ticks'] = True
         write(OUT/f'data/{NS}/horizon/block/{b}.json',decl)
     write(OUT/f'data/{NS}/horizon/block/miasma_air.json', {
-        'template': 'minecraft:air',
+        'template': 'minecraft:air', 'item': False,
         'properties': {'random_ticks': True},
         'state_properties': {'intensity': {'type': 'enum', 'values': [str(i) for i in range(1, 9)]}},
         'default_state': {'intensity': '8'},

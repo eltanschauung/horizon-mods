@@ -1,5 +1,6 @@
 {
   "template": "minecraft:air",
+  "item": false,
   "properties": {
     "random_ticks": true
   },
