@@ -1029,5 +1029,10 @@
   "region_zooms": 3,
   "vanilla_weight": 10,
   "region_min_quarts": 192,
-  "climate_guard": true
+  "climate_guard": true,
+  "configuration": {
+    "file": "gensokyolegacy/generation.toml",
+    "key": "overworld.region_weight",
+    "scale_key": "overworld.biome_scale"
+  }
 }
