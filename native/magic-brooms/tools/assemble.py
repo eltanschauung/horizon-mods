@@ -49,7 +49,13 @@ def write(root, path, value):
     file.write_text(json.dumps(value, indent=2) + '\n')
 
 
-def rotate(point, pivot, angles):
+def rotate(point, transform):
+    # GeckoLib bakes in a reflected X coordinate system and applies the
+    # authored rotations as Rz * Ry * Rx around the reflected pivot.
+    x, y, z = transform.get('pivot', (0, 0, 0))
+    pivot = (-x, y, z)
+    x, y, z = transform.get('rotation', (0, 0, 0))
+    angles = (-x, -y, z)
     p = [v - o for v, o in zip(point, pivot)]
     for axis, degrees in enumerate(angles):
         a, b = (axis + 1) % 3, (axis + 2) % 3
@@ -69,6 +75,7 @@ def entity_model(geometry, mounted=True):
         for cube in bone.get('cubes', []):
             x, y, z = cube['origin']
             w, h, d = cube['size']
+            x = -x - w
             box_uv = cube['uv']
             u, v = box_uv if isinstance(box_uv, list) else (0, 0)
             # The bristle layers have different negative inflation values so
@@ -79,27 +86,26 @@ def entity_model(geometry, mounted=True):
                         z - inflate + c*(d + 2*inflate))
                        for c in range(2) for b in range(2) for a in range(2)]
             for point in corners:
-                posed = rotate(point, cube.get('pivot', [0, 0, 0]), cube.get('rotation', [0, 0, 0]))
+                posed = rotate(point, cube)
                 transform = bone
                 while transform:
-                    posed = rotate(posed, transform.get('pivot', [0, 0, 0]),
-                                   transform.get('rotation', [0, 0, 0]))
+                    posed = rotate(posed, transform)
                     transform = bones.get(transform.get('parent'))
                 a, b, c = posed
                 center = 0.5 if mounted else 0.0
                 lines.append(f'v {a/16+0.5:.6f} {b/16+center:.6f} {c/16+0.5:.6f}')
-            faces = [
-                ((1, 0, 2, 3), u+d, v+d, w, h),
-                ((4, 5, 7, 6), u+2*d+w, v+d, w, h),
-                ((0, 4, 6, 2), u, v+d, d, h),
-                ((5, 1, 3, 7), u+d+w, v+d, d, h),
-                ((2, 6, 7, 3), u+d, v, w, d),
-                ((0, 1, 5, 4), u+d+w, v, w, d),
-            ]
+            w, h, d = map(math.floor, (w, h, d))
+            faces = {
+                'north': ((2, 3, 1, 0), u+d, v+d, w, h),
+                'south': ((7, 6, 4, 5), u+2*d+w, v+d, w, h),
+                'west': ((6, 2, 0, 4), u+d+w, v+d, d, h),
+                'east': ((3, 7, 5, 1), u, v+d, d, h),
+                'up': ((6, 7, 3, 2), u+d, v, w, d),
+                'down': ((0, 1, 5, 4), u+d+w, v+d, w, -d),
+            }
             width = geometry['description']['texture_width']
             height = geometry['description']['texture_height']
-            for direction, (indices, sx, sy, sw, sh) in zip(
-                    ('north', 'south', 'west', 'east', 'up', 'down'), faces):
+            for direction, (indices, sx, sy, sw, sh) in faces.items():
                 if isinstance(box_uv, dict):
                     if direction not in box_uv:
                         continue
@@ -108,7 +114,7 @@ def entity_model(geometry, mounted=True):
                     sw, sh = face_uv.get('uv_size', (sw, sh))
                 if sw == 0 or sh == 0:
                     continue
-                uv = [(sx, sy+sh), (sx+sw, sy+sh), (sx+sw, sy), (sx, sy)]
+                uv = [(sx+sw, sy), (sx, sy), (sx, sy+sh), (sx+sw, sy+sh)]
                 for a, b in uv:
                     lines.append(f'vt {a/width:.7f} {1-b/height:.7f}')
                 # OBJ vertex and UV indices have independent counters.
@@ -153,17 +159,22 @@ def assemble(source, root):
     original_lang = json.loads(source.read('assets/brooms/lang/en_us.json'))
     for upgraded in (False, True):
         geo_name = 'broom_upgraded' if upgraded else 'broom'
-        geometry = json.loads(source.read(f'assets/brooms/geo/{geo_name}.geo.json'))['minecraft:geometry'][0]
-        (models/f'{geo_name}.obj').write_text(entity_model(geometry))
+        for name in (geo_name, f'rack_{geo_name}'):
+            geometry = json.loads(source.read(f'assets/brooms/geo/{name}.geo.json'))['minecraft:geometry'][0]
+            (models/f'{name}.obj').write_text(entity_model(geometry))
         for family in FAMILIES:
             name = f'broom_{family}' + ('_upgraded' if upgraded else '')
             item(name, original_lang[f'item.brooms.{name}'], 1)
             lang[f'entity.{NS}.{name}'] = original_lang[f'item.brooms.{name}']
             texture(f'item/{name}.png')
             texture(f'entity/{name}.png', f'item/{name}_mount.png')
-            write(root, f'{assets}/models/item/{name}_mount.json', {
-                'loader': 'neoforge:obj', 'flip_v': True, 'model': f'{NS}:models/{geo_name}.obj',
-                'textures': {'surface': f'{NS}:item/{name}_mount', 'particle': f'{NS}:item/{name}_mount'},
+            for display, mesh in (('mount', geo_name), ('rack', f'rack_{geo_name}')):
+                write(root, f'{assets}/models/item/{name}_{display}.json', {
+                    'loader': 'neoforge:obj', 'flip_v': True, 'model': f'{NS}:models/{mesh}.obj',
+                    'textures': {'surface': f'{NS}:item/{name}_mount', 'particle': f'{NS}:item/{name}_mount'},
+                })
+            write(root, f'{assets}/items/{name}_rack.json', {
+                'model': {'type': 'minecraft:model', 'model': f'{NS}:item/{name}_rack'},
             })
             write(root, f'{data}/horizon/entity_type/{name}.json', {
                 'template': 'minecraft:wandering_trader',

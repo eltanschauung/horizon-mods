@@ -1,0 +1,9 @@
+{
+  "loader": "neoforge:obj",
+  "flip_v": true,
+  "model": "horizon_magic_brooms:models/rack_broom_upgraded.obj",
+  "textures": {
+    "surface": "horizon_magic_brooms:item/broom_ice_upgraded_mount",
+    "particle": "horizon_magic_brooms:item/broom_ice_upgraded_mount"
+  }
+}
