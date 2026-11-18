@@ -7,7 +7,7 @@ description = """
 
 A port of Alice's Dolls (1.7.10-kog3, by iwa_yukinoshita), used with permission, restrung for Horizon:
 
-- **Dolls with jobs:** Shanghai and Goliath fight, Horai mines to ore, Ooedo explodes, Germany fells trees, London finds spawners, Russia and Moscow gather, Marisa and Reimu shoot homing danmaku, Patchouli snipes from far off, Yukari follows you and fights, Yuuka farms, Wakasagi fishes (with the rod you give her), and Aya takes real photos from her own eyes.
+- **Dolls with jobs:** Shanghai and Goliath fight, Horai mines to ore, Ooedo explodes, Germany fells trees, London finds spawners, Russia and Moscow gather, Marisa and Reimu shoot homing danmaku, Patchouli snipes from far off, Yukari follows you as your portable gap (with Yukari Gaps), Yuuka farms, Wakasagi fishes (with the rod you give her), and Aya takes real photos from her own eyes.
 - **Love:** feed them, and give them point and power items from [Touhou Items](https://playhorizon.dev/mods/thkaguyamod_native), and they level up, stronger and faster at their work each level. Their name tag shows their level and how far to the next.
 - **Evolutions** every three levels: Shanghai to Goliath to Netherite Goliath, Horai to Diamond and Netherite Horai, Russia to Moscow.
 - They eat food to heal, store experience for you to bottle, take the heads of the mobs they kill, and stand up for each other.
@@ -23,6 +23,14 @@ source = "https://github.com/mxpbxb/alice-dolls-restringed"
 icon = "icons/alice_dolls_native.png"
 categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
+
+[[versions]]
+version = "0.35.6"
+published = "2026-11-19"
+game = "26.3"
+file = "alice_dolls_native-0.35.6.hnmod"
+sha256 = "ad4f19533adf63b299c632fc2234710179e43773e65f63eeef08b267d6342b47"
+changelog = "Yukari is a quarter taller, and leaves mobs and dropped items alone. Patchouli walks slower and, riding on your head, slows you; her side hair turns with her head. Each Aya riding you adds two levels of Speed: two Ayas, Speed IV. Needs the assets 0.14.1."
 
 [[versions]]
 version = "0.35.2"
