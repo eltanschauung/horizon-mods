@@ -8,9 +8,11 @@ description = """
 - **Craft** a Yukari Gap from four amethyst shards, four ender pearls and a gold ingot.
 - **Place** it where there are two free blocks and name it. A name another gap has gets a number: Home (2), Home (3).
 - **Mine** it with anything, a pickaxe, another tool or your hand, and it drops as its item.
-- **Lock** it in the same window and only you can use it or break it. Unlocked, every player can.
+- **Lock** it in the same window and only you can use it or break it. While locked, share it with chosen players.
+- **Find** a gap (right-click it once) before you can travel to it, unless its owner made it **global** with a **Yukari Umbrella**, which Yukari (Touhou Mobs) drops 70 times in 100 and each use takes.
 - **Right-click** any gap for a big screen of every gap you may use, in rows with a scroll bar. Click one to go.
 - **Travel is free**, however far, and to any dimension.
+- **A Yukari Doll** ([Alice Dolls Restringed](https://playhorizon.dev/mods/alice_dolls_native)) is her owner's portable gap: right-click her with an empty hand for the same screen, and she follows you through. It only goes one way.
 - **Sneak and right-click** your own gap to rename it or change its lock.
 
 In the world a gap is an eye-gap picture that leans and always turns to face you.
@@ -18,7 +20,7 @@ In the world a gap is an eye-gap picture that leans and always turns to face you
 Beta: new, and still being tried. Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision.
 
 Inspired by Waystones by BlayTheNinth; no code or assets of it are included. Yukari Yakumo is from the Touhou Project by ZUN: a non-commercial fan work. No Minecraft code or assets are included. MIT licensed."""
-authors = ["mxpbxb"]
+authors = ["mxpbxb", "pipef0x"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
 license = "MIT"
@@ -26,6 +28,62 @@ source = "https://github.com/mxpbxb/yukari-gaps"
 icon = "icons/yukari_gap_native.png"
 categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
+
+[[versions]]
+version = "0.8.1"
+published = "2026-11-19"
+game = "26.3"
+file = "yukari_gap_native-0.8.1.hnmod"
+sha256 = "bd97e6c28eb515023b477990ab30e504cdc098c289dae635af52acfe1ec8356c"
+changelog = "The gap shader (Yukari Gap Demo, in WGSL) is embedded in the native source as a const string. Nothing changes in play. Needs the assets 0.7.0."
+
+[[versions]]
+version = "0.8.0"
+published = "2026-11-18"
+game = "26.3"
+file = "yukari_gap_native-0.8.0.hnmod"
+sha256 = "37f2c0afe1e18bce4f20550af738ca4aa41e1fa7748562b622eb2497fa05b7b5"
+changelog = "A Yukari Doll from Alice Dolls Restringed (0.35.2 or later) is her owner's portable, one-way gap: right-click her with an empty hand for the travel screen, and she follows you through. She is never on the list. Needs the assets mod 0.7.0."
+
+[[versions]]
+version = "0.7.0"
+published = "2026-11-18"
+game = "26.3"
+file = "yukari_gap_native-0.7.0.hnmod"
+sha256 = "a49d12c571fdf1c830286ca786668bf74a2ba671195fecd5f2c88f5311f6c2fc"
+changelog = "Giga Gaps: right-click your own gap with a Yukari Umbrella to make it global, and it becomes a Giga Gap, drawn a quarter bigger with its own look; it drops a Yukari Gap when mined. Another umbrella turns it back, and gaps made global before become Giga Gaps when next right-clicked. Needs the assets mod 0.7.0."
+
+[[versions]]
+version = "0.6.6"
+published = "2026-11-18"
+game = "26.3"
+file = "yukari_gap_native-0.6.6.hnmod"
+sha256 = "095e604bde2687e4d4842e01b91c707a0574cca3ff1a8084f3eec5580d0e4966"
+changelog = "Draws pipef0x's Yukari Gap Demo look: the gap upright and facing you, its lower tip on the block, full bright, with a bow swinging at each tip. Needs the assets mod 0.6.7."
+
+[[versions]]
+version = "0.6.4"
+published = "2026-11-17"
+game = "26.3"
+file = "yukari_gap_native-0.6.4.hnmod"
+sha256 = "3db38e81b10d458bb9c3c0c3ac8f97b21f755c53f7aeb25736f06094c4c8596d"
+changelog = "Each Yukari Umbrella is good for one use, in Creative too. The umbrella now drops from Touhou Mobs 0.9.0 (Yukari 70 times in 100, Yukari Great Doll always), which sees each boss's last death; this mod no longer drops it. Assets unchanged (0.6.3)."
+
+[[versions]]
+version = "0.6.3"
+published = "2026-11-17"
+game = "26.3"
+file = "yukari_gap_native-0.6.3.hnmod"
+sha256 = "1ad829564dab48e6919c41f1ca195a9009e37f0dc819d71b1c56410ab47910f9"
+changelog = "A gap must be found (right-click it once) before others travel to it; a locked gap can be shared with chosen players; a Yukari Umbrella, dropped by Yukari (Touhou Mobs), makes your gap global, and each use takes the umbrella. A creative tab. Needs the assets mod 0.6.3."
+
+[[versions]]
+version = "0.5.2"
+published = "2026-11-15"
+game = "26.3"
+file = "yukari_gap_native-0.5.2.hnmod"
+sha256 = "0aa908733e8a638796d4fcc7881b5c422714a9480e3fd318151d9e842f7ef2bb"
+changelog = "A mined gap always drops itself, whatever it was mined with: the mod makes the item instead of relying on the block's loot, which is only rolled for a pickaxe. In creative nothing drops. The assets mod is unchanged."
 
 [[versions]]
 version = "0.5.1"
