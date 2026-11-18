@@ -1,7 +1,7 @@
 {
   "type": "horizon_gensokyo_legacy:template",
   "footprint_radius": 0,
-  "ground": "#minecraft:dirt",
+  "ground": "#horizon_gensokyo_legacy:mushroom_template_ground",
   "max_slope": 0,
   "root_depth": 2,
   "templates": [

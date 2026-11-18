@@ -2,7 +2,7 @@
 """Assemble the dependency-checked Horizon biome content. Native features retain their IDs."""
 import json, shutil
 from pathlib import Path
-from import_jar import ROOT, NS, BIOMES
+from import_jar import ROOT, NS, BIOMES, MUSHROOM_GROWTH
 OUT=ROOT/'content'
 def write(p,v):
     p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(v,indent=2)+'\n')
@@ -133,6 +133,18 @@ def main():
     write(OUT/f'data/{NS}/horizon/creative_tab/nature.json',{'title':'Gensokyo Legacy','icon':NS+':star_flower','items':[NS+':'+b for b in inv['blocks']]})
     from overworld import add
     add(OUT,write)
+    # The 1.20.1 dirt tag included grass, podzol, mycelium, moss and mud.
+    mushroom_ground = f'{NS}:mushroom_template_ground'
+    write(OUT/f'data/{NS}/tags/block/mushroom_template_ground.json', {
+        'values': ['#minecraft:dirt', 'minecraft:grass_block', 'minecraft:podzol',
+                   'minecraft:mycelium', 'minecraft:moss_block', 'minecraft:mud',
+                   'minecraft:muddy_mangrove_roots'],
+    })
+    for name in MUSHROOM_GROWTH:
+        path = OUT/f'data/{NS}/worldgen/configured_feature/{name}.json'
+        feature = json.loads(path.read_text())
+        feature['config']['ground'] = '#'+mushroom_ground
+        write(path, feature)
     from normalize import apply
     apply(OUT,write)
     from namespace import rebase
