@@ -12,6 +12,7 @@ description = """
 - **Find** a gap (right-click it once) before you can travel to it, unless its owner made it **global** with a **Yukari Umbrella**, which Yukari (Touhou Mobs) drops 70 times in 100 and each use takes.
 - **Right-click** any gap for a big screen of every gap you may use, in rows with a scroll bar. Click one to go.
 - **Travel is free**, however far, and to any dimension.
+- **A Yukari Doll** ([Alice Dolls Restringed](https://playhorizon.dev/mods/alice_dolls_native)) is her owner's portable gap: right-click her with an empty hand for the same screen, and she follows you through. It only goes one way.
 - **Sneak and right-click** your own gap to rename it or change its lock.
 
 In the world a gap is an eye-gap picture that leans and always turns to face you.
@@ -27,6 +28,14 @@ source = "https://github.com/mxpbxb/yukari-gaps"
 icon = "icons/yukari_gap_native.png"
 categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
+
+[[versions]]
+version = "0.8.0"
+published = "2026-11-18"
+game = "26.3"
+file = "yukari_gap_native-0.8.0.hnmod"
+sha256 = "37f2c0afe1e18bce4f20550af738ca4aa41e1fa7748562b622eb2497fa05b7b5"
+changelog = "A Yukari Doll from Alice Dolls Restringed (0.35.2 or later) is her owner's portable, one-way gap: right-click her with an empty hand for the travel screen, and she follows you through. She is never on the list. Needs the assets mod 0.7.0."
 
 [[versions]]
 version = "0.7.0"
