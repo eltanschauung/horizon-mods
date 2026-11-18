@@ -29,6 +29,14 @@ categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
 
 [[versions]]
+version = "0.7.0"
+published = "2026-11-18"
+game = "26.3"
+file = "yukari_gap_native-0.7.0.hnmod"
+sha256 = "a49d12c571fdf1c830286ca786668bf74a2ba671195fecd5f2c88f5311f6c2fc"
+changelog = "Giga Gaps: right-click your own gap with a Yukari Umbrella to make it global, and it becomes a Giga Gap, drawn a quarter bigger with its own look; it drops a Yukari Gap when mined. Another umbrella turns it back, and gaps made global before become Giga Gaps when next right-clicked. Needs the assets mod 0.7.0."
+
+[[versions]]
 version = "0.6.6"
 published = "2026-11-18"
 game = "26.3"

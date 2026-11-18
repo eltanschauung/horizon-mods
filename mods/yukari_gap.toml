@@ -18,6 +18,14 @@ categories = ["transportation", "library"]
 tags = ["teleport", "waypoints", "touhou", "assets"]
 
 [[versions]]
+version = "0.7.0"
+published = "2026-11-18"
+game = "26.3"
+file = "yukari_gap-0.7.0.hmod"
+sha256 = "9f255397987318c963312f1b01be30f60353d2a4bf76f4bfe112745627b26a0e"
+changelog = "Giga Gaps: a gap its owner makes global with a Yukari Umbrella becomes a Giga Gap, open to everyone, drawn a quarter bigger over a dark back wall with new eyes. Another umbrella turns it back. Needs the native mod 0.7.0."
+
+[[versions]]
 version = "0.6.7"
 published = "2026-11-18"
 game = "26.3"
