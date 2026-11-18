@@ -15,6 +15,8 @@ if os.environ.get('GENSOKYO_PREPARE_ONLY'):biomes=biomes[:1]
 expected={}
 for p in (ROOT/'upstream/data/gensokyolegacy/worldgen/biome').glob('*.json'):
  expected['horizon_gensokyo_legacy:'+p.stem]={k:v for k,v in json.loads(p.read_text())['effects'].items() if k.endswith('_color')}
+# The forest now intentionally uses the current vanilla jungle's colormap.
+expected.pop('horizon_gensokyo_legacy:bamboo_forest_of_the_lost')
 os.environ['GENSOKYO_EXPECT_TINTS']=json.dumps(expected)
 for biome in biomes:
  print('CHECK',biome,flush=True)

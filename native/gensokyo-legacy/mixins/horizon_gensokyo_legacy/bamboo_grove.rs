@@ -66,7 +66,7 @@ impl Grove {
         );
         let soil = bindings
             .tags
-            .get("minecraft:dirt")
+            .get("minecraft:substrate_overworld")
             .cloned()
             .ok_or(DecodeError::Field("bamboo grove soil"))?;
         Ok(Self {

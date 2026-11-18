@@ -97,7 +97,11 @@ fn check(a: &[String]) -> horizon_client::Result<()> {
                 assert_eq!(actual,value,"{id} {key}");
             }
         }
-        println!("PASS original biome colors");
+        let find_biome = |id| biomes.list.iter().find(|b| b.name == id).expect("test biome registered");
+        let bamboo = find_biome("horizon_gensokyo_legacy:bamboo_forest_of_the_lost");
+        let jungle = find_biome("minecraft:jungle");
+        assert_eq!((bamboo.foliage, bamboo.water), (jungle.foliage, jungle.water));
+        println!("PASS biome colors");
     }
     let mut ov = WorldgenOverrides::default();
     ov.set_config_root(
