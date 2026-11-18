@@ -1031,7 +1031,7 @@
   "region_min_quarts": 192,
   "climate_guard": true,
   "configuration": {
-    "file": "gensokyolegacy/generation.toml",
+    "file": "horizon_gensokyo_legacy/generation.toml",
     "key": "overworld.region_weight",
     "scale_key": "overworld.biome_scale"
   }

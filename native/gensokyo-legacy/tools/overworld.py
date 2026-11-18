@@ -16,7 +16,7 @@ def add(out,write):
     assert {e['biome'].split(':')[1] for e in entries}==set(BIOMES)
     # Surface and underground surface samples share the climate candidate.
     entries += [dict(e,parameters=dict(e['parameters'],depth=[1.,1.])) for e in entries[:]]
-    write(out/f'data/{NS}/worldgen/biome_placement/overworld.json',{'preset':'minecraft:overworld','group':NS+':overworld','weight':4,'selector':'weirdness','biomes':entries,'region_order':5,'region_zooms':3,'vanilla_weight':10,'region_min_quarts':192,'climate_guard':True,'configuration':{'file':NS+'/generation.toml','key':'overworld.region_weight','scale_key':'overworld.biome_scale'}})
+    write(out/f'data/{NS}/worldgen/biome_placement/overworld.json',{'preset':'minecraft:overworld','group':NS+':overworld','weight':4,'selector':'weirdness','biomes':entries,'region_order':5,'region_zooms':3,'vanilla_weight':10,'region_min_quarts':192,'climate_guard':True,'configuration':{'file':'horizon_gensokyo_legacy/generation.toml','key':'overworld.region_weight','scale_key':'overworld.biome_scale'}})
     # Reuse the source's biome-specific rules, retaining their enclosing floor/water guards.
     source=json.loads((out.parent/'source_surface.json').read_text())
     write(out/f'data/{NS}/worldgen/material_rule/overworld.json',source)
