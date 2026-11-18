@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:cherry_wall_sign",
+  "properties": {
+    "hardness": 1.0,
+    "explosion_resistance": 1.0,
+    "light": 0,
+    "requires_tool": false,
+    "friction": 0.6,
+    "map_color": 10
+  },
+  "default_state": {
+    "facing": "north",
+    "waterlogged": "false"
+  },
+  "item": false,
+  "wood_type": "biomesoplenty:maple"
+}

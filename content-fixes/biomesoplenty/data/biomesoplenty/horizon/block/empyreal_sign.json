@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:crimson_sign",
+  "properties": {
+    "hardness": 1.0,
+    "explosion_resistance": 1.0,
+    "light": 0,
+    "requires_tool": false,
+    "friction": 0.6,
+    "map_color": 24
+  },
+  "default_state": {
+    "rotation": "8",
+    "waterlogged": "false"
+  },
+  "wood_type": "biomesoplenty:empyreal",
+  "wall_block": "biomesoplenty:empyreal_wall_sign"
+}

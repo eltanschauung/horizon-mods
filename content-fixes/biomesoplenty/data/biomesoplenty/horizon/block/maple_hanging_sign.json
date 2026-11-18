@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:cherry_hanging_sign",
+  "properties": {
+    "hardness": 1.0,
+    "explosion_resistance": 1.0,
+    "light": 0,
+    "requires_tool": false,
+    "friction": 0.6,
+    "map_color": 10
+  },
+  "default_state": {
+    "attached": "false",
+    "rotation": "8",
+    "waterlogged": "false"
+  },
+  "wood_type": "biomesoplenty:maple",
+  "wall_block": "biomesoplenty:maple_wall_hanging_sign"
+}
