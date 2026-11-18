@@ -8,7 +8,7 @@ description = """
 All 30 mobs of three 1.7.10 Touhou mods in one, ported with their creators' permission:
 
 - **Fairies and small youkai:** fairies, sunflower fairies with their familiars, phantoms, the Hanabeeper, ice, Nether and moon fairies, crow tengu and hell ravens.
-- **Bosses** that come back in their next phase when their health runs out: Cirno, Rumia, Soga no Tojiko, Wriggle, Reimu, Wakasagihime, Hina, Marisa and Yukari.
+- **Bosses**, with one life each: Cirno, Rumia, Soga no Tojiko, Wriggle, Reimu, Wakasagihime, Hina, Marisa and Yukari.
 - **People:** Sakuya, Sanae and Rinnosuke wander about; right-click Miko to set the danmaku level.
 - **Summons:** the Cursed Decoy Doll and Yukari's yin-yang orb.
 - **Classic bosses:** Reimu, Marisa, Yukari, Cirno, Rumia, Tojiko, Wriggle, Sakuya, Sanae and Miko as the original mods had them, with every spell card they declared, lasers included, all their stages in one Wither-style health bar. Rare: once in 20,000 one comes in place of its counterpart.
@@ -26,6 +26,14 @@ source = "https://github.com/mxpbxb/touhou-mobs"
 icon = "icons/thmobs_native.png"
 categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
+
+[[versions]]
+version = "0.9.4"
+published = "2026-11-18"
+game = "26.3"
+file = "thmobs_native-0.9.4.hnmod"
+sha256 = "b6666102a6fc85e45cb7f96e06768368e438ff8fc0ea018d9f5ba51941474519"
+changelog = "The basic bosses have one life: only the classic ones come back after a death. They spawn with the health of their strongest phase (Yukari 300). /kill kills a boss at last: Horizon gives no kill blow, so the mod took each /kill for a phase ended and the boss came back unhurtable. No mob is left unhurtable by a boss that had its id before. Assets unchanged (0.9.0)."
 
 [[versions]]
 version = "0.9.2"
