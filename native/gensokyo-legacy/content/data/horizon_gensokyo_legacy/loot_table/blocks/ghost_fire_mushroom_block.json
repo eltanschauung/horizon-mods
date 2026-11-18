@@ -1,0 +1,48 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "condition": [
+                "minecraft:tool/can_silk_touch"
+              ],
+              "name": "horizon_gensokyo_legacy:ghost_fire_mushroom_block"
+            },
+            {
+              "type": "minecraft:item",
+              "modifier": [
+                {
+                  "add": false,
+                  "count": {
+                    "type": "minecraft:uniform",
+                    "max": 2.0,
+                    "min": -6.0
+                  },
+                  "type": "minecraft:set_count"
+                },
+                {
+                  "type": "minecraft:limit_count",
+                  "limit": {
+                    "min": 0.0
+                  }
+                },
+                {
+                  "type": "minecraft:explosion_decay"
+                }
+              ],
+              "name": "horizon_gensokyo_legacy:ghost_fire_mushroom"
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "horizon_gensokyo_legacy:blocks/ghost_fire_mushroom_block"
+}

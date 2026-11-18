@@ -301,5 +301,6 @@
   "block.horizon_gensokyo_legacy.yellow_tiles_slab": "q\u0250\u05dfS s\u01dd\u05df\u0131\u27d8 \u028do\u05df\u05df\u01dd\u028e",
   "block.horizon_gensokyo_legacy.yellow_tiles_stairs": "s\u0279\u0131\u0250\u0287S s\u01dd\u05df\u0131\u27d8 \u028do\u05df\u05df\u01dd\u028e",
   "block.horizon_gensokyo_legacy.yellow_tiles_vertical_slab": "q\u0250\u05dfS \u05df\u0250\u0254\u0131\u0287\u0279\u01dd\u039b s\u01dd\u05df\u0131\u27d8 \u028do\u05df\u05df\u01dd\u028e",
-  "block.horizon_gensokyo_legacy.yellow_wavy_noren": "u\u01dd\u0279oN \u028e\u028c\u0250M \u028do\u05df\u05df\u01dd\u028e"
+  "block.horizon_gensokyo_legacy.yellow_wavy_noren": "u\u01dd\u0279oN \u028e\u028c\u0250M \u028do\u05df\u05df\u01dd\u028e",
+  "effect.horizon_gensokyo_legacy.miasma": "\u0250\u026fs\u0250\u0131W"
 }

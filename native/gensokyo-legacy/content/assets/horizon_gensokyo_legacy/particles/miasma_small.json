@@ -1,0 +1,10 @@
+{
+  "textures": [
+    "horizon_gensokyo_legacy:miasma_small_0",
+    "horizon_gensokyo_legacy:miasma_small_1",
+    "horizon_gensokyo_legacy:miasma_small_2"
+  ],
+  "horizon:behaviour": {
+    "rising_spore": 0.12
+  }
+}

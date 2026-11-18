@@ -1,0 +1,13 @@
+{
+  "type": "horizon_gensokyo_legacy:template",
+  "footprint_radius": 2,
+  "ground": "#minecraft:dirt",
+  "max_slope": 3,
+  "root_depth": 4,
+  "templates": [
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/mushroom/dream_large_1",
+      "weight": 1
+    }
+  ]
+}

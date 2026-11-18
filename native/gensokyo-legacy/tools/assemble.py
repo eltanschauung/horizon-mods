@@ -6,13 +6,35 @@ from import_jar import ROOT, NS, BIOMES
 OUT=ROOT/'content'
 def write(p,v):
     p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(v,indent=2)+'\n')
+def convert_mushroom_loot(value):
+    """Convert the JAR's 1.20 loot conditions and modifiers to Horizon's game version."""
+    if isinstance(value, list):
+        return [convert_mushroom_loot(entry) for entry in value]
+    if not isinstance(value, dict):
+        return value
+    result = {}
+    for key, entry in value.items():
+        if key == 'condition':
+            if entry == 'minecraft:match_tool' and 'enchantments' in value['predicate']:
+                return 'minecraft:tool/can_silk_touch'
+            result['type'] = entry
+        elif key == 'function':
+            result['type'] = entry
+        elif key in ('conditions', 'functions'):
+            result['condition' if key == 'conditions' else 'modifier'] = convert_mushroom_loot(entry)
+        else:
+            result[key] = convert_mushroom_loot(entry)
+    return result
+
 def main():
     inv=json.loads((ROOT/'inventory.json').read_text())
     if OUT.exists():shutil.rmtree(OUT)
     OUT.mkdir();shutil.copy2(ROOT/'horizon-mod.toml',OUT/'horizon-mod.toml')
     # Only files in the selected dependency closure; no stale reference extraction.
     for n in inv['hashes']:
-        if n.startswith('data/'):
+        if '/loot_tables/' in n:
+            write(OUT/n.replace('/loot_tables/', '/loot_table/'), convert_mushroom_loot(json.loads((ROOT/'upstream'/n).read_text())))
+        elif n.startswith('data/'):
             p=OUT/n;p.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/'upstream'/n,p)
     # Resource models recursively retain their original parents and texture references.
     todo=[f'assets/{NS}/blockstates/{b}.json' for b in inv['blocks']]
@@ -24,6 +46,14 @@ def main():
         write(OUT/particle, definition)
         for sprite in definition['textures']:
             todo.append(f"assets/{NS}/textures/particle/{sprite.split(':', 1)[1]}.png")
+    for particle, size in [('miasma', 0.20), ('miasma_small', 0.12)]:
+        path = f'assets/{NS}/particles/{particle}.json'
+        definition = json.loads((ROOT/'upstream'/path).read_text())
+        definition['horizon:behaviour'] = {'rising_spore': size}
+        write(OUT/path, definition)
+        for sprite in definition['textures']:
+            todo.append(f"assets/{NS}/textures/particle/{sprite.split(':', 1)[1]}.png")
+    todo.extend([f'assets/{NS}/blockstates/miasma_air.json', f'assets/{NS}/textures/mob_effect/miasma.png'])
     done=set()
     def refs(v):
         if isinstance(v,str) and v.startswith(NS+':'):yield v.split(':',1)[1]
@@ -45,7 +75,7 @@ def main():
         elif n.endswith('.png') and src.with_suffix('.png.mcmeta').exists():shutil.copy2(src.with_suffix('.png.mcmeta'),p.with_suffix('.png.mcmeta'))
     langs=ROOT/f'upstream/assets/{NS}/lang'
     for p in langs.glob('*.json'):
-        v=json.loads(p.read_text());v={k:x for k,x in v.items() if k.startswith(('block.','biome.'))}
+        v=json.loads(p.read_text());v={k:x for k,x in v.items() if k.startswith(('block.','biome.')) or k == f'effect.{NS}.miasma'}
         write(OUT/f'assets/{NS}/lang/{p.name}',v)
     for b in inv['blocks']:
         if b.endswith('_cherry_fallen_leaves'):template='moss_carpet'
@@ -90,7 +120,16 @@ def main():
         if b=='large_water_lily':decl['shapes']={'default':[[1/16,9/16,1/16,15/16,10.5/16,15/16]]}
         if b in ('ghost_fire_mushroom','ghost_fire_mushroom_block','eugune_ghost_fire'):decl['properties']['light']=8
         if b=='golden_lotus':decl['default_state']={'part':'single','size':'0'}
+        if b == 'demonic_miasma_mushroom_block':
+            decl['properties']['random_ticks'] = True
         write(OUT/f'data/{NS}/horizon/block/{b}.json',decl)
+    write(OUT/f'data/{NS}/horizon/block/miasma_air.json', {
+        'template': 'minecraft:air',
+        'properties': {'random_ticks': True},
+        'state_properties': {'intensity': {'type': 'enum', 'values': [str(i) for i in range(1, 9)]}},
+        'default_state': {'intensity': '8'},
+    })
+    write(OUT/f'data/{NS}/horizon/mob_effect/miasma.json', {'category': 'harmful', 'color': 0x7a4ba1})
     write(OUT/f'data/{NS}/horizon/creative_tab/nature.json',{'title':'Gensokyo Legacy','icon':NS+':star_flower','items':[NS+':'+b for b in inv['blocks']]})
     from overworld import add
     add(OUT,write)

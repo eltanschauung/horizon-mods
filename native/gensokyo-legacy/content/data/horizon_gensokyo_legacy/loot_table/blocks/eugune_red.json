@@ -1,0 +1,61 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "condition": [
+        {
+          "type": "minecraft:any_of",
+          "terms": [
+            {
+              "type": "minecraft:match_tool",
+              "predicate": {
+                "items": [
+                  "minecraft:shears"
+                ]
+              }
+            },
+            "minecraft:tool/can_silk_touch"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "horizon_gensokyo_legacy:eugune_red"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "condition": [
+        {
+          "type": "minecraft:inverted",
+          "term": {
+            "type": "minecraft:any_of",
+            "terms": [
+              {
+                "type": "minecraft:match_tool",
+                "predicate": {
+                  "items": [
+                    "minecraft:shears"
+                  ]
+                }
+              },
+              "minecraft:tool/can_silk_touch"
+            ]
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:red_mushroom"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "horizon_gensokyo_legacy:blocks/eugune_red"
+}

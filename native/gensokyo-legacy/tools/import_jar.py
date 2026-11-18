@@ -11,6 +11,11 @@ plain_of_the_past myouren_temple_barrens hill_of_the_nameless sunflower_plains
 misty_lake misty_lake_shore untrodden_valley genbu_ravine youkai_mountain_foothills
 sanctuary tengu_settlement secret_heaven_cliff youkai_mountain_summit'''.split()
 NS = 'gensokyolegacy'
+MUSHROOM_GROWTH = [
+    f'magical_forest/{kind}_{size}'
+    for kind in ('ghost_fire', 'dream', 'demonic_miasma')
+    for size in ('small', 'medium', 'large')
+]
 def strings(v):
     if isinstance(v, str): yield v
     elif isinstance(v, list):
@@ -38,6 +43,7 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('jar',type=Path);a=p.parse_args()
     with ZipFile(a.jar) as z:
         available=set(z.namelist());seen={};templates={};blocks=set();todo=[f'data/{NS}/worldgen/biome/{n}.json' for n in BIOMES]
+        todo.extend(f'data/{NS}/worldgen/configured_feature/{name}.json' for name in MUSHROOM_GROWTH)
         def add_refs(v):
             for s in strings(v):
                 if not s.startswith(NS+':'):continue
@@ -88,6 +94,10 @@ def main():
                     else:continue
                     values.append(entry)
                 if values:files[n]=(json.dumps(dict(tag,values=values),indent=2)+'\n').encode()
+        for block in sorted(blocks):
+            if 'mushroom' in block or block.startswith('eugune_'):
+                name = f'data/{NS}/loot_tables/blocks/{block}.json'
+                files[name] = z.read(name)
         files.update({n:(json.dumps(v,indent=2)+'\n').encode() for n,v in seen.items()});files.update(templates)
         files['META-INF/mods.toml']=z.read('META-INF/mods.toml')
         out=ROOT/'upstream'

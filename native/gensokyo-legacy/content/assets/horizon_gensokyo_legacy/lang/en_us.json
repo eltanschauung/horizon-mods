@@ -301,5 +301,6 @@
   "block.horizon_gensokyo_legacy.yellow_tiles_slab": "Yellow Tiles Slab",
   "block.horizon_gensokyo_legacy.yellow_tiles_stairs": "Yellow Tiles Stairs",
   "block.horizon_gensokyo_legacy.yellow_tiles_vertical_slab": "Yellow Tiles Vertical Slab",
-  "block.horizon_gensokyo_legacy.yellow_wavy_noren": "Yellow Wavy Noren"
+  "block.horizon_gensokyo_legacy.yellow_wavy_noren": "Yellow Wavy Noren",
+  "effect.horizon_gensokyo_legacy.miasma": "Miasma"
 }

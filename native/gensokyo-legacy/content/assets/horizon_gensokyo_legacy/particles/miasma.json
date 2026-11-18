@@ -1,0 +1,13 @@
+{
+  "textures": [
+    "horizon_gensokyo_legacy:miasma_0",
+    "horizon_gensokyo_legacy:miasma_1",
+    "horizon_gensokyo_legacy:miasma_2",
+    "horizon_gensokyo_legacy:miasma_3",
+    "horizon_gensokyo_legacy:miasma_4",
+    "horizon_gensokyo_legacy:miasma_5"
+  ],
+  "horizon:behaviour": {
+    "rising_spore": 0.2
+  }
+}

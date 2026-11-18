@@ -1,0 +1,21 @@
+{
+  "type": "horizon_gensokyo_legacy:template",
+  "footprint_radius": 2,
+  "ground": "#minecraft:dirt",
+  "max_slope": 3,
+  "root_depth": 4,
+  "templates": [
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/mushroom/ghost_fire_large_1",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/mushroom/ghost_fire_large_2",
+      "weight": 1
+    },
+    {
+      "data": "horizon_gensokyo_legacy:magical_forest/mushroom/ghost_fire_large_3",
+      "weight": 1
+    }
+  ]
+}
