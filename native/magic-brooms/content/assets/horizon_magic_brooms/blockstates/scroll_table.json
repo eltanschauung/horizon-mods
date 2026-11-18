@@ -1,7 +1,65 @@
 {
-  "variants": {
-    "": {
-      "model": "horizon_magic_brooms:block/scroll_table"
+  "multipart": [
+    {
+      "apply": {
+        "model": "horizon_magic_brooms:block/scroll_table"
+      }
+    },
+    {
+      "when": {
+        "stage": "paper"
+      },
+      "apply": {
+        "model": "horizon_magic_brooms:block/scroll_table_preview_paper"
+      }
+    },
+    {
+      "when": {
+        "stage": "fire"
+      },
+      "apply": {
+        "model": "horizon_magic_brooms:block/scroll_table_preview_fire"
+      }
+    },
+    {
+      "when": {
+        "stage": "ice"
+      },
+      "apply": {
+        "model": "horizon_magic_brooms:block/scroll_table_preview_ice"
+      }
+    },
+    {
+      "when": {
+        "stage": "lightning"
+      },
+      "apply": {
+        "model": "horizon_magic_brooms:block/scroll_table_preview_lightning"
+      }
+    },
+    {
+      "when": {
+        "stage": "ender"
+      },
+      "apply": {
+        "model": "horizon_magic_brooms:block/scroll_table_preview_ender"
+      }
+    },
+    {
+      "when": {
+        "stage": "grove"
+      },
+      "apply": {
+        "model": "horizon_magic_brooms:block/scroll_table_preview_grove"
+      }
+    },
+    {
+      "when": {
+        "stage": "tide"
+      },
+      "apply": {
+        "model": "horizon_magic_brooms:block/scroll_table_preview_tide"
+      }
     }
-  }
+  ]
 }

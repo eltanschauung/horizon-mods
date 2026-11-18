@@ -1,0 +1,31 @@
+{
+  "textures": {
+    "page": "minecraft:item/paper",
+    "particle": "horizon_magic_brooms:block/scroll_table/base"
+  },
+  "elements": [
+    {
+      "from": [
+        4.32,
+        8.24,
+        4.32
+      ],
+      "to": [
+        11.68,
+        8.24,
+        11.68
+      ],
+      "faces": {
+        "up": {
+          "texture": "#page",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

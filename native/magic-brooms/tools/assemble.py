@@ -15,6 +15,33 @@ CATALYSTS = ('blaze_powder', 'packed_ice', 'redstone', 'chorus_fruit', 'vine', '
 WORKSTATIONS = ('broom_workbench', 'scroll_table', 'broom_rack')
 FACING_ROTATIONS = {'north': 0, 'east': 90, 'south': 180, 'west': 270}
 
+WORKBENCH_BOXES = [
+    (0, 0, 0, 16, 3, 16), (0, 11, 0, 16, 13, 16),
+    *((x, 3, z, x+3, 13, z+3) for x in (1, 12) for z in (1, 12)),
+]
+SCROLL_TABLE_BOXES = [
+    (2, 6, 3, 14, 8, 13),
+    *((x, 0, z, x+2, 6, z+2) for x in (3, 11) for z in (4, 10)),
+    *((4, 3, z, 12, 4, z+2) for z in (4, 10)),
+]
+RACK_BOXES = [
+    (-6, 0, 4, 22, 2, 12), (-5, 2, 10, -3, 24, 12), (19, 2, 10, 21, 24, 12),
+    (-5, 13, 10, 21, 15, 12), (-5, 24, 10, 21, 26, 12),
+    *((x, 12, 5, x+4, 14, 10) for x in (-4, 6, 16)),
+]
+
+
+def block_boxes(boxes):
+    return [[coordinate / 16 for coordinate in box] for box in boxes]
+
+
+def rack_boxes(boxes):
+    turned = [(16-z1, y0, x0, 16-z0, y1, x1) for x0, y0, z0, x1, y1, z1 in boxes]
+    return {'property': 'facing', 'values': {
+        facing: block_boxes(turned if facing in ('east', 'west') else boxes)
+        for facing in FACING_ROTATIONS
+    }}
+
 
 def write(root, path, value):
     file = root / path
@@ -159,10 +186,17 @@ def assemble(source, root):
                  if block == 'scroll_table' else {})
         block_decl = {
             'template': 'minecraft:crafting_table', 'state_properties': state,
+            'properties': {'occludes': False},
         }
         if block == 'broom_rack':
             # Loom's horizontal placement faces the block toward its placer.
             block_decl.update(template='minecraft:loom', default_state={'facing': 'north'})
+            block_decl['shapes'] = rack_boxes([(-6, 0, 3, 22, 26, 13)])
+            block_decl['collision_shapes'] = rack_boxes(RACK_BOXES)
+        else:
+            block_decl['shapes'] = {'default': block_boxes(
+                WORKBENCH_BOXES if block == 'broom_workbench' else SCROLL_TABLE_BOXES)}
+            block_decl['collision_shapes'] = block_decl['shapes']
         write(root, f'{data}/horizon/block/{block}.json', block_decl)
         def station_model(path, geometry, sprite):
             mesh = models/f'{geometry}.obj'
@@ -197,7 +231,25 @@ def assemble(source, root):
             variants = ({f'facing={facing}': dict(model, y=degrees)
                          for facing, degrees in FACING_ROTATIONS.items()}
                         if block == 'broom_rack' else {'': model})
-        write(root, f'{assets}/blockstates/{block}.json', {'variants': variants})
+        blockstates = {'variants': variants}
+        if block == 'scroll_table':
+            blockstates = {'multipart': [{'apply': model}]}
+            for stage in ('paper', *FAMILIES[1:]):
+                material = 'minecraft:item/paper' if stage == 'paper' else f'{NS}:item/{stage}_scroll'
+                half_width = 3.68 if stage == 'paper' else 4.16
+                path = f'scroll_table_preview_{stage}'
+                write(root, f'{assets}/models/block/{path}.json', {
+                    'textures': {'page': material, 'particle': f'{NS}:block/scroll_table/base'},
+                    'elements': [{
+                        'from': [8-half_width, 8.24, 8-half_width],
+                        'to': [8+half_width, 8.24, 8+half_width],
+                        'faces': {'up': {'texture': '#page', 'uv': [0, 0, 16, 16]}},
+                    }],
+                })
+                blockstates['multipart'].append({
+                    'when': {'stage': stage}, 'apply': {'model': f'{NS}:block/{path}'},
+                })
+        write(root, f'{assets}/blockstates/{block}.json', blockstates)
         write(root, f'{assets}/items/{block}.json', {
             'model': {'type': 'minecraft:model', 'model': f'{NS}:block/{block}'},
         })

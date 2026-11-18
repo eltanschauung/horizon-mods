@@ -1,0 +1,31 @@
+{
+  "textures": {
+    "page": "horizon_magic_brooms:item/tide_scroll",
+    "particle": "horizon_magic_brooms:block/scroll_table/base"
+  },
+  "elements": [
+    {
+      "from": [
+        3.84,
+        8.24,
+        3.84
+      ],
+      "to": [
+        12.16,
+        8.24,
+        12.16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#page",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}
