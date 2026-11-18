@@ -8,7 +8,12 @@ description = """
 - **Mobs taken out:** dolphins, foxes, sniffers, copper golems, allays, turtles, bees, parrots, husks, strays, polar bears, pandas, camels, llamas, phantoms, frogs, glow squids, striders, camel husks, armadillos, axolotls, happy ghasts, sulfur cubes, nautiluses, trader llamas, zombie nautiluses, bogged, parched, breezes, creakings, tadpoles and goats. Each can be kept again in `removed_mobs.cfg`; nothing else can be removed.
 - **No new looks for old mobs:** cows, pigs and chickens only in their original look, wolves only as the original wolf, and every baby the redesign changed (villagers, zombies, piglins, farm animals, wolves, cats, horses and more) drawn the old way.
 - **No sculk in new terrain:** sculk patches and loose sculk veins no longer generate; sculk is crafted from dirt and a bottle o' enchanting, with recipes for sculk veins, sensors, catalysts and shriekers, and a bottle o' enchanting from any mob head.
-- **No leaf litter, wildflowers or pink petals on the ground:** none generate, those already there disappear as chunks load, and they are smelted instead (leaves, a flower, a pink tulip).
+- **No leaf litter, wildflowers or pink petals generate** in new terrain (those already in a world stay); they are crafted instead (leaves; a dandelion and an oxeye daisy; a pink tulip and cherry leaves) or smelted. **Kelp** only in warm, lukewarm and frozen oceans, and crafted from seagrass and bone meal.
+- **Powder snow holds you up, slows you, and freezes you after 15 seconds.**
+- **Kelp only in warm, lukewarm and frozen oceans** (new terrain).
+- **Old animal sounds and plain wolves:** classic sounds only, every wolf the original colour.
+- **Enchanting costs half the level asked:** a level 30 enchantment takes 15 levels.
+- **Netherite in an anvil:** a diamond item and a netherite ingot, no smithing template.
 - **Deepslate digs faster:** only 15% slower than stone, not twice as slow (its ores and cobbled and polished kinds alike).
 - **Walk on powder snow** as if you wore leather boots, and **right-click a grown crop** to harvest and replant it.
 - **Key Binds search by key:** the Key Binds search finds a binding by the key it is on.
@@ -24,6 +29,70 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.15.0"
+published = "2026-11-17"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.15.0.hnmod"
+sha256 = "2e3c053f92da21d63cc56df5b6276ffced6d4648957eccb9127f8d1dbe3f69f6"
+changelog = "Piercing and Multishot can be on one crossbow together, from the enchanting table, an anvil or /enchant."
+
+[[versions]]
+version = "0.14.0"
+published = "2026-11-17"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.14.0.hnmod"
+sha256 = "68eb61e0fa917e733ffbf63ea9173b2fbdadd801dc910feff8d80c274b35c5cd"
+changelog = "Crossbow firework rockets never hurt the player who shot them (they still hurt everyone else in the blast) and load from anywhere in the inventory, as arrows do, so a crossbow in the off hand needs no rocket in the main hand. Enchanting costs the full level it asks for: a level 30 enchantment takes 30 levels. Shields block 50% of a hit's damage. The content mod is unchanged."
+
+[[versions]]
+version = "0.13.0"
+published = "2026-11-17"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.13.0.hnmod"
+sha256 = "160611c722d97d5d4ce7331a601156d6b3ffbbd163bbb119b3b7db8571616e9a"
+changelog = "Leaf litter, wildflowers and pink petals already in a world stay (they only stop generating). Crafting recipes: four leaf litter from any leaves, four wildflowers from a dandelion and an oxeye daisy, four pink petals from a pink tulip and cherry leaves, two kelp from seagrass and bone meal. The content mod is unchanged."
+
+[[versions]]
+version = "0.12.1"
+published = "2026-11-17"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.12.1.hnmod"
+sha256 = "b647722045b996ab1ada733e7a6c59566bd4d9b30ae83cece55c82eb08c31888"
+changelog = "Fixes worlds crashing when made or opened (\"feature order cycle found\") alongside mods that add ocean features, such as Wild Caves: kelp in warm and frozen oceans now goes just after the seagrass, not at the end. The content mod is unchanged."
+
+[[versions]]
+version = "0.12.0"
+published = "2026-11-16"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.12.0.hnmod"
+sha256 = "9fa2f5f4b09587599dce8c82b247f2988bd1fbe1f6c56edff5885c7c45560fd8"
+changelog = "Powder snow never sinks you (even landing from high up), slows you as soul sand does, and after 15 seconds standing on it freezes you and deals its damage. The content mod is unchanged."
+
+[[versions]]
+version = "0.11.0"
+published = "2026-11-15"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.11.0.hnmod"
+sha256 = "24e9741cbcb7554b79ee82150c23238dc9c22c5872ffeb9075d4321004e11c17"
+changelog = "Kelp only in warm, lukewarm and frozen oceans (deep ones too): none in ordinary or cold oceans. Only newly generated ocean changes. The content mod is unchanged."
+
+[[versions]]
+version = "0.10.0"
+published = "2026-11-15"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.10.0.hnmod"
+sha256 = "fa352599381b17cc1fc5a0056262f24015935fa5ce8fb470849afc8a99960b74"
+changelog = "Animals make their classic sounds (no sound variants; babies sound as they used to). Every wolf is the original pale one, drawn so even on a server without the mod. Enchanting costs half the level it asks for: a level 30 enchantment takes 15 levels (never less than vanilla's 1 to 3). The content mod is unchanged."
+
+[[versions]]
+version = "0.9.0"
+published = "2026-11-15"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.9.0.hnmod"
+sha256 = "bd1285e356385c451c30ea5689ce391715e783aa679ec16f78f01abe2dcee192"
+changelog = "Netherite in an anvil: a diamond tool, weapon or armour piece and a netherite ingot make its netherite kind (enchantments kept, 1 level), no smithing template. On a server, babies now show their real variant looks for every player, sent from the server (the server needs this version too). The content mod is unchanged."
 
 [[versions]]
 version = "0.8.0"
