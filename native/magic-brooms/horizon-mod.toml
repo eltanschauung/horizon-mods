@@ -1,0 +1,8 @@
+id = "horizon_magic_brooms"
+name = "Magic Brooms"
+version = "0.1.0"
+description = "Rideable magic brooms with elemental variants."
+authors = ["Iced Fox Studios (original)", "eltanschauung (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
