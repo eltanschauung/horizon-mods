@@ -19,6 +19,13 @@ file = "crates/horizon-world/src/worldgen/placement.rs"
 name = "gensokyo"
 source = "placements.rs"
 
+[[module]]
+id = "bamboo-grove"
+file = "crates/horizon-world/src/worldgen/feature_graph.rs"
+name = "bamboo_grove"
+visibility = "pub"
+source = "bamboo_grove.rs"
+
 [[injection]]
 id = "feature-decode"
 kind = "HEAD"

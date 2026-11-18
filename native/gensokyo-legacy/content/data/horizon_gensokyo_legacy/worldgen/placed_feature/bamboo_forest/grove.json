@@ -1,0 +1,59 @@
+{
+  "feature": {
+    "type": "horizon_gensokyo_legacy:bamboo_grove",
+    "templates": [
+      {
+        "id": "horizon_gensokyo_legacy:bamboo_forest/prototype_1",
+        "weight": 4
+      },
+      {
+        "id": "horizon_gensokyo_legacy:bamboo_forest/short",
+        "weight": 3
+      },
+      {
+        "id": "horizon_gensokyo_legacy:bamboo_forest/wide",
+        "weight": 1
+      },
+      {
+        "id": "horizon_gensokyo_legacy:bamboo_forest/tall",
+        "weight": 3
+      },
+      {
+        "id": "horizon_gensokyo_legacy:bamboo_forest/swept",
+        "weight": 2
+      },
+      {
+        "id": "horizon_gensokyo_legacy:bamboo_forest/twin_crown",
+        "weight": 3
+      }
+    ]
+  },
+  "placement": [
+    {
+      "type": "horizon_gensokyo_legacy:jittered_grid",
+      "value": {
+        "cell": 11,
+        "margin": 4,
+        "salt": 41321,
+        "chance": 1
+      }
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "OCEAN_FLOOR_WG"
+    },
+    {
+      "type": "minecraft:surface_water_depth_filter",
+      "max_water_depth": 0
+    },
+    {
+      "type": "minecraft:biome"
+    },
+    {
+      "type": "horizon_gensokyo_legacy:biome_density",
+      "edge": 0.2,
+      "interior": 1,
+      "salt": 4991
+    }
+  ]
+}

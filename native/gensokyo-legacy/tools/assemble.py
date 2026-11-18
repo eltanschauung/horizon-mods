@@ -147,6 +147,8 @@ def main():
         write(path, feature)
     from normalize import apply
     apply(OUT,write)
+    from bamboo_forest import add as add_bamboo_forest
+    add_bamboo_forest(OUT, write)
     from namespace import rebase
     rebase(OUT)
     licenses=OUT/'assets/horizon_gensokyo_legacy/licenses';licenses.mkdir(parents=True,exist_ok=True)

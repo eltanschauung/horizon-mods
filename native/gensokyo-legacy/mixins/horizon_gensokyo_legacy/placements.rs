@@ -9,6 +9,14 @@ pub struct Modifier(Value);
 impl Modifier {
     pub fn decode(v: Value) -> Result<Self, DecodeError> {
         match v["type"].as_str().unwrap_or("") {
+            "horizon_gensokyo_legacy:biome_density"
+                if ["edge", "interior"]
+                    .iter()
+                    .all(|key| v[key].as_f64().is_some_and(|n| (0.0..=1.0).contains(&n)))
+                    && v["salt"].as_i64().is_some() =>
+            {
+                Ok(Self(v))
+            }
             "horizon_gensokyo_legacy:jittered_grid"
             | "horizon_gensokyo_legacy:grid_exclusion"
             | "horizon_gensokyo_legacy:noise_band"
@@ -32,6 +40,37 @@ impl Modifier {
                 let top = c.height(HeightmapType::WorldSurface, p[0], p[2])?;
                 let floor = c.height(HeightmapType::MotionBlockingNoLeaves, p[0], p[2])?;
                 (top - floor >= int(v, "min_gap")) == v["under"].as_bool().unwrap()
+            }
+            "horizon_gensokyo_legacy:biome_density" => {
+                // Measure distance to the nearest biome edge in rings, without querying
+                // beyond the FEATURES stage's 3×3 terrain window.
+                let [x, y, z] = p;
+                let y = y + 4;
+                let biome = c.biome_identity([x, y, z])?;
+                let mut interior = 1.0;
+                'rings: for radius in [4, 9, 14] {
+                    let diagonal = radius * 7 / 10;
+                    for (dx, dz) in [
+                        (radius, 0),
+                        (-radius, 0),
+                        (0, radius),
+                        (0, -radius),
+                        (diagonal, diagonal),
+                        (diagonal, -diagonal),
+                        (-diagonal, diagonal),
+                        (-diagonal, -diagonal),
+                    ] {
+                        if c.biome_identity([x.wrapping_add(dx), y, z.wrapping_add(dz)])? != biome {
+                            interior = f64::from(radius - 4) / 15.0;
+                            break 'rings;
+                        }
+                    }
+                }
+                let edge = v["edge"].as_f64().unwrap();
+                let chance = edge + interior * (v["interior"].as_f64().unwrap() - edge);
+                let seed = c.world_seed()? as u64 ^ v["salt"].as_i64().unwrap() as u64;
+                let at = ((x as u32 as u64) << 32) | (z as u32 as u64);
+                ((mix(seed ^ mix(at)) >> 11) as f64) < chance * (1u64 << 53) as f64
             }
             "horizon_gensokyo_legacy:jittered_grid" => {
                 let layer = &v["value"];

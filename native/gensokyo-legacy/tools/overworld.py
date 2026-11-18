@@ -5,7 +5,7 @@ from import_jar import NS,BIOMES
 def add(out,write):
     entries=[]
     # Inland lowlands: three climate columns and three vegetation bands.
-    rows=[['myouren_temple_barrens','plain_of_the_past','sunflower_plains'],[None,'sakura_forest','hill_of_the_nameless'],[None,'bamboo_forest_of_the_lost','youkai_mountain_foothills']]
+    rows=[['myouren_temple_barrens','plain_of_the_past','sunflower_plains'],[None,'sakura_forest','hill_of_the_nameless'],[None,None,'youkai_mountain_foothills']]
     for row,names in enumerate(rows):
         for col,name in enumerate(names):
             if name is None:
@@ -26,6 +26,8 @@ def add(out,write):
     ]
     for temperature, humidity in forest_bands:
         entries.append(entry('magical_forest',temperature,humidity,[-.19,1.0],[-.35,.5]))
+    # Compete across the jungle bands, including their cooler, drier and warmer margins.
+    entries.append(entry('bamboo_forest_of_the_lost',[.13,.68],[.06,1.0],[-.15,1.0],[-.65,.65]))
     # Use the BOP Spider Lily Field's surface climate, including its terrain bands.
     # The local snapshot keeps Gensokyo independently buildable and installable.
     spider_lily = json.loads((out.parent/'spider_lily_climate.json').read_text())
@@ -48,7 +50,7 @@ def add(out,write):
     source=json.loads((out.parent/'source_surface.json').read_text())
     write(out/f'data/{NS}/worldgen/material_rule/overworld.json',source)
     write(out/f'data/{NS}/worldgen/generation_extension/overworld.json',{'settings':'minecraft:overworld','surface_rule':NS+':overworld'})
-    tags={'is_forest':['magical_forest','sakura_forest','bamboo_forest_of_the_lost','muenzuka','youkai_mountain_foothills','sanctuary','tengu_settlement'],'is_plains':['plain_of_the_past','myouren_temple_barrens','hill_of_the_nameless','sunflower_plains'],'is_mountain':['untrodden_valley','youkai_mountain_foothills','sanctuary','tengu_settlement','secret_heaven_cliff','youkai_mountain_summit'],'is_beach':['misty_lake_shore'],'is_ocean':['misty_lake']}
+    tags={'is_jungle':['bamboo_forest_of_the_lost'],'is_forest':['magical_forest','sakura_forest','bamboo_forest_of_the_lost','muenzuka','youkai_mountain_foothills','sanctuary','tengu_settlement'],'is_plains':['plain_of_the_past','myouren_temple_barrens','hill_of_the_nameless','sunflower_plains'],'is_mountain':['untrodden_valley','youkai_mountain_foothills','sanctuary','tengu_settlement','secret_heaven_cliff','youkai_mountain_summit'],'is_beach':['misty_lake_shore'],'is_ocean':['misty_lake']}
     for tag,names in tags.items():write(out/f'data/minecraft/tags/worldgen/biome/{tag}.json',{'replace':False,'values':[NS+':'+n for n in names]})
 def entry(name,t,h,c,e,weirdness=(-1.,1.)):
     return {'biome':NS+':'+name,'parameters':{'temperature':t,'humidity':h,'continentalness':c,'erosion':e,'depth':[0.,0.],'weirdness':weirdness,'offset':0.}}

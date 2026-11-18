@@ -6,6 +6,15 @@ fn feature_decode(
     if !kind.starts_with("horizon_gensokyo_legacy:") {
         return core::ops::ControlFlow::Continue(());
     }
+    if kind == "horizon_gensokyo_legacy:bamboo_grove" {
+        let result = serde_json::from_str(json)
+            .map_err(DecodeError::from)
+            .and_then(|value| {
+                crate::worldgen::feature_graph::bamboo_grove::Grove::decode(value, bindings)
+            })
+            .map(|grove| NativeFeature(std::sync::Arc::new(grove)));
+        return core::ops::ControlFlow::Break(Some(result));
+    }
     let result = serde_json::from_str(json)
         .map_err(DecodeError::from)
         .and_then(|v| {

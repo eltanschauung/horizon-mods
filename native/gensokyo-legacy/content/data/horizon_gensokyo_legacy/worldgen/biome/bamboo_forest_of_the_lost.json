@@ -5,21 +5,20 @@
   ],
   "downfall": 0.9,
   "effects": {
-    "foliage_color": 6258506,
-    "grass_color": 7311186,
+    "water_color": "#3f76e4",
     "mood_sound": {
       "block_search_extent": 8,
       "offset": 2.0,
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000
-    },
-    "water_color": 4157290
+    }
   },
   "features": [
     [],
     [
       "minecraft:lake_lava_underground",
-      "minecraft:lake_lava_surface"
+      "minecraft:lake_lava_surface",
+      "horizon_gensokyo_legacy:bamboo_forest/pond"
     ],
     [],
     [],
@@ -63,28 +62,25 @@
     ],
     [
       "minecraft:glow_lichen",
-      "minecraft:patch_large_fern",
-      "minecraft:trees_taiga",
-      "minecraft:flower_default",
-      "minecraft:patch_grass_taiga_2",
-      "minecraft:brown_mushroom_taiga",
-      "minecraft:red_mushroom_taiga",
+      "horizon_gensokyo_legacy:bamboo_forest/grove",
+      "horizon_gensokyo_legacy:bamboo_forest/jungle_trees",
+      "horizon_gensokyo_legacy:bamboo_forest/edge_oaks",
+      "horizon_gensokyo_legacy:bamboo_forest/bushes",
+      "minecraft:bamboo",
+      "minecraft:patch_grass_jungle",
       "minecraft:patch_sugar_cane",
-      "minecraft:patch_pumpkin",
-      "minecraft:patch_berry_rare",
-      "horizon_gensokyo_legacy:gensokyo_biome/bamboo_dense",
-      "horizon_gensokyo_legacy:gensokyo_biome/bamboo_sparse"
+      "minecraft:patch_firefly_bush_swamp",
+      "minecraft:patch_firefly_bush_near_water_swamp"
     ],
     [
       "minecraft:freeze_top_layer"
     ]
   ],
   "has_precipitation": true,
-  "temperature": 0.3,
+  "temperature": 0.95,
   "attributes": {
     "minecraft:visual/sky_color": 8168447,
     "minecraft:visual/fog_color": 8230048,
-    "minecraft:visual/water_fog_color": 329011,
     "minecraft:gameplay/natural_mob_spawns": {
       "spawns_by_category": {
         "ambient": [],
