@@ -32,8 +32,8 @@
     {
       "type": "horizon_gensokyo_legacy:jittered_grid",
       "value": {
-        "cell": 11,
-        "margin": 4,
+        "cell": 7,
+        "margin": 2,
         "salt": 41321,
         "chance": 1
       }

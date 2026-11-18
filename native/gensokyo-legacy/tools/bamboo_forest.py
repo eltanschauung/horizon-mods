@@ -118,7 +118,7 @@ def add(out, write):
     grove = placed('grove', modifier(NS + ':bamboo_grove', templates=[
         {'id': f'{NS}:bamboo_forest/{name}', 'weight': weight} for name, weight in weights.items()
     ]), [
-        modifier(NS + ':jittered_grid', value={'cell': 11, 'margin': 4, 'salt': 41321, 'chance': 1}),
+        modifier(NS + ':jittered_grid', value={'cell': 7, 'margin': 2, 'salt': 41321, 'chance': 1}),
         surface, dry, biome, gradient(.20, 1, 4991),
     ])
     jungle = placed('jungle_trees', 'minecraft:jungle_tree', [

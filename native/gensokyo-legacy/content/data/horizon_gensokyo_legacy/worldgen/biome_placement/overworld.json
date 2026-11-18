@@ -308,11 +308,11 @@
       "biome": "horizon_gensokyo_legacy:bamboo_forest_of_the_lost",
       "parameters": {
         "temperature": [
-          0.13,
-          0.68
+          0.16,
+          0.63
         ],
         "humidity": [
-          0.06,
+          0.12,
           1.0
         ],
         "continentalness": [
@@ -338,11 +338,11 @@
       "biome": "horizon_gensokyo_legacy:bamboo_forest_of_the_lost",
       "parameters": {
         "temperature": [
-          -0.15,
-          0.13
+          -0.1,
+          0.16
         ],
         "humidity": [
-          0.33,
+          0.42,
           1.0
         ],
         "continentalness": [
@@ -3488,11 +3488,11 @@
       "biome": "horizon_gensokyo_legacy:bamboo_forest_of_the_lost",
       "parameters": {
         "temperature": [
-          0.13,
-          0.68
+          0.16,
+          0.63
         ],
         "humidity": [
-          0.06,
+          0.12,
           1.0
         ],
         "continentalness": [
@@ -3518,11 +3518,11 @@
       "biome": "horizon_gensokyo_legacy:bamboo_forest_of_the_lost",
       "parameters": {
         "temperature": [
-          -0.15,
-          0.13
+          -0.1,
+          0.16
         ],
         "humidity": [
-          0.33,
+          0.42,
           1.0
         ],
         "continentalness": [
