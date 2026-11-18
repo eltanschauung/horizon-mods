@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.36.0"
+published = "2026-11-19"
+game = "26.3"
+file = "alice_dolls_native-0.36.0.hnmod"
+sha256 = "114003e0280dba95644d92d34c8f7a2ed02a664ef9d6647091e952ae4ca8d39e"
+changelog = "Alice's panel: right-click your Alice empty-handed to see all your other dolls, wherever they are (what each is doing, its love level, how far off), and set them to Standby, Patrol, Follow or Rideon, turn their work AI on or off, ring them back, open one's inventory from afar, or send their items to another doll. Needs the assets 0.14.1."
+
+[[versions]]
 version = "0.35.8"
 published = "2026-11-19"
 game = "26.3"
