@@ -8,13 +8,14 @@ description = """
 All 30 mobs of three 1.7.10 Touhou mods in one, ported with their creators' permission:
 
 - **Fairies and small youkai:** fairies, sunflower fairies with their familiars, phantoms, the Hanabeeper, ice, Nether and moon fairies, crow tengu and hell ravens.
-- **Bosses** that come back in their next phase when their health runs out: Cirno, Rumia, Soga no Tojiko, Wriggle, Reimu, Wakasagihime, Hina, Marisa and Yukari.
+- **Bosses**, with one life each: Cirno, Rumia, Soga no Tojiko, Wriggle, Reimu, Wakasagihime, Hina, Marisa and Yukari.
 - **People:** Sakuya, Sanae and Rinnosuke wander about; right-click Miko to set the danmaku level.
 - **Summons:** the Cursed Decoy Doll and Yukari's yin-yang orb.
+- **Classic bosses:** Reimu, Marisa, Yukari, Cirno, Rumia, Tojiko, Wriggle, Sakuya, Sanae and Miko as the original mods had them, with every spell card they declared, lasers included, all their stages in one Wither-style health bar. Rare: once in 20,000 one comes in place of its counterpart.
 
-Each mob fires its original danmaku patterns, ported line for line, and is drawn with its original model. They spawn in their original biomes, Biomes O' Plenty's too; every mob's spawning is set in `spawns.cfg` in the mod's config folder. Hostile mobs, but not creepers, go for the Touhou mobs that are attacking, and a Touhou mob a vanilla mob hurts fights it back. The bosses and people are rare: about once or twice a night, alone. Coming through a [Yukari gap](https://playhorizon.dev/mods/yukari_gap_native) brings Yukari after you once in 2,000.
+Each mob fires its original danmaku patterns, ported line for line, and is drawn with its original model. They spawn in their original biomes, Biomes O' Plenty's too; every mob's spawning is set in `spawns.cfg` in the mod's config folder. Hostile mobs, but not creepers, go for the Touhou mobs that are attacking, and a Touhou mob a vanilla mob hurts fights it back. The bosses and people are rare: about once or twice a night, alone. Coming through a [Yukari gap](https://playhorizon.dev/mods/yukari_gap_native) brings Yukari after you once in 2,000. Through a gap made global with a Yukari umbrella she comes as Yukari Great Doll. Yukari drops the umbrella 70 times in 100, the Great Doll always.
 
-Not yet: most bosses' spell cards, lasers, and the people's trades.
+Not yet: the other bosses' spell cards (the classic bosses have theirs), and the people's trades.
 
 Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. Touhou Project by ZUN: a non-commercial fan work. The original mods' art and designs are their creators'. No Minecraft code or assets are included."""
 authors = ["kuro-anco, Katrix and the SPELLCARD PLUS author (originals)", "mxpbxb (Horizon port)"]
@@ -25,6 +26,46 @@ source = "https://github.com/mxpbxb/touhou-mobs"
 icon = "icons/thmobs_native.png"
 categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
+
+[[versions]]
+version = "0.9.6"
+published = "2026-11-18"
+game = "26.3"
+file = "thmobs_native-0.9.6.hnmod"
+sha256 = "9ffb62b84bf6304ec0ab5ab9aeac031c71fcd15ce29253e5d06c5f06e9281333"
+changelog = "Doll Points (Touhou Items' point item) drop one time in 25 when a mob dies for good, not every time."
+
+[[versions]]
+version = "0.9.4"
+published = "2026-11-18"
+game = "26.3"
+file = "thmobs_native-0.9.4.hnmod"
+sha256 = "b6666102a6fc85e45cb7f96e06768368e438ff8fc0ea018d9f5ba51941474519"
+changelog = "The basic bosses have one life: only the classic ones come back after a death. They spawn with the health of their strongest phase (Yukari 300). /kill kills a boss at last: Horizon gives no kill blow, so the mod took each /kill for a phase ended and the boss came back unhurtable. No mob is left unhurtable by a boss that had its id before. Assets unchanged (0.9.0)."
+
+[[versions]]
+version = "0.9.2"
+published = "2026-11-18"
+game = "26.3"
+file = "thmobs_native-0.9.2.hnmod"
+sha256 = "8743340f2d2f5e0d95d02f5fe56429f03a2bc80ac9e67ea55ec4519663bb57c0"
+changelog = "The mobs drop their loot at last: fairies and crows their Arcadian Dream items, the others Touhou Items' Point and Power items, Yukari her umbrella. Bosses go through their phases and are untouchable at the start of each, and Rinnosuke and Miko answer a right click. The game names modded mobs minecraft:thmobs:..., which the mod didn't recognise. Assets unchanged (0.9.0)."
+
+[[versions]]
+version = "0.9.1"
+published = "2026-11-17"
+game = "26.3"
+file = "thmobs_native-0.9.1.hnmod"
+sha256 = "8c78c834f6b96fcac498f5395a85015d7e227fc993755407586fb496d7d53996"
+changelog = "The fairies and crow tengu drop what Arcadian Dream's fairies drop (its power and point items, sometimes a bomb, extend, star or the Fairy Playground disc) and sound like its fairies (a bat's voice). Yukari Great Doll is half her size and her danmaku flies at half speed. A boss killed with /kill now dies for good and drops its loot, umbrellas included. Assets unchanged (0.9.0)."
+
+[[versions]]
+version = "0.9.0"
+published = "2026-11-17"
+game = "26.3"
+file = "thmobs_native-0.9.0.hnmod"
+sha256 = "c3590b411478315689880c316390d1cec92507881ab3ad76307a7237c5c367be"
+changelog = "Classic bosses: eleven named characters also come as a Classic version that fights as the original mods had it, at full rate of fire, through every stage and with every spell card they declared, lasers included. A classic boss has all its stages in one health bar, like the Wither: each stage's worth of health lost breaks its spell card and starts the next. Once in 20,000 one spawns in place of its counterpart, and each has a spawn egg. Yukari Great Doll (classic Yukari with a quarter of the health and half the danmaku damage) comes through gaps made global with a Yukari umbrella, and always drops an umbrella; Yukari drops one 70 times in 100. Touhou mobs no longer drink the wandering trader's potions and milk. Needs the assets mod 0.9.0."
 
 [[versions]]
 version = "0.8.0"
