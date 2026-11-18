@@ -30,6 +30,14 @@ categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
 
 [[versions]]
+version = "0.8.1"
+published = "2026-11-19"
+game = "26.3"
+file = "yukari_gap_native-0.8.1.hnmod"
+sha256 = "bd97e6c28eb515023b477990ab30e504cdc098c289dae635af52acfe1ec8356c"
+changelog = "The gap shader (Yukari Gap Demo, in WGSL) is embedded in the native source as a const string. Nothing changes in play. Needs the assets 0.7.0."
+
+[[versions]]
 version = "0.8.0"
 published = "2026-11-18"
 game = "26.3"
