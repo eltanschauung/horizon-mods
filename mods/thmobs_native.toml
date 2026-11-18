@@ -28,6 +28,14 @@ categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
 
 [[versions]]
+version = "0.9.6"
+published = "2026-11-18"
+game = "26.3"
+file = "thmobs_native-0.9.6.hnmod"
+sha256 = "9ffb62b84bf6304ec0ab5ab9aeac031c71fcd15ce29253e5d06c5f06e9281333"
+changelog = "Doll Points (Touhou Items' point item) drop one time in 25 when a mob dies for good, not every time."
+
+[[versions]]
 version = "0.9.4"
 published = "2026-11-18"
 game = "26.3"
