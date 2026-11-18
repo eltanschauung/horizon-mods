@@ -144,6 +144,7 @@ def add(out, write):
     }
     forest['attributes'].pop('minecraft:visual/water_fog_color', None)
     forest['features'][1].append(pond)
+    forest['features'][6].remove(f'{NS}:gensokyo_biome/bamboo_forest_mud')
     forest['features'][9] = [
         'minecraft:glow_lichen', grove, jungle, oak, bushes, 'minecraft:bamboo',
         'minecraft:patch_grass_jungle', 'minecraft:patch_sugar_cane',

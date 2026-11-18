@@ -105,11 +105,12 @@ impl NativeAlgorithm for Grove {
         };
         let blocks = template.palettes()[self.palette].blocks();
         let mut floors = BTreeMap::new();
+        let (mut lowest, mut highest) = (i32::MAX, i32::MIN);
         let mut writes = Vec::with_capacity(blocks.len());
         for stem in blocks.iter().filter(|block| block.pos[1] == 0) {
             let [x, y, z] = transform(stem.pos);
             let mut floor = None;
-            for ground in (y - 5..=y + 3).rev() {
+            for ground in (y - 3..=y + 2).rev() {
                 let pos = [x, ground, z];
                 if !world.context().ensure_can_write(pos)?
                     || world.context().outside_build_height(ground)?
@@ -130,6 +131,11 @@ impl NativeAlgorithm for Grove {
             let Some(ground) = floor else {
                 return Ok(false);
             };
+            lowest = lowest.min(ground);
+            highest = highest.max(ground);
+            if highest - lowest > 3 {
+                return Ok(false);
+            }
             floors.insert((x, z), ground);
             for y in ground + 1..y {
                 let p = [x, y, z];
