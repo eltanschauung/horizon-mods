@@ -12,12 +12,13 @@ The items of Touhou Items Mod (Itutu no Nandai MOD+, by kuro-anco) and Grimoire 
 - **Held and let go:** the Mini-Hakkero's Master Spark, Tengu's Fan, the Nuclear Control Rod.
 - **Right-click items:** amulets and talismans, Yuyuko's Fan, Kappa's Water Pistol, Sakuya's Stopwatch, the Ibuki Gourd.
 - **Point and power items:** Power, Full Power, Extend, Bomb, Star, Faith and more; [Touhou Mobs](https://playhorizon.dev/mods/thmobs_native) drops them.
+- **The Giga Torch**, Torchmaster's Mega Torch (by Xalcon, MIT): it stops monsters, phantoms, the Touhou Mobs and Arcadian Dream fairies, and village sieges within 64 blocks. Craft it from a torch, two logs, two diamonds and four Max Doll Points (four Doll Points in a square each).
 - **Nine spell cards**, cast for experience levels.
 
 Every weapon takes the enchantments a sword takes. Only the Mochi Hammer has a recipe; the rest are in the creative tabs.
 
 Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. Touhou Project by ZUN: a non-commercial fan work. The original mods' art and designs are their creators'. No Minecraft code or assets are included."""
-authors = ["kuro-anco (Touhou Items Mod)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)"]
+authors = ["kuro-anco (Touhou Items Mod)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)", "Xalcon (Torchmaster's Mega Torch, MIT)"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
 license = "All Rights Reserved"
@@ -25,6 +26,14 @@ source = "https://github.com/mxpbxb/touhou-items"
 icon = "icons/thkaguyamod_native.png"
 categories = ["adventure", "equipment"]
 tags = ["touhou", "weapons", "danmaku", "spell-cards"]
+
+[[versions]]
+version = "0.4.1"
+published = "2026-11-18"
+game = "26.3"
+file = "thkaguyamod_native-0.4.1.hnmod"
+sha256 = "1b7005039f12f223ae6620285c9349a202e170d073371da576f40fde29ce078f"
+changelog = "The Giga Torch, Torchmaster's Mega Torch (by Xalcon, MIT): placed, it stops monsters, phantoms, the Touhou Mobs and Arcadian Dream fairies, and village sieges within 64 blocks. Craft it from a torch, two logs, two diamonds and four Max Doll Points. Needs the assets mod 0.5.0."
 
 [[versions]]
 version = "0.3.1"

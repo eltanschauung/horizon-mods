@@ -5,8 +5,8 @@ summary = "The items, textures and creative tabs of Touhou Items. Needs the Touh
 description = """
 **This is one of the two parts of [Touhou Items](https://playhorizon.dev/mods/thkaguyamod_native), and does nothing alone.** Install both: this one, the assets, and the native part.
 
-It holds the 50 items, their textures, the Mochi Hammer's recipe, the sword enchantment tags and the danmaku sheets, from Touhou Items Mod (by kuro-anco) and Grimoire of Alice (by Arekkuusu), used with their creators' permission."""
-authors = ["kuro-anco (Touhou Items Mod)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)"]
+It holds the 50 items, their textures, the recipes of the Mochi Hammer, the Max Doll Point and the Giga Torch, the sword enchantment tags and the danmaku sheets, from Touhou Items Mod (by kuro-anco) and Grimoire of Alice (by Arekkuusu), used with their creators' permission."""
+authors = ["kuro-anco (Touhou Items Mod)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)", "Xalcon (Torchmaster's Mega Torch, MIT)"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
 license = "All Rights Reserved"
@@ -14,6 +14,30 @@ source = "https://github.com/mxpbxb/touhou-items"
 icon = "icons/thkaguyamod.png"
 categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
+
+[[versions]]
+version = "0.5.0"
+published = "2026-11-18"
+game = "26.3"
+file = "thkaguyamod-0.5.0.hmod"
+sha256 = "169e4d71480ee760da2c8a1784bee32156d9c0d82d3f0fadb368caf168fc03ca"
+changelog = "The Giga Torch (Torchmaster's Mega Torch, by Xalcon, MIT) and the Max Doll Point (four Doll Points in a square), with their art and recipes. Needs the native mod 0.4.1."
+
+[[versions]]
+version = "0.4.4"
+published = "2026-11-17"
+game = "26.3"
+file = "thkaguyamod-0.4.4.hmod"
+sha256 = "b9fdb52639b5162fa10563717f19c301fc18095c901e81541d7fa1ed9bd55dff"
+changelog = "The Mochi Hammer deals 11 damage (was 9), and its recipe takes one ancient debris in place of the brick: two diamonds and an ancient debris over two sticks."
+
+[[versions]]
+version = "0.4.3"
+published = "2026-11-17"
+game = "26.3"
+file = "thkaguyamod-0.4.3.hmod"
+sha256 = "0b1fcfd2dd17dcb0459fa8928d327bc171a6046db2b6baa9ddecfc78c8f3b1a2"
+changelog = "The Mochi Hammer deals 1 more damage: 9 instead of 8."
 
 [[versions]]
 version = "0.4.2"
