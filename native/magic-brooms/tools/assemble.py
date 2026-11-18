@@ -109,8 +109,8 @@ def assemble(source, root):
             'parent': 'minecraft:item/generated', 'textures': {'layer0': f'{NS}:item/{name}'},
         })
 
-    def texture(path):
-        out = root / assets / 'textures' / path
+    def texture(path, destination=None):
+        out = root / assets / 'textures' / (destination or path)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_bytes(source.read(f'assets/brooms/textures/{path}'))
 
@@ -127,10 +127,10 @@ def assemble(source, root):
             item(name, original_lang[f'item.brooms.{name}'], 1)
             lang[f'entity.{NS}.{name}'] = original_lang[f'item.brooms.{name}']
             texture(f'item/{name}.png')
-            texture(f'entity/{name}.png')
+            texture(f'entity/{name}.png', f'item/{name}_mount.png')
             write(root, f'{assets}/models/item/{name}_mount.json', {
                 'loader': 'neoforge:obj', 'flip_v': True, 'model': f'{NS}:models/{geo_name}.obj',
-                'textures': {'surface': f'{NS}:entity/{name}', 'particle': f'{NS}:entity/{name}'},
+                'textures': {'surface': f'{NS}:item/{name}_mount', 'particle': f'{NS}:item/{name}_mount'},
             })
             write(root, f'{data}/horizon/entity_type/{name}.json', {
                 'template': 'minecraft:wandering_trader',
