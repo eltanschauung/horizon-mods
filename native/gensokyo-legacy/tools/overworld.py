@@ -27,8 +27,8 @@ def add(out,write):
     for temperature, humidity in forest_bands:
         entries.append(entry('magical_forest',temperature,humidity,[-.19,1.0],[-.35,.5]))
     # Compete across the jungle bands, including their cooler, drier and warmer margins.
-    entries.append(entry('bamboo_forest_of_the_lost',[.16,.63],[.12,1.0],[-.19,1.0],[-.78,.90]))
-    entries.append(entry('bamboo_forest_of_the_lost',[-.10,.16],[.42,1.0],[0,1.0],[-.35,1.0]))
+    entries.append(entry('bamboo_forest_of_the_lost',[.14,.66],[.08,1.0],[-.19,1.0],[-.78,.90]))
+    entries.append(entry('bamboo_forest_of_the_lost',[-.13,.14],[.36,1.0],[0,1.0],[-.35,1.0]))
     # Use the BOP Spider Lily Field's surface climate, including its terrain bands.
     # The local snapshot keeps Gensokyo independently buildable and installable.
     spider_lily = json.loads((out.parent/'spider_lily_climate.json').read_text())
