@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.3"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.3.hnmod"
+sha256 = "d26eb138ce7e06f8d0205076cf954297155e70eb0e330f230148b38a52b3e552"
+changelog = "Fixes a doll losing the page of its inventory that a screen showed: those rows are the doll's again as the screen closes, and are saved at once. Needs the assets 0.15.1."
+
+[[versions]]
 version = "0.42.2"
 published = "2026-11-20"
 game = "26.3"
