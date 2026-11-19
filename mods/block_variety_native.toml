@@ -8,7 +8,7 @@ description = """
 Chipped (by Terrarium), Chisel (by the Chisel team) and Block Carpentry (by PianoManu) in one mod, with the Item Trash Can of Trash Cans (by SuperMartijn642), ported with their creators' permission:
 
 - **4,858 block variants:** every Chipped block but its workbenches, and 2,371 of Chisel's variants, each a block of its own that behaves as its vanilla block does.
-- **The chisel:** right-click with it, holding blocks in your other hand, for a menu of every block of their group, and click one to turn the whole stack into it. Right-click a placed block with it to turn it into the group's next block (sneaking, the one before), keeping its facing and state.
+- **The chisel:** right-click with it, holding blocks in your other hand, for its own screen: every block of their group as icons, with a search. Click one to turn the whole stack into it, right-click to turn one. Right-click a placed block with it to turn it into the group's next block (sneaking, the one before), keeping its facing and state.
 - **Frames:** 37 frames (block, falling block, slab, stairs, slope, edged slope, wall, fence, gate, door, trapdoor, pane, carpet, ladder, button, pressure plate, layered block, bed, chest, daylight detector, and their illusion twins) that take on the look of any block put in them. The hammer takes the block back out.
 - **Item Trash Can:** nine slots, and whatever goes in, from your hand or a hopper, is gone the next tick.
 
@@ -23,6 +23,14 @@ source = "https://github.com/mxpbxb/block-variety"
 icon = "icons/block_variety_native.png"
 categories = ["decoration"]
 tags = ["blocks", "building", "chisel", "decoration"]
+
+[[versions]]
+version = "0.5.0"
+published = "2026-11-20"
+game = "26.3"
+file = "block_variety_native-0.5.0.hnmod"
+sha256 = "645473dcbdff7bd80cb1219902e82d58c9f6c88184998a4daffbff0bd14d7d84"
+changelog = "The chisel opens its own screen instead of a chest menu: every block of the group as icons in a grid that scrolls, a search by name, click to turn the whole stack and right-click to turn one. It stays open as you go. Works with block_variety 0.4.0."
 
 [[versions]]
 version = "0.4.0"
