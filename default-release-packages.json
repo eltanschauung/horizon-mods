@@ -78,5 +78,10 @@
     "kind": "native",
     "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.7.0/thkaguyamod_native-0.6.0.hnmod",
     "sha256": "ae3966d010ea57b5d0b7f3068573675b419015ba3747c4745d87acac07d8c2b5"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/mxpbxb/yukari-gaps/releases/download/v0.7.0/yukari_gap-0.7.0.hmod",
+    "sha256": "9f255397987318c963312f1b01be30f60353d2a4bf76f4bfe112745627b26a0e"
   }
 ]
