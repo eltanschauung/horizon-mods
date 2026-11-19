@@ -181,3 +181,20 @@ bindings=[
 {name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
 {name="canceled",ty="&mut bool",value="&mut *canceled"}
 ]
+
+[[module]]
+id = "corpse-waypoints"
+file = "crates/horizon-client/src/game.rs"
+name = "game_corpse_waypoints"
+source = "corpse_waypoints.rs"
+
+[[injection]]
+id = "corpse-waypoint-snapshot"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_net_from_server"
+helper = "corpse_message.rs"
+bindings = [
+    {name="game",ty="&crate::game::Game<'_>",value="&*self"},
+    {name="channel",ty="&str",value="channel"},
+    {name="data",ty="&[u8]",value="data"},
+]

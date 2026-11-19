@@ -7,7 +7,7 @@ const COLORS:[u32;6]=[0xff5555ff,0xff55ff55,0xffffaa00,0xffff55ff,0xff55ffff,0xf
 #[derive(Default)]
 struct State { scope:String, points:Vec<Waypoint>, writable:bool, open:bool, selected:Option<usize>, form:[String;4], field:usize, replace_on_type:bool, color:usize, page:usize, rects:Vec<[f32;4]>, error:String }
 thread_local! { static STATE:RefCell<State> = RefCell::new(State::default()); }
-fn scope(game:&Game<'_>)->String {
+pub(super) fn scope(game:&Game<'_>)->String {
  let source=if game.integrated.is_none() { game.server_address().map(str::to_owned) } else { None }
      .unwrap_or_else(||game.save.root.to_string_lossy().into_owned());
  let hash=source.as_bytes().iter().fold(0xcbf29ce484222325u64,|h,b|(h^u64::from(*b)).wrapping_mul(0x100000001b3));
@@ -82,5 +82,10 @@ pub(super) fn markers(game:&Game<'_>,settings:super::official_minimap::Settings)
  for m in game.mobs.iter().filter(|m|m.kind.id.as_str()=="minecraft:player" && !m.is_invisible()) {if let Some((x,y))=project(m.position.x,m.position.z,false) && let Some((face,hat))=m.skin.as_deref().and_then(|skin|skin_rects(game,skin)){let opacity=game.player_presentation_opacity(m,glam::DVec3::new(p.x,p.y,p.z)).clamp(0.0,1.0);let color=(((opacity*255.0).round() as u32)<<24)|0x00ffffff;markers.push(Marker{x,y,face:Some(face),hat:Some(hat),color,label:String::new()});}}
  if settings.player_head && let Some((face,hat))=game.player_model.as_ref().and_then(|m|m.skin.as_deref()).and_then(|skin|skin_rects(game,skin)){markers.push(Marker{x:0.0,y:0.0,face:Some(face),hat:Some(hat),color:u32::MAX,label:String::new()});OWN_HEAD.with(|v|v.set(true));}
  STATE.with_borrow_mut(|s|{load(game,s);for w in s.points.iter().filter(|w|w.enabled&&w.dimension==game.dim.id()){if let Some((x,y))=project(w.position[0],w.position[2],true){markers.push(Marker{x,y,face:None,hat:None,color:COLORS[w.color%6],label:w.name.chars().take(1).collect()});}}});
+ for point in super::game_corpse_waypoints::points(game) {
+     if let Some((x, y)) = project(point[0], point[2], true) {
+         markers.push(Marker { x, y, face: None, hat: None, color: 0xffff5555, label: "✕".into() });
+     }
+ }
  MARKERS.with_borrow_mut(|v|*v=markers);
 }

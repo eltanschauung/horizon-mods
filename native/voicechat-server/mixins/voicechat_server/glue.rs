@@ -148,11 +148,9 @@ fn wear_phone(game: &mut Game<'_>, player: u128) {
         return;
     }
     let Some((slot, phone)) =
-        inventory
-            .slots
-            .iter()
-            .take(9)
-            .enumerate()
+        (0..9)
+            .chain(std::iter::once(crate::game::shield::OFFHAND_SLOT))
+            .filter_map(|slot| inventory.slots.get(slot).map(|stack| (slot, stack)))
             .find_map(|(slot, stack)| {
                 stack
                     .as_ref()
