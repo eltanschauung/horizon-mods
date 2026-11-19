@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
 
 [[versions]]
+version = "0.7.2"
+published = "2026-11-20"
+game = "26.3"
+file = "thkaguyamod-0.7.2.hmod"
+sha256 = "1550d00f1750b948299a8b9e4127d334a9c2befbb817989c01df57f3db53dda0"
+changelog = "The Giga Torch drops itself however it is broken: by hand, with any tool or in an explosion. Needs thkaguyamod_native 0.6.1."
+
+[[versions]]
 version = "0.7.1"
 published = "2026-11-20"
 game = "26.3"
