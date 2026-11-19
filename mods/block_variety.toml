@@ -16,6 +16,14 @@ categories = ["decoration", "library"]
 tags = ["blocks", "building", "chisel", "assets"]
 
 [[versions]]
+version = "0.2.2"
+published = "2026-11-20"
+game = "26.3"
+file = "block_variety-0.2.2.hmod"
+sha256 = "ace9f83ceaa6e1755fc7d99f431bc672aa821ca2b7f9941bbc4a37d3f722cadc"
+changelog = "Chipped's and Chisel's basalt, brought onto Programmer Art Continuation's basalt. Needs block_variety_native 0.2.0."
+
+[[versions]]
 version = "0.2.1"
 published = "2026-11-20"
 game = "26.3"
