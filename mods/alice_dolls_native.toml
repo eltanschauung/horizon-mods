@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.39.1"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.39.1.hnmod"
+sha256 = "791262fd1af0730e6984b3ff9ad74eeb1ba96550ed31a5efbdbc0bea619b96d6"
+changelog = "Sneak-click Marisa, Reimu, Patchouli, Yukari, Yuuka or Wakasagi with a bomb (Arcadian Dream's or Touhou Items') and she takes it and drops a limited spell card of her character's from Touhou Items 0.7.0, good for 16 casts."
+
+[[versions]]
 version = "0.38.0"
 published = "2026-11-19"
 game = "26.3"
