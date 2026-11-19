@@ -1,12 +1,12 @@
 id = "thkaguyamod"
 kind = "mod"
 name = "Touhou Items (assets)"
-summary = "The items, textures and creative tabs of Touhou Items. Needs the Touhou Items native mod."
+summary = "The items, blocks, textures and creative tabs of Touhou Items. Needs the Touhou Items native mod."
 description = """
 **This is one of the two parts of [Touhou Items](https://playhorizon.dev/mods/thkaguyamod_native), and does nothing alone.** Install both: this one, the assets, and the native part.
 
-It holds the 50 items, their textures, the recipes of the Mochi Hammer, the Max Doll Point and the Giga Torch, the sword enchantment tags and the danmaku sheets, from Touhou Items Mod (by kuro-anco) and Grimoire of Alice (by Arekkuusu), used with their creators' permission."""
-authors = ["kuro-anco (Touhou Items Mod)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)", "Xalcon (Torchmaster's Mega Torch, MIT)"]
+It holds the items and blocks, their textures, the spell cards' icons, about 190 recipes, the ores' world generation, the sword enchantment tags and the danmaku sheets, from Touhou Items Mod (by kuro-anco), SPELLCARD PLUS and Journey To Gensokyo (by Katrix), and Grimoire of Alice (by Arekkuusu), used with their creators' permission."""
+authors = ["kuro-anco (Touhou Items Mod)", "SPELLCARD PLUS authors", "Katrix (Journey To Gensokyo)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)", "Xalcon (Torchmaster's Mega Torch, MIT)"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
 license = "All Rights Reserved"
@@ -14,6 +14,14 @@ source = "https://github.com/mxpbxb/touhou-items"
 icon = "icons/thkaguyamod.png"
 categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
+
+[[versions]]
+version = "0.6.0"
+published = "2026-11-19"
+game = "26.3"
+file = "thkaguyamod-0.6.0.hmod"
+sha256 = "25de2f0c5bb481c74c9d199e00097ab7b7f292bd5b35f8e898ddf8a17a9cb8b3"
+changelog = "All 71 spell cards of Touhou Items Mod, SPELLCARD PLUS and Journey To Gensokyo; the rest of the items (shots, lasers, Hoshiguma dishes, Hina's dolls, ingots, dusts, notes, masks, shields, foods); the blocks (danmaku and laser crafting tables, divine spirits, Grimoire of Alice's blocks, the Onbashira pillar); Journey To Gensokyo's ores in the Overworld, the Nether and the End; about 190 of the originals' recipes; and a Blocks tab. Needs thkaguyamod_native 0.5.0."
 
 [[versions]]
 version = "0.5.0"
