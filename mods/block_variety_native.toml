@@ -7,7 +7,7 @@ description = """
 
 Chipped (by Terrarium), Chisel (by the Chisel team) and Block Carpentry (by PianoManu) in one mod, with the Item Trash Can of Trash Cans (by SuperMartijn642), ported with their creators' permission:
 
-- **4,629 block variants:** every Chipped block but its workbenches, and 2,371 of Chisel's variants, each a block of its own that behaves as its vanilla block does.
+- **4,858 block variants:** every Chipped block but its workbenches, and 2,371 of Chisel's variants, each a block of its own that behaves as its vanilla block does.
 - **The chisel:** right-click with it, holding blocks in your other hand, for a menu of every block of their group, and click one to turn the whole stack into it. Right-click a placed block with it to turn it into the group's next block (sneaking, the one before), keeping its facing and state.
 - **Frames:** 37 frames (block, falling block, slab, stairs, slope, edged slope, wall, fence, gate, door, trapdoor, pane, carpet, ladder, button, pressure plate, layered block, bed, chest, daylight detector, and their illusion twins) that take on the look of any block put in them. The hammer takes the block back out.
 - **Item Trash Can:** nine slots, and whatever goes in, from your hand or a hopper, is gone the next tick.
@@ -23,6 +23,14 @@ source = "https://github.com/mxpbxb/block-variety"
 icon = "icons/block_variety_native.png"
 categories = ["decoration"]
 tags = ["blocks", "building", "chisel", "decoration"]
+
+[[versions]]
+version = "0.4.0"
+published = "2026-11-20"
+game = "26.3"
+file = "block_variety_native-0.4.0.hnmod"
+sha256 = "88423a3fd1d41c72afaff6fe497d6d1c8344bfe5fb332ef1a8f0d98e8db22cf8"
+changelog = "The chisel's groups for Chipped 1.18.1's 229 new variants. Needs block_variety 0.4.0."
 
 [[versions]]
 version = "0.3.0"
