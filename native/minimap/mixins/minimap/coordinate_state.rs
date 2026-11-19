@@ -6,7 +6,14 @@ thread_local! {
 }
 
 #[derive(Clone)]
-pub struct Marker { pub x:f32, pub y:f32, pub face:Option<crate::hud::Rect>, pub hat:Option<crate::hud::Rect>, pub color:u32, pub label:String }
+pub struct Marker {
+    pub x: f32,
+    pub y: f32,
+    pub face: Option<crate::hud::Rect>,
+    pub hat: Option<crate::hud::Rect>,
+    pub color: u32,
+    pub label: String,
+}
 thread_local! {
  pub static MARKERS: std::cell::RefCell<Vec<Marker>> = const { std::cell::RefCell::new(Vec::new()) };
  pub static OWN_HEAD: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
@@ -55,4 +62,43 @@ pub fn draw_markers(
             }
         }
     });
+}
+
+thread_local! {
+    pub static COMPASS_NORTH: std::cell::Cell<Option<(f32, f32)>> = const { std::cell::Cell::new(None) };
+}
+
+pub fn draw_compass(
+    batch: &mut crate::hud::HudBatch,
+    atlas: &crate::hud::HudAtlas,
+    x: f32,
+    y: f32,
+    size: f32,
+) {
+    use crate::hud::HudBatch;
+    let Some((nx, ny)) = COMPASS_NORTH.with(|direction| direction.get()) else {
+        return;
+    };
+    let round = OUTLINE.with(|outline| outline.get().1);
+    let radius = size / 2.0;
+    let reach = radius - 6.0;
+    let scale = 0.65;
+    for (letter, dx, dy) in [
+        ("N", nx, ny),
+        ("E", -ny, nx),
+        ("S", -nx, -ny),
+        ("W", ny, -nx),
+    ] {
+        let rim = if round {
+            reach
+        } else {
+            reach / dx.abs().max(dy.abs())
+        };
+        let width = HudBatch::text_width(atlas, letter) * scale;
+        let tx = (x + radius + dx * rim - width / 2.0).round();
+        let ty = (y + radius + dy * rim - 4.0 * scale).round();
+        let start = batch.vertices.len();
+        batch.text(atlas, letter, tx, ty, 0xf0ffffff, true);
+        batch.scale_since(start, tx, ty, scale, scale);
+    }
 }

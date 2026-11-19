@@ -208,3 +208,13 @@ bindings = [
     { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
     { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *batch" },
 ]
+
+[[injection]]
+id = "radar-compass-north"
+kind = "MODIFY_EXPRESSION_VALUE"
+target = "horizon_client::game::extras::Game<'_>::draw_extras"
+selector = "Some(view.north())"
+require = 1
+ordinal = 0
+helper = "compass_north.rs"
+bindings = [{ name = "north", ty = "Option<(f32, f32)>", value = "$value" }]

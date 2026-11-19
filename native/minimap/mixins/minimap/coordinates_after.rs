@@ -99,6 +99,7 @@ fn coordinates_after(
             }
         }
     });
+    minimap_coordinates::draw_compass(batch, atlas, x, y, look.size);
     minimap_coordinates::COORDINATES.with(|c| {
         let text = c.borrow();
         let Some(text) = text.as_deref() else {

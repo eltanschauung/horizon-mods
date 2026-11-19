@@ -5,7 +5,8 @@ fn minimap_view(
 ) {
     use crate::game::official_minimap as m;
     use horizon_client::extras::Corner;
-    use horizon_client::extras_hud::minimap_coordinates::COORDINATES;
+    use horizon_client::extras_hud::minimap_coordinates::{COMPASS_NORTH, COORDINATES};
+    COMPASS_NORTH.with(|direction| direction.set(None));
     COORDINATES.with(|c| *c.borrow_mut() = None);
     horizon_client::extras_hud::minimap_coordinates::MARKERS.with_borrow_mut(|v| v.clear());
     horizon_client::extras_hud::minimap_coordinates::OWN_HEAD.with(|v|v.set(false));
@@ -31,6 +32,7 @@ fn minimap_view(
     });
     horizon_client::extras_hud::minimap_coordinates::OUTLINE
         .with(|s| s.set((settings.outline, settings.round)));
+    COMPASS_NORTH.with(|direction| direction.set(Some((0.0, -1.0))));
     let (size, blocks_per_pixel) = settings.view();
     crate::game::minimap_waypoints::markers(game, settings);
     *minimap = Some(crate::game::native_hooks::NativeMinimap {
