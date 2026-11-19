@@ -859,55 +859,6 @@ pub fn loot_drops(game: &mut Game<'_>, context: &NativeLootDrops<'_>, drops: &mu
         pending.insert(player_uuid, record.clone());
     }
 
-    // Build BlockEntity NBT
-    let mut nbt = Compound::default();
-    nbt.insert(
-        JavaString::from("id"),
-        Tag::String(JavaString::from("gravestone:gravestone")),
-    );
-    nbt.insert(
-        JavaString::from("DeathId"),
-        Tag::String(JavaString::from(death_id.as_str())),
-    );
-    nbt.insert(
-        JavaString::from("PlayerName"),
-        Tag::String(JavaString::from(player_name.as_str())),
-    );
-    nbt.insert(
-        JavaString::from("PlayerUuid"),
-        Tag::String(JavaString::from(player_uuid.to_string().as_str())),
-    );
-    nbt.insert(
-        JavaString::from("Dimension"),
-        Tag::String(JavaString::from(context.dimension)),
-    );
-    nbt.insert(JavaString::from("X"), Tag::Int(grave_pos[0]));
-    nbt.insert(JavaString::from("Y"), Tag::Int(grave_pos[1]));
-    nbt.insert(JavaString::from("Z"), Tag::Int(grave_pos[2]));
-    nbt.insert(JavaString::from("Timestamp"), Tag::Long(timestamp));
-
-    let items_ser = stored_items
-        .iter()
-        .map(|i| {
-            format!(
-                "{}|{}|{}|{}|{}",
-                i.slot_tag,
-                i.count,
-                i.item,
-                i.damage,
-                i.nbt.as_deref().unwrap_or("")
-            )
-        })
-        .collect::<Vec<_>>()
-        .join(";");
-    nbt.insert(
-        JavaString::from("Items"),
-        Tag::String(JavaString::from(items_ser.as_str())),
-    );
-
-    let snbt_str = horizon_client::snbt::to_snbt(&Tag::Compound(nbt));
-    game.native_set_block_entity(context.dimension, grave_pos, &snbt_str);
-
     // All items successfully saved in grave: clear world drops!
     drops.clear();
 }
@@ -1094,7 +1045,7 @@ static LAST_GRAVE_CLICK: Mutex<(u128, [i32; 3])> = Mutex::new((0, [0, 0, 0]));
 pub fn right_click_block(game: &mut Game<'_>, pos: [i32; 3], canceled: &mut bool) {
     let block = game.native_block(pos);
     if block == GRAVESTONE_BLOCK {
-        let is_sneaking = game.keys.held(crate::game::Mapping::Sneak) || game.has_shift_down();
+        let is_sneaking = game.native_sneaking();
         if is_sneaking {
             restore_grave_to_player(game, pos);
             *canceled = true;
