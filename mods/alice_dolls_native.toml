@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.1"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.1.hnmod"
+sha256 = "7a015e07f714badb34e41a24fd3e200c8f28496f2e50a99e76d20e805964adc3"
+changelog = "Fixed on dedicated servers, where one level is in place at a time: doll shots, beams and swings show again, the doll bell lists and brings your dolls again, and scrolling or opening doll inventories, Alice panel orders, inventory changes and love from work are no longer lost. Needs the assets 0.15.1."
+
+[[versions]]
 version = "0.42.0"
 published = "2026-11-20"
 game = "26.3"
