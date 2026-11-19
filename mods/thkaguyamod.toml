@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
 
 [[versions]]
+version = "0.7.0"
+published = "2026-11-20"
+game = "26.3"
+file = "thkaguyamod-0.7.0.hmod"
+sha256 = "44047f8bc93830b1a973d327d48367f45af14f067031f24af648dfe27d550377"
+changelog = "The limited spell cards: one-stack cards of 16 casts, in the Spell Cards tab. Needs thkaguyamod_native 0.6.0."
+
+[[versions]]
 version = "0.6.0"
 published = "2026-11-19"
 game = "26.3"

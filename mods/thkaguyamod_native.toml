@@ -30,6 +30,14 @@ categories = ["adventure", "equipment"]
 tags = ["touhou", "weapons", "danmaku", "spell-cards"]
 
 [[versions]]
+version = "0.6.0"
+published = "2026-11-20"
+game = "26.3"
+file = "thkaguyamod_native-0.6.0.hnmod"
+sha256 = "ae3966d010ea57b5d0b7f3068573675b419015ba3747c4745d87acac07d8c2b5"
+changelog = "Spell cards do half their damage. Limited cards (Stardust Reverie, Fantasy Seal, Agni Shine, Mesh of Light and Darkness, Flower Wind Moon, Tail Fin Slap) cast as their card does, for its levels, and wear out after 16 casts; Alice Dolls Restringed's dolls give them for a bomb. Needs thkaguyamod 0.7.0."
+
+[[versions]]
 version = "0.5.0"
 published = "2026-11-19"
 game = "26.3"
