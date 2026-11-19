@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.2"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.2.hnmod"
+sha256 = "e66e5e35a2f025eb1f1736256a8cdf4b51d6d9f90600e8f2fb3bedc394b750fb"
+changelog = "Fixes dolls losing items: a doll picking up a dropped item no longer throws away what it took in since its last save, a doll saves its inventory every tick it changes, a dying doll drops what it really carried, a doll picked up with a full inventory drops at your feet instead of vanishing with all it held, and a doll screen that can't reopen after a scroll closes. Needs the assets 0.15.1."
+
+[[versions]]
 version = "0.42.1"
 published = "2026-11-20"
 game = "26.3"
