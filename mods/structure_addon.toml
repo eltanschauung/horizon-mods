@@ -5,7 +5,7 @@ summary = "Old structure mods in one: Underground Biomes stone strata, Recurrent
 description = """
 A data-only mod that brings several old world-generation mods to Horizon:
 
-- **Underground Biomes Constructs:** 56 stones as big strata. Most of the world stays plain stone, but stone biomes (the peaks, windswept hills, stony shores, dripstone caves, and Biomes O' Plenty's crags, volcanoes and highlands) are full of them.
+- **Underground Biomes Constructs:** 56 stones as big strata. Most of the world stays plain stone, with rare strata below y 50 in stone and deepslate, but stone biomes (the peaks, windswept hills, stony shores, dripstone caves, and Biomes O' Plenty's crags, volcanoes and highlands) are full of them. In about a quarter of the world a stone biome is all one stone instead.
 - **Recurrent Complex:** surface buildings (towers, pyramids, forts, huts) and underground crypts.
 - **Ancient Structures:** German, Japanese and Mayan buildings, villages and temples.
 - **Generatormods:** building templates, Great Walls, walled cities with streets and cellular-automaton ruins, plus underground cities and dungeons.
@@ -22,6 +22,14 @@ source = "https://github.com/mxpbxb/structure-addon"
 icon = "icons/structure_addon.png"
 categories = ["worldgen", "adventure"]
 tags = ["structures", "dungeons", "caves", "stone"]
+
+[[versions]]
+version = "0.4.0"
+published = "2026-11-19"
+game = "26.3"
+file = "structure_addon-0.4.0.hmod"
+sha256 = "f75ed16e3c6b22a791434164a2102a563d61b5ef329f538c3dcafe8efbf5f6aa"
+changelog = "Underground Biomes stones: outside the stone biomes every stone stays below y 50, and every stone now appears in deepslate too. Stone biomes keep their dense strata, except in about a quarter of the world (two kinds of patch a few hundred blocks across, the same in every world), where a stone biome has no strata and all its stone is one stone, picked at random for that biome. Only newly generated chunks change."
 
 [[versions]]
 version = "0.3.4"
