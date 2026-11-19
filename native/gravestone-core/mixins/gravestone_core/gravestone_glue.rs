@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use horizon_client::game::Game;
@@ -59,7 +59,6 @@ pub struct GuiState {
 type Graves = HashMap<(String, [i32; 3]), GraveRecord>;
 static GRAVESTONES: Mutex<Option<Graves>> = Mutex::new(None);
 static PENDING_OBITUARIES: Mutex<Option<HashMap<u128, GraveRecord>>> = Mutex::new(None);
-static LAST_PLAYER_INVENTORY: Mutex<Option<(u128, Vec<Option<ItemStack>>)>> = Mutex::new(None);
 static PENDING_DEATH_SLOTS: Mutex<Option<(u128, Vec<(String, ItemStack)>)>> = Mutex::new(None);
 static OPEN_OBITUARY: Mutex<Option<ObituaryData>> = Mutex::new(None);
 static GUI_STATE: Mutex<GuiState> = Mutex::new(GuiState {
@@ -161,7 +160,10 @@ fn format_time(timestamp: i64) -> String {
     let m = if mp < 10 { mp + 3 } else { mp - 9 };
     let y = if m <= 2 { y + 1 } else { y };
 
-    format!("{:04}-{:02}-{:02} {:02}:{:02}:{:02} UTC", y, m, d, hours, mins, s)
+    format!(
+        "{:04}-{:02}-{:02} {:02}:{:02}:{:02} UTC",
+        y, m, d, hours, mins, s
+    )
 }
 
 fn compound_get<'a>(c: &'a Compound, key: &str) -> Option<&'a Tag> {
@@ -205,14 +207,22 @@ fn yaw_to_grave_facing(yaw: f32) -> &'static str {
 }
 
 fn grave_file(game: &Game<'_>) -> Option<PathBuf> {
-    Some(game.native_world_dir()?.join("gravestone").join("graves.json"))
+    Some(
+        game.native_world_dir()?
+            .join("gravestone")
+            .join("graves.json"),
+    )
 }
 
 fn save_graves_to_disk(game: &Game<'_>, graves: &Graves) -> bool {
-    let Some(path) = grave_file(game) else { return false; };
+    let Some(path) = grave_file(game) else {
+        return false;
+    };
     let records: Vec<_> = graves.values().collect();
     let result = (|| -> anyhow::Result<()> {
-        if let Some(parent) = path.parent() { std::fs::create_dir_all(parent)?; }
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent)?;
+        }
         let bytes = serde_json::to_vec(&records)?;
         crate::save::write_durable(&path, &bytes)?;
         Ok(())
@@ -225,10 +235,16 @@ fn save_graves_to_disk(game: &Game<'_>, graves: &Graves) -> bool {
 }
 
 fn load_from_disk(game: &Game<'_>) -> bool {
-    if game.remote.is_some() || !game.native_on(MOD_ID) { return false; }
-    let Some(path) = grave_file(game) else { return false; };
+    if game.remote.is_some() || !game.native_on(MOD_ID) {
+        return false;
+    }
+    let Some(path) = grave_file(game) else {
+        return false;
+    };
     let mut loaded = WORLD_FILE.lock().unwrap();
-    if loaded.as_ref() == Some(&path) { return true; }
+    if loaded.as_ref() == Some(&path) {
+        return true;
+    }
     let records = match std::fs::read(&path) {
         Ok(bytes) => match serde_json::from_slice::<Vec<GraveRecord>>(&bytes) {
             Ok(records) => records,
@@ -245,39 +261,58 @@ fn load_from_disk(game: &Game<'_>) -> bool {
     };
     let mut graves = GRAVESTONES.lock().unwrap();
     let mut pending = PENDING_OBITUARIES.lock().unwrap();
-    *pending = Some(records.iter().filter(|g| !g.obituary_given)
-        .map(|g| (g.player_uuid, g.clone())).collect());
-    *graves = Some(records.into_iter()
-        .map(|g| ((g.dimension.clone(), g.pos), g)).collect());
+    *pending = Some(
+        records
+            .iter()
+            .filter(|g| !g.obituary_given)
+            .map(|g| (g.player_uuid, g.clone()))
+            .collect(),
+    );
+    *graves = Some(
+        records
+            .into_iter()
+            .map(|g| ((g.dimension.clone(), g.pos), g))
+            .collect(),
+    );
     *loaded = Some(path);
     true
 }
 
 pub fn publish_waypoints(game: &mut Game<'_>, dimension: &str) {
-    if game.world.game_time % 20 != 0 || dimension.len() > u8::MAX as usize || !load_from_disk(game) {
+    if game.world.game_time % 20 != 0 || dimension.len() > u8::MAX as usize || !load_from_disk(game)
+    {
         return;
     }
     let players = game.native_server_players();
     let messages = {
         let graves = GRAVESTONES.lock().unwrap();
-        let Some(graves) = graves.as_ref() else { return; };
+        let Some(graves) = graves.as_ref() else {
+            return;
+        };
         let mut by_owner = HashMap::<u128, Vec<&GraveRecord>>::new();
-        for grave in graves.values().filter(|g| g.dimension == dimension && !g.items.is_empty()) {
+        for grave in graves
+            .values()
+            .filter(|g| g.dimension == dimension && !g.items.is_empty())
+        {
             by_owner.entry(grave.player_uuid).or_default().push(grave);
         }
-        players.into_iter().filter(|p| p.dimension == dimension).map(|p| {
-            let mut records = by_owner.remove(&p.uuid).unwrap_or_default();
-            records.sort_unstable_by_key(|g| std::cmp::Reverse((g.timestamp, g.pos)));
-            let mut bytes = vec![1, dimension.len() as u8];
-            bytes.extend_from_slice(dimension.as_bytes());
-            for grave in records.into_iter().take(64) {
-                let [x, y, z] = grave.pos.map(f64::from);
-                for v in [x + 0.5, y, z + 0.5] {
-                    bytes.extend_from_slice(&v.to_be_bytes());
+        players
+            .into_iter()
+            .filter(|p| p.dimension == dimension)
+            .map(|p| {
+                let mut records = by_owner.remove(&p.uuid).unwrap_or_default();
+                records.sort_unstable_by_key(|g| std::cmp::Reverse((g.timestamp, g.pos)));
+                let mut bytes = vec![1, dimension.len() as u8];
+                bytes.extend_from_slice(dimension.as_bytes());
+                for grave in records.into_iter().take(64) {
+                    let [x, y, z] = grave.pos.map(f64::from);
+                    for v in [x + 0.5, y, z + 0.5] {
+                        bytes.extend_from_slice(&v.to_be_bytes());
+                    }
                 }
-            }
-            (p.uuid, bytes)
-        }).collect::<Vec<_>>()
+                (p.uuid, bytes)
+            })
+            .collect::<Vec<_>>()
     };
     for (player, bytes) in messages {
         let _ = game.native_net_send_to_player(player, "gravestone_core:waypoints", &bytes);
@@ -345,12 +380,18 @@ fn create_obituary_stack(grave: &GraveRecord, is_ru: bool) -> ItemStack {
             format!("§2Мир: {}", dim_display).as_str(),
         )));
         lore_list.push(Tag::String(JavaString::from(
-            format!("§eКоординаты: {}, {}, {}", grave.pos[0], grave.pos[1], grave.pos[2]).as_str(),
+            format!(
+                "§eКоординаты: {}, {}, {}",
+                grave.pos[0], grave.pos[1], grave.pos[2]
+            )
+            .as_str(),
         )));
         lore_list.push(Tag::String(JavaString::from(
             format!("§bПредметов в могиле: {}", grave.items.len()).as_str(),
         )));
-        lore_list.push(Tag::String(JavaString::from("§3§o[Нажмите ПКМ для чтения]")));
+        lore_list.push(Tag::String(JavaString::from(
+            "§3§o[Нажмите ПКМ для чтения]",
+        )));
     } else {
         lore_list.push(Tag::String(JavaString::from(
             format!("§7Died: {}", date_str).as_str(),
@@ -359,7 +400,11 @@ fn create_obituary_stack(grave: &GraveRecord, is_ru: bool) -> ItemStack {
             format!("§2Dimension: {}", dim_display).as_str(),
         )));
         lore_list.push(Tag::String(JavaString::from(
-            format!("§eCoordinates: {}, {}, {}", grave.pos[0], grave.pos[1], grave.pos[2]).as_str(),
+            format!(
+                "§eCoordinates: {}, {}, {}",
+                grave.pos[0], grave.pos[1], grave.pos[2]
+            )
+            .as_str(),
         )));
         lore_list.push(Tag::String(JavaString::from(
             format!("§bItems in grave: {}", grave.items.len()).as_str(),
@@ -376,8 +421,10 @@ fn parse_obituary_stack(stack: &ItemStack) -> Option<ObituaryData> {
     let cd = stack.custom_data()?;
 
     let death_id = tag_string(compound_get(cd, "DeathId")).unwrap_or_default();
-    let player_name = tag_string(compound_get(cd, "PlayerName")).unwrap_or_else(|| "Игрок".to_string());
-    let dimension = tag_string(compound_get(cd, "Dimension")).unwrap_or_else(|| "minecraft:overworld".to_string());
+    let player_name =
+        tag_string(compound_get(cd, "PlayerName")).unwrap_or_else(|| "Игрок".to_string());
+    let dimension = tag_string(compound_get(cd, "Dimension"))
+        .unwrap_or_else(|| "minecraft:overworld".to_string());
     let x = match compound_get(cd, "X") {
         Some(Tag::Int(v)) => *v,
         _ => 0,
@@ -482,12 +529,18 @@ fn refresh_obituary_stack(slot: &mut Option<ItemStack>, ru: bool) {
             format!("§2Мир: {}", dim_display).as_str(),
         )));
         lore_list.push(Tag::String(JavaString::from(
-            format!("§eКоординаты: {}, {}, {}", data.pos[0], data.pos[1], data.pos[2]).as_str(),
+            format!(
+                "§eКоординаты: {}, {}, {}",
+                data.pos[0], data.pos[1], data.pos[2]
+            )
+            .as_str(),
         )));
         lore_list.push(Tag::String(JavaString::from(
             format!("§bПредметов в могиле: {}", data.items.len()).as_str(),
         )));
-        lore_list.push(Tag::String(JavaString::from("§3§o[Нажмите ПКМ для чтения]")));
+        lore_list.push(Tag::String(JavaString::from(
+            "§3§o[Нажмите ПКМ для чтения]",
+        )));
     } else {
         lore_list.push(Tag::String(JavaString::from(
             format!("§7Died: {}", date_str).as_str(),
@@ -496,7 +549,11 @@ fn refresh_obituary_stack(slot: &mut Option<ItemStack>, ru: bool) {
             format!("§2Dimension: {}", dim_display).as_str(),
         )));
         lore_list.push(Tag::String(JavaString::from(
-            format!("§eCoordinates: {}, {}, {}", data.pos[0], data.pos[1], data.pos[2]).as_str(),
+            format!(
+                "§eCoordinates: {}, {}, {}",
+                data.pos[0], data.pos[1], data.pos[2]
+            )
+            .as_str(),
         )));
         lore_list.push(Tag::String(JavaString::from(
             format!("§bItems in grave: {}", data.items.len()).as_str(),
@@ -532,7 +589,9 @@ pub fn check_pending_obituaries(game: &mut Game<'_>) {
         return;
     }
 
-    if !load_from_disk(game) { return; }
+    if !load_from_disk(game) {
+        return;
+    }
 
     let mut pending_guard = PENDING_OBITUARIES.lock().unwrap();
     let pending = pending_guard.get_or_insert_with(HashMap::new);
@@ -560,7 +619,11 @@ pub fn check_pending_obituaries(game: &mut Game<'_>) {
             given = true;
         } else if let Some(player) = game.player.as_ref() {
             // Inventory was full, drop item at player's feet safely
-            let drop_pos = [player.position.x, player.position.y + 0.5, player.position.z];
+            let drop_pos = [
+                player.position.x,
+                player.position.y + 0.5,
+                player.position.z,
+            ];
             game.spawn_item(rem, drop_pos, [0.0, 0.1, 0.0], 10);
             given = true;
         }
@@ -576,11 +639,19 @@ pub fn check_pending_obituaries(game: &mut Game<'_>) {
         }
         save_graves_to_disk(game, gravestones);
 
-        let prefix = if ru { "§6[Могилы]" } else { "§6[Gravestone]" };
-        let short_notice = if ru {
-            format!("{prefix} §eВы возродились. В инвентарь выдан некролог с координатами гибели (ПКМ для чтения).")
+        let prefix = if ru {
+            "§6[Могилы]"
         } else {
-            format!("{prefix} §eYou respawned. An obituary with death coordinates has been added to your inventory (Right-Click to read).")
+            "§6[Gravestone]"
+        };
+        let short_notice = if ru {
+            format!(
+                "{prefix} §eВы возродились. В инвентарь выдан некролог с координатами гибели (ПКМ для чтения)."
+            )
+        } else {
+            format!(
+                "{prefix} §eYou respawned. An obituary with death coordinates has been added to your inventory (Right-Click to read)."
+            )
         };
         game.native_tell(acting, horizon_client::text::Text::legacy(&short_notice));
     }
@@ -595,10 +666,7 @@ pub fn listed(mods: &mut Vec<horizon_client::mod_api::NativeMod>) {
     });
 }
 
-pub fn block_entity(
-    block: &str,
-    entity: &mut Option<(String, Compound)>,
-) {
+pub fn block_entity(block: &str, entity: &mut Option<(String, Compound)>) {
     if block == GRAVESTONE_BLOCK && entity.is_none() {
         let mut nbt = Compound::default();
         nbt.insert(
@@ -609,25 +677,9 @@ pub fn block_entity(
     }
 }
 
-pub fn player_inventory_changed(
-    player: u128,
-    stacks: &[Option<ItemStack>],
-) {
-    if player == 0 || stacks.is_empty() {
-        return;
-    }
-    let mut last = LAST_PLAYER_INVENTORY.lock().unwrap();
-    *last = Some((player, stacks.to_vec()));
-}
-
-/// HEAD injection of `Game::drop_inventory`:
 /// Called right before `death_drops` drains `game.inventory`, `game.armor`, and `game.offhand`.
 /// We capture every non-empty slot with its precise tag (`main:0..35`, `armor:head`, `armor:chest`, `armor:legs`, `armor:feet`, `offhand:0`).
-pub fn drop_inventory(
-    game: &mut Game<'_>,
-    _at: [f64; 3],
-    who: (u128, i32),
-) {
+pub fn drop_inventory(game: &mut Game<'_>, _at: [f64; 3], who: (u128, i32)) {
     if !game.native_on(MOD_ID) || game.ui.rules.bool("keep_inventory") {
         return;
     }
@@ -667,18 +719,18 @@ pub fn drop_inventory(
     *PENDING_DEATH_SLOTS.lock().unwrap() = Some((who.0, tagged));
 }
 
-pub fn loot_drops(
-    game: &mut Game<'_>,
-    context: &NativeLootDrops<'_>,
-    drops: &mut Vec<ItemStack>,
-) {
+pub fn loot_drops(game: &mut Game<'_>, context: &NativeLootDrops<'_>, drops: &mut Vec<ItemStack>) {
     let is_player_death = matches!(context.entity, Some((_, "minecraft:player")));
-    let Some(player_uuid) = context.player else { return; };
+    let Some(player_uuid) = context.player else {
+        return;
+    };
     if !is_player_death {
         return;
     }
 
-    if drops.is_empty() || !load_from_disk(game) { return; }
+    if drops.is_empty() || !load_from_disk(game) {
+        return;
+    }
 
     let origin = context.origin;
     let x = origin[0].floor() as i32;
@@ -732,8 +784,12 @@ pub fn loot_drops(
         player_uuid & 0xFFFFFFFFFFFF
     );
 
-    let player_name = game.native_server_players().into_iter().find(|p| p.uuid == player_uuid)
-        .map(|p| p.name).unwrap_or_else(|| "Player".into());
+    let player_name = game
+        .native_server_players()
+        .into_iter()
+        .find(|p| p.uuid == player_uuid)
+        .map(|p| p.name)
+        .unwrap_or_else(|| "Player".into());
 
     let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -742,19 +798,33 @@ pub fn loot_drops(
 
     // Keep slots from the snapshot, but save only stacks that actually survived the
     // death-drop rules (including Soulbound and Curse of Vanishing).
-    let mut tagged = PENDING_DEATH_SLOTS.lock().unwrap().take()
-        .filter(|(owner, _)| *owner == player_uuid).map(|(_, slots)| slots).unwrap_or_default();
-    let stored_items: Vec<_> = drops.iter().enumerate().map(|(i, stack)| {
-        let slot_tag = tagged.iter().position(|(_, saved)| saved == stack)
-            .map(|at| tagged.remove(at).0).unwrap_or_else(|| format!("main:{}", i.min(35)));
-        StoredItem {
-            slot_tag,
-            count: stack.count,
-            item: stack.item.to_string(),
-            damage: stack.damage,
-            nbt: Some(horizon_client::snbt::to_snbt(&crate::save::item_to_nbt(stack))),
-        }
-    }).collect();
+    let mut tagged = PENDING_DEATH_SLOTS
+        .lock()
+        .unwrap()
+        .take()
+        .filter(|(owner, _)| *owner == player_uuid)
+        .map(|(_, slots)| slots)
+        .unwrap_or_default();
+    let stored_items: Vec<_> = drops
+        .iter()
+        .enumerate()
+        .map(|(i, stack)| {
+            let slot_tag = tagged
+                .iter()
+                .position(|(_, saved)| saved == stack)
+                .map(|at| tagged.remove(at).0)
+                .unwrap_or_else(|| format!("main:{}", i.min(35)));
+            StoredItem {
+                slot_tag,
+                count: stack.count,
+                item: stack.item.to_string(),
+                damage: stack.damage,
+                nbt: Some(horizon_client::snbt::to_snbt(&crate::save::item_to_nbt(
+                    stack,
+                ))),
+            }
+        })
+        .collect();
 
     let record = GraveRecord {
         death_id: death_id.clone(),
@@ -774,7 +844,9 @@ pub fn loot_drops(
         let previous = gravestones.insert(key.clone(), record.clone());
         if !save_graves_to_disk(game, gravestones) {
             gravestones.remove(&key);
-            if let Some(previous) = previous { gravestones.insert(key, previous); }
+            if let Some(previous) = previous {
+                gravestones.insert(key, previous);
+            }
             if let Some(state) = game.native_default_state("minecraft:air") {
                 let _ = game.native_set_block(context.dimension, grave_pos, state, 3);
             }
@@ -840,11 +912,7 @@ pub fn loot_drops(
     drops.clear();
 }
 
-pub fn player_respawned(
-    game: &mut Game<'_>,
-    _player: u128,
-    _name: &str,
-) {
+pub fn player_respawned(game: &mut Game<'_>, _player: u128, _name: &str) {
     check_pending_obituaries(game);
 }
 
@@ -859,7 +927,9 @@ pub fn player_respawned(
 /// If any target slot is already occupied, places in the first free inventory slot (0..35),
 /// and drops any remaining overflow safely into the world via `game.spawn_item`.
 pub fn restore_grave_to_player(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
-    if !load_from_disk(game) { return false; }
+    if !load_from_disk(game) {
+        return false;
+    }
     let mut gravestones_guard = GRAVESTONES.lock().unwrap();
     let gravestones = gravestones_guard.get_or_insert_with(HashMap::new);
     let key = (game.dim.id().to_owned(), pos);
@@ -971,7 +1041,11 @@ pub fn restore_grave_to_player(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
         if let Some(i) = free_slot {
             game.inventory[i] = Some(stack);
         } else {
-            let drop_pos = [pos[0] as f64 + 0.5, pos[1] as f64 + 0.5, pos[2] as f64 + 0.5];
+            let drop_pos = [
+                pos[0] as f64 + 0.5,
+                pos[1] as f64 + 0.5,
+                pos[2] as f64 + 0.5,
+            ];
             game.spawn_item(stack, drop_pos, [0.0, 0.2, 0.0], 10);
         }
     }
@@ -986,7 +1060,11 @@ pub fn restore_grave_to_player(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
     }
 
     let ru = is_ru(game);
-    let prefix = if ru { "§6[Могилы]" } else { "§6[Gravestone]" };
+    let prefix = if ru {
+        "§6[Могилы]"
+    } else {
+        "§6[Gravestone]"
+    };
     let msg = if ru {
         format!(
             "{prefix} §aВещи из могилы игрока {} успешно возвращены!",
@@ -1004,11 +1082,7 @@ pub fn restore_grave_to_player(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
     true
 }
 
-pub fn destroy_block(
-    game: &mut Game<'_>,
-    pos: [i32; 3],
-    canceled: &mut bool,
-) {
+pub fn destroy_block(game: &mut Game<'_>, pos: [i32; 3], canceled: &mut bool) {
     let block = game.native_block(pos);
     if block == GRAVESTONE_BLOCK {
         *canceled = !restore_grave_to_player(game, pos);
@@ -1017,11 +1091,7 @@ pub fn destroy_block(
 
 static LAST_GRAVE_CLICK: Mutex<(u128, [i32; 3])> = Mutex::new((0, [0, 0, 0]));
 
-pub fn right_click_block(
-    game: &mut Game<'_>,
-    pos: [i32; 3],
-    canceled: &mut bool,
-) {
+pub fn right_click_block(game: &mut Game<'_>, pos: [i32; 3], canceled: &mut bool) {
     let block = game.native_block(pos);
     if block == GRAVESTONE_BLOCK {
         let is_sneaking = game.keys.held(crate::game::Mapping::Sneak) || game.has_shift_down();
@@ -1034,16 +1104,23 @@ pub fn right_click_block(
                 .map(|d| d.as_millis())
                 .unwrap_or(0);
             let mut last_click = LAST_GRAVE_CLICK.lock().unwrap();
-            let is_duplicate = (now_millis.saturating_sub(last_click.0) < 350) && (last_click.1 == pos);
+            let is_duplicate =
+                (now_millis.saturating_sub(last_click.0) < 350) && (last_click.1 == pos);
             *last_click = (now_millis, pos);
 
             if !is_duplicate {
-                if !load_from_disk(game) { return; }
+                if !load_from_disk(game) {
+                    return;
+                }
                 let mut gravestones_guard = GRAVESTONES.lock().unwrap();
                 let gravestones = gravestones_guard.get_or_insert_with(HashMap::new);
                 if let Some(grave) = gravestones.get(&(game.dim.id().to_owned(), pos)) {
                     let ru = is_ru(game);
-                    let prefix = if ru { "§6[Могилы]" } else { "§6[Gravestone]" };
+                    let prefix = if ru {
+                        "§6[Могилы]"
+                    } else {
+                        "§6[Gravestone]"
+                    };
                     let dim_name = format_dim_locative(&grave.dimension, ru);
                     let msg = if ru {
                         format!(
@@ -1066,48 +1143,13 @@ pub fn right_click_block(
 }
 
 /// Right click on obituary item opens GUI window
-pub fn use_item(
-    game: &mut Game<'_>,
-    stack: &ItemStack,
-    claimed: &mut bool,
-) {
+pub fn use_item(game: &mut Game<'_>, stack: &ItemStack, claimed: &mut bool) {
     let item_id = &*stack.item;
     if item_id == OBITUARY_ITEM || item_id.ends_with(":obituary") {
         *claimed = true;
-        let mut ob_data = parse_obituary_stack(stack);
+        let ob_data = parse_obituary_stack(stack);
 
         // Fallback to disk record by death_id if items list was empty
-        if let Some(ref mut data) = ob_data {
-            if data.items.is_empty() && !data.death_id.is_empty() {
-                if !load_from_disk(game) { return; }
-                let mut gravestones_guard = GRAVESTONES.lock().unwrap();
-                let gravestones = gravestones_guard.get_or_insert_with(HashMap::new);
-                for g in gravestones.values() {
-                    if g.death_id == data.death_id && !g.items.is_empty() {
-                        data.items = g.items.clone();
-                        break;
-                    }
-                }
-            }
-        }
-
-        if ob_data.is_none() {
-            // Fallback: construct from latest grave
-            load_from_disk(game);
-            let mut gravestones_guard = GRAVESTONES.lock().unwrap();
-            let gravestones = gravestones_guard.get_or_insert_with(HashMap::new);
-            if let Some(latest) = gravestones.values().max_by_key(|g| g.timestamp) {
-                ob_data = Some(ObituaryData {
-                    death_id: latest.death_id.clone(),
-                    player_name: latest.player_name.clone(),
-                    dimension: latest.dimension.clone(),
-                    pos: latest.pos,
-                    timestamp: latest.timestamp,
-                    items: latest.items.clone(),
-                });
-            }
-        }
-
         if let Some(data) = ob_data {
             *OPEN_OBITUARY.lock().unwrap() = Some(data);
             *GUI_STATE.lock().unwrap() = GuiState {
@@ -1126,35 +1168,15 @@ pub fn tick(game: &mut Game<'_>) {
     if OPEN_SCREEN_REQUESTED.swap(false, Ordering::SeqCst) {
         let _ = game.native_mod_screen_open(MOD_ID);
     }
-    check_pending_obituaries(game);
-
     let ru = is_ru(game);
     for slot in game.inventory.iter_mut() {
         refresh_obituary_stack(slot, ru);
     }
     refresh_obituary_stack(&mut game.offhand, ru);
-
-    let acting = game.native_acting_id();
-    if acting != 0 && !is_player_dead(game) {
-        let mut full_inv = Vec::new();
-        for item in game.inventory.iter() {
-            full_inv.push(item.clone());
-        }
-        full_inv.push(game.armor[3].clone());
-        full_inv.push(game.armor[2].clone());
-        full_inv.push(game.armor[1].clone());
-        full_inv.push(game.armor[0].clone());
-        full_inv.push(game.offhand.clone());
-        *LAST_PLAYER_INVENTORY.lock().unwrap() = Some((acting, full_inv));
-    }
 }
 
 /// Renders the Obituary GUI book screen when the mod screen is open
-pub fn screen_render_post(
-    game: &Game<'_>,
-    batch: &mut HudBatch,
-    screen: &NativeScreenView<'_>,
-) {
+pub fn screen_render_post(game: &Game<'_>, batch: &mut HudBatch, screen: &NativeScreenView<'_>) {
     if screen.id != "mod" || game.native_mod_screen() != Some(MOD_ID) {
         return;
     }
@@ -1199,17 +1221,15 @@ pub fn screen_render_post(
     };
     game.native_fill(batch, tab0_rect, tab0_bg);
     let tab0_label = if gui_state.active_tab == 0 {
-        if ru { "§0§lСводка" } else { "§0§lSummary" }
+        if ru {
+            "§0§lСводка"
+        } else {
+            "§0§lSummary"
+        }
     } else {
         if ru { "§8Сводка" } else { "§8Summary" }
     };
-    game.native_text(
-        batch,
-        tab0_label,
-        [ox + 18.0, oy + 8.0],
-        0,
-        false,
-    );
+    game.native_text(batch, tab0_label, [ox + 18.0, oy + 8.0], 0, false);
 
     // Tab 1: Items
     let tab1_rect = [ox + 88.0, oy + 5.0, 85.0, 16.0];
@@ -1220,17 +1240,19 @@ pub fn screen_render_post(
     };
     game.native_fill(batch, tab1_rect, tab1_bg);
     let tab1_label = if gui_state.active_tab == 1 {
-        if ru { "§0§lПредметы" } else { "§0§lItems" }
+        if ru {
+            "§0§lПредметы"
+        } else {
+            "§0§lItems"
+        }
     } else {
-        if ru { "§8Предметы" } else { "§8Items" }
+        if ru {
+            "§8Предметы"
+        } else {
+            "§8Items"
+        }
     };
-    game.native_text(
-        batch,
-        tab1_label,
-        [ox + 98.0, oy + 8.0],
-        0,
-        false,
-    );
+    game.native_text(batch, tab1_label, [ox + 98.0, oy + 8.0], 0, false);
 
     // Close button (X) at top right: 16x16 button with 1px border
     let close_x_rect = [ox + pw - 22.0, oy + 5.0, 16.0, 16.0];
@@ -1241,7 +1263,12 @@ pub fn screen_render_post(
         && mouse[1] <= close_x_rect[1] + close_x_rect[3];
     game.native_fill(
         batch,
-        [close_x_rect[0] - 1.0, close_x_rect[1] - 1.0, close_x_rect[2] + 2.0, close_x_rect[3] + 2.0],
+        [
+            close_x_rect[0] - 1.0,
+            close_x_rect[1] - 1.0,
+            close_x_rect[2] + 2.0,
+            close_x_rect[3] + 2.0,
+        ],
         0xFF8B7765,
     );
     game.native_fill(
@@ -1249,7 +1276,13 @@ pub fn screen_render_post(
         close_x_rect,
         if hovered_x { 0xFFD9534F } else { 0xFFDFD1B8 },
     );
-    game.native_text(batch, "§4✕", [close_x_rect[0] + 4.0, close_x_rect[1] + 3.0], 0, false);
+    game.native_text(
+        batch,
+        "§4✕",
+        [close_x_rect[0] + 4.0, close_x_rect[1] + 3.0],
+        0,
+        false,
+    );
 
     // Bottom Close Button: [ Закрыть (Esc) ]
     let close_btn_rect = [ox + pw / 2.0 - 45.0, oy + ph - 22.0, 90.0, 16.0];
@@ -1260,7 +1293,11 @@ pub fn screen_render_post(
     game.native_fill(
         batch,
         close_btn_rect,
-        if hovered_close { 0xFFBFA98B } else { 0xFFD2C1A5 },
+        if hovered_close {
+            0xFFBFA98B
+        } else {
+            0xFFD2C1A5
+        },
     );
     game.native_fill(
         batch,
@@ -1272,7 +1309,11 @@ pub fn screen_render_post(
         ],
         0xFF8B7765,
     );
-    let close_str = if ru { "§0Закрыть (Esc)" } else { "§0Close (Esc)" };
+    let close_str = if ru {
+        "§0Закрыть (Esc)"
+    } else {
+        "§0Close (Esc)"
+    };
     game.native_text(
         batch,
         close_str,
@@ -1284,14 +1325,12 @@ pub fn screen_render_post(
     // 5. Render Tab Content
     if gui_state.active_tab == 0 {
         // --- SUMMARY TAB ---
-        let title_hdr = if ru { "§6§lНекролог" } else { "§6§lObituary" };
-        game.native_text(
-            batch,
-            title_hdr,
-            [ox + 16.0, oy + 35.0],
-            0,
-            false,
-        );
+        let title_hdr = if ru {
+            "§6§lНекролог"
+        } else {
+            "§6§lObituary"
+        };
+        game.native_text(batch, title_hdr, [ox + 16.0, oy + 35.0], 0, false);
         game.native_fill(batch, [ox + 16.0, oy + 47.0, pw - 32.0, 1.0], 0xFF8B7765);
 
         let name_label = if ru { "Погибший" } else { "Player" };
@@ -1299,16 +1338,28 @@ pub fn screen_render_post(
         game.native_text(batch, &name_str, [ox + 16.0, oy + 54.0], 0, false);
 
         let time_fmt = format_time(data.timestamp);
-        let time_label = if ru { "Время гибели" } else { "Time of death" };
+        let time_label = if ru {
+            "Время гибели"
+        } else {
+            "Time of death"
+        };
         let time_str = format!("§8{}: §0{}", time_label, time_fmt);
         game.native_text(batch, &time_str, [ox + 16.0, oy + 70.0], 0, false);
 
         let dim_display = format_dim_nominative(&data.dimension, ru);
-        let dim_label = if ru { "Измерение" } else { "Dimension" };
+        let dim_label = if ru {
+            "Измерение"
+        } else {
+            "Dimension"
+        };
         let dim_str = format!("§8{}: §2{}", dim_label, dim_display);
         game.native_text(batch, &dim_str, [ox + 16.0, oy + 86.0], 0, false);
 
-        let coords_label = if ru { "Координаты" } else { "Coordinates" };
+        let coords_label = if ru {
+            "Координаты"
+        } else {
+            "Coordinates"
+        };
         let coords_str = format!(
             "§8{}: §1X: §0{}  §1Y: §0{}  §1Z: §0{}",
             coords_label, data.pos[0], data.pos[1], data.pos[2]
@@ -1316,33 +1367,59 @@ pub fn screen_render_post(
         game.native_text(batch, &coords_str, [ox + 16.0, oy + 102.0], 0, false);
 
         let total_items: u32 = data.items.iter().map(|i| i.count).sum();
-        let items_hdr = if ru { "Всего предметов" } else { "Total items" };
+        let items_hdr = if ru {
+            "Всего предметов"
+        } else {
+            "Total items"
+        };
         let slots_hdr = if ru { "слотов" } else { "slots" };
-        let items_count_str = format!("§8{}: §4§l{} §8({}: {})", items_hdr, total_items, slots_hdr, data.items.len());
+        let items_count_str = format!(
+            "§8{}: §4§l{} §8({}: {})",
+            items_hdr,
+            total_items,
+            slots_hdr,
+            data.items.len()
+        );
         game.native_text(batch, &items_count_str, [ox + 16.0, oy + 120.0], 0, false);
 
         game.native_fill(batch, [ox + 16.0, oy + 136.0, pw - 32.0, 1.0], 0xFFC6B292);
 
-        let msg_l1 = if ru { "§8§o\"Ваши вещи бережно сохранены" } else { "§8§o\"Your items are safely preserved" };
-        let msg_l2 = if ru { "§8§oв могиле на месте вашей гибели.\"" } else { "§8§oin the grave at your death location.\"" };
-        let msg_l3 = if ru { "§7Shift+ПКМ или разрушение могилы вернёт вещи." } else { "§7Shift+Right-Click or break grave to recover." };
+        let msg_l1 = if ru {
+            "§8§o\"Ваши вещи бережно сохранены"
+        } else {
+            "§8§o\"Your items are safely preserved"
+        };
+        let msg_l2 = if ru {
+            "§8§oв могиле на месте вашей гибели.\""
+        } else {
+            "§8§oin the grave at your death location.\""
+        };
+        let msg_l3 = if ru {
+            "§7Shift+ПКМ или разрушение могилы вернёт вещи."
+        } else {
+            "§7Shift+Right-Click or break grave to recover."
+        };
 
         game.native_text(batch, msg_l1, [ox + 16.0, oy + 146.0], 0, false);
         game.native_text(batch, msg_l2, [ox + 16.0, oy + 158.0], 0, false);
         game.native_text(batch, msg_l3, [ox + 16.0, oy + 173.0], 0, false);
     } else {
         // --- ITEMS TAB ---
-        let items_hdr = if ru { "§0§lЭкипировка и предметы в могиле:" } else { "§0§lEquipment & items in grave:" };
-        game.native_text(
-            batch,
-            items_hdr,
-            [ox + 16.0, oy + 32.0],
-            0,
-            false,
-        );
+        let items_hdr = if ru {
+            "§0§lЭкипировка и предметы в могиле:"
+        } else {
+            "§0§lEquipment & items in grave:"
+        };
+        game.native_text(batch, items_hdr, [ox + 16.0, oy + 32.0], 0, false);
 
         // Armor & Offhand row (5 boxes: Helmet, Chest, Legs, Boots, Offhand)
-        let slot_tags = ["armor:head", "armor:chest", "armor:legs", "armor:feet", "offhand:0"];
+        let slot_tags = [
+            "armor:head",
+            "armor:chest",
+            "armor:legs",
+            "armor:feet",
+            "offhand:0",
+        ];
         let slot_names = if ru {
             ["Шлем", "Нагр.", "Поножи", "Обувь", "2-я рука"]
         } else {
@@ -1497,7 +1574,11 @@ pub fn screen_mouse_button_pressed_pre(
             return;
         }
         // Next button '>'
-        if mx >= ox + pw - 36.0 && mx <= ox + pw - 16.0 && my >= oy + ph - 22.0 && my <= oy + ph - 6.0 {
+        if mx >= ox + pw - 36.0
+            && mx <= ox + pw - 16.0
+            && my >= oy + ph - 22.0
+            && my <= oy + ph - 6.0
+        {
             gui_state.items_page += 1;
             *canceled = true;
             return;

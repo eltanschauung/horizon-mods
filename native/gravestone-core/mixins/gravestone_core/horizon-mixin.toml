@@ -96,19 +96,9 @@ bindings = [
 ]
 
 [[injection]]
-id = "player-inventory-changed"
-kind = "HEAD"
-target = "horizon_client::game::native_hooks::Game<'_>::native_player_inventory_changed"
-helper = "player_inventory_changed.rs"
-bindings = [
-  { name = "player", ty = "u128", value = "player" },
-  { name = "stacks", ty = "&[Option<horizon_client::items::ItemStack>]", value = "stacks" },
-]
-
-[[injection]]
 id = "drop-inventory"
 kind = "HEAD"
-target = "horizon_client::game::item_entities::Game<'_>::drop_inventory"
+target = "horizon_client::game::Game<'_>::drop_inventory"
 helper = "drop_inventory.rs"
 bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
@@ -149,3 +139,10 @@ bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "dimension", ty = "&str", value = "dimension" },
 ]
+
+[[injection]]
+id = "grave-obituary-tick"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_player_tick"
+helper = "obituary_tick.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
