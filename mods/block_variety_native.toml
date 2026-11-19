@@ -5,16 +5,17 @@ summary = "Every block of Chipped and Chisel, turned into one another with the c
 description = """
 **This mod has two parts, and you need both.** Install this one, the native part, and [Block Variety (assets)](https://playhorizon.dev/mods/block_variety), then press Build.
 
-Chipped (by Terrarium), Chisel (by the Chisel team) and Block Carpentry (by PianoManu) in one mod, ported with their creators' permission:
+Chipped (by Terrarium), Chisel (by the Chisel team) and Block Carpentry (by PianoManu) in one mod, with the Item Trash Can of Trash Cans (by SuperMartijn642), ported with their creators' permission:
 
 - **4,629 block variants:** every Chipped block but its workbenches, and 2,371 of Chisel's variants, each a block of its own that behaves as its vanilla block does.
 - **The chisel:** right-click with it, holding blocks in your other hand, for a menu of every block of their group, and click one to turn the whole stack into it. Right-click a placed block with it to turn it into the group's next block (sneaking, the one before), keeping its facing and state.
 - **Frames:** 37 frames (block, falling block, slab, stairs, slope, edged slope, wall, fence, gate, door, trapdoor, pane, carpet, ladder, button, pressure plate, layered block, bed, chest, daylight detector, and their illusion twins) that take on the look of any block put in them. The hammer takes the block back out.
+- **Item Trash Can:** nine slots, and whatever goes in, from your hand or a hopper, is gone the next tick.
 
 There are no Chipped workbenches: the chisel does it all.
 
 Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. The original mods' art and designs are their creators'. No Minecraft code or assets are included."""
-authors = ["Terrarium (Chipped)", "Chisel team (Chisel)", "PianoManu (Block Carpentry)", "mxpbxb (Horizon port)"]
+authors = ["Terrarium (Chipped)", "Chisel team (Chisel)", "PianoManu (Block Carpentry)", "SuperMartijn642 (Trash Cans)", "mxpbxb (Horizon port)"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
 license = "All Rights Reserved"
@@ -22,6 +23,14 @@ source = "https://github.com/mxpbxb/block-variety"
 icon = "icons/block_variety_native.png"
 categories = ["decoration"]
 tags = ["blocks", "building", "chisel", "decoration"]
+
+[[versions]]
+version = "0.3.0"
+published = "2026-11-20"
+game = "26.3"
+file = "block_variety_native-0.3.0.hnmod"
+sha256 = "52e504ba29a26d72f393c7d287cbcedb0b55853f4660e42abb7e022e2e85822b"
+changelog = "The Item Trash Can of Trash Cans (by SuperMartijn642): nine slots, emptied every tick, filled from a hand or a hopper. Needs block_variety 0.3.0."
 
 [[versions]]
 version = "0.2.0"
