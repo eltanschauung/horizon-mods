@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.41.0"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.41.0.hnmod"
+sha256 = "086d1a7cfdbc27631c7db5f6c19fe9dd27687db81971f29f5081366f4db63d74"
+changelog = "Moscow gains a slot and two more to a stack for each level after she evolves (54 slots of 128 to start, up to 64 slots). Stacks over 99 keep their own counts when a doll is saved or picked up; before, the extra went to the first stack of that item."
+
+[[versions]]
 version = "0.40.0"
 published = "2026-11-20"
 game = "26.3"
