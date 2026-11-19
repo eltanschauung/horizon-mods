@@ -219,7 +219,7 @@ fn save_graves_to_disk(game: &Game<'_>, graves: &Graves) -> bool {
         return false;
     };
     let records: Vec<_> = graves.values().collect();
-    let result = (|| -> anyhow::Result<()> {
+    let result = (|| -> Result<(), Box<dyn std::error::Error>> {
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent)?;
         }
