@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "items", "assets"]
 
 [[versions]]
+version = "0.7.1"
+published = "2026-11-20"
+game = "26.3"
+file = "thkaguyamod-0.7.1.hmod"
+sha256 = "a6fb68e6e00a2c55a55796766fa66ce8843b19a238ebcc8cf3da70a5728ddf76"
+changelog = "Journey To Gensokyo's ores generate again (26.3's ore format), and seven animated textures (Hyperconcentrated Magic, the third eye, the Hisou sword and others) load. Needs thkaguyamod_native 0.6.1."
+
+[[versions]]
 version = "0.7.0"
 published = "2026-11-20"
 game = "26.3"
