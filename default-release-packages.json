@@ -1,0 +1,47 @@
+[
+  {
+    "kind": "native",
+    "url": "https://github.com/lavoide/horizon-ports/releases/download/emojiful-v0.1.1/emojiful-0.1.1.hnmod",
+    "sha256": "b6c5019bf9285e55b76a71e33ba3ed65289240df4c53f0c7d08012b5cffdf9ce"
+  },
+  {
+    "kind": "font-pack",
+    "url": "https://github.com/lavoide/horizon-ports/releases/download/emojiful-v0.1.1/emojiful_twemoji-0.1.1.zip",
+    "sha256": "3352ee13d1f07122bca40252c62cf52de04d4c30c74b13518c32321c90dd5faf"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/AdLf0208/bibliocraft_legacy/releases/download/bibliocraft-0.2.0/bibliocraft.hmod",
+    "sha256": "48544f9e8306b7ffa4c2934e0f6c46756aaf40eb29540d9dc2f99e9fae33105e"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/AdLf0208/yungs_better_desert_temples/releases/download/betterdeserttemples-0.2.0/betterdeserttemples.hmod",
+    "sha256": "7cdc7c265425a404c06014a6a495a32854e10acfb1d58b49615ac541b5c4dd31"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/AdLf0208/yungs_better_jungle_temples/releases/download/betterjungletemples-0.2.0/betterjungletemples.hmod",
+    "sha256": "74394afa0ebd90f1b24d017ec427dfd744fc8c23da83b33ea3f5c283e9729615"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/AdLf0208/yungs_better_witch_huts/releases/download/betterwitchhuts-0.2.0/betterwitchhuts.hmod",
+    "sha256": "a3e8391ddc8ccc87a122256e0b10e86751e396dca8829783a16858bc9fda9a87"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/AdLf0208/yungs_better_end_island/releases/download/betterendisland-0.2.0/betterendisland.hmod",
+    "sha256": "93c7105f41889c4a392ea9ec0b035a484e46cb5fa3f736c7409f21cba315cdcf"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/AdLf0208/yungs_extras/releases/download/yungsextras-0.2.0/yungsextras.hmod",
+    "sha256": "28da290a7bff9efe572e46dc89394b8f178f027842f29a0f29ebdc9160f83b5f"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/AdLf0208/mvs_moogs_voyager_structures/releases/download/mvs-0.1.0/mvs.hmod",
+    "sha256": "e7cbcdadbac06c67909b5f83214a2e9fa214ead78ab76eec4d17803d4b95c0dc"
+  }
+]
