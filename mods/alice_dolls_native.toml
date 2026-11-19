@@ -25,6 +25,30 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.39.1"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.39.1.hnmod"
+sha256 = "791262fd1af0730e6984b3ff9ad74eeb1ba96550ed31a5efbdbc0bea619b96d6"
+changelog = "Sneak-click Marisa, Reimu, Patchouli, Yukari, Yuuka or Wakasagi with a bomb (Arcadian Dream's or Touhou Items') and she takes it and drops a limited spell card of her character's from Touhou Items 0.7.0, good for 16 casts."
+
+[[versions]]
+version = "0.38.0"
+published = "2026-11-19"
+game = "26.3"
+file = "alice_dolls_native-0.38.0.hnmod"
+sha256 = "e888b439b47e849fa82c0deca1a0c414e7bb643ae6ab707b65921893e5971c69"
+changelog = "When a giga quarry is done, or ended by another order, the Horai leaves a line of ladders down the pit's wall from the corner where she began. Dolls never drown. The Drown Protect Bauble is gone (assets 0.15.0), as no doll needs it."
+
+[[versions]]
+version = "0.37.0"
+published = "2026-11-19"
+game = "26.3"
+file = "alice_dolls_native-0.37.0.hnmod"
+sha256 = "ef8a4ba2ed13bf615633807e280f319d4314cbea6b96921369615e5b18715880"
+changelog = "Alice's panel can put the ticked dolls in your inventory as their items, with all they carry; a doll that doesn't fit is called to you instead, so nothing is dropped. Alice patrols from the moment she is placed. A Diamond Horai that evolves into a Netherite Horai now quarries, and an evolved Netherite Goliath hits as hard as one. Russia and Moscow keep the Point items they carry. Assets unchanged (0.14.1)."
+
+[[versions]]
 version = "0.36.0"
 published = "2026-11-19"
 game = "26.3"

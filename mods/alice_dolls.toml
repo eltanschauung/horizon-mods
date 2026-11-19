@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "dolls", "assets"]
 
 [[versions]]
+version = "0.15.0"
+published = "2026-11-19"
+game = "26.3"
+file = "alice_dolls-0.15.0.hmod"
+sha256 = "d5013078329b751b69fd4cb0d50b71e6a9ce05d81e9b1981fb9e0fa84bd41815"
+changelog = "The Drown Protect Bauble is removed: dolls never drown (native 0.38.0)."
+
+[[versions]]
 version = "0.14.1"
 published = "2026-11-19"
 game = "26.3"
