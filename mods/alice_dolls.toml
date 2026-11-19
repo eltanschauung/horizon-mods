@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "dolls", "assets"]
 
 [[versions]]
+version = "0.15.1"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls-0.15.1.hmod"
+sha256 = "44b9b43cbfbb5bb6c7a41c2977224bf7e60ac7a3a96ee9e1abcdbae8bf2180be"
+changelog = "Doll anchors can be mined by hand or with any tool, and drop themselves (before, only a pickaxe got one back)."
+
+[[versions]]
 version = "0.15.0"
 published = "2026-11-19"
 game = "26.3"

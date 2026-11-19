@@ -25,6 +25,54 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.3"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.3.hnmod"
+sha256 = "d26eb138ce7e06f8d0205076cf954297155e70eb0e330f230148b38a52b3e552"
+changelog = "Fixes a doll losing the page of its inventory that a screen showed: those rows are the doll's again as the screen closes, and are saved at once. Needs the assets 0.15.1."
+
+[[versions]]
+version = "0.42.2"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.2.hnmod"
+sha256 = "e66e5e35a2f025eb1f1736256a8cdf4b51d6d9f90600e8f2fb3bedc394b750fb"
+changelog = "Fixes dolls losing items: a doll picking up a dropped item no longer throws away what it took in since its last save, a doll saves its inventory every tick it changes, a dying doll drops what it really carried, a doll picked up with a full inventory drops at your feet instead of vanishing with all it held, and a doll screen that can't reopen after a scroll closes. Needs the assets 0.15.1."
+
+[[versions]]
+version = "0.42.1"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.1.hnmod"
+sha256 = "7a015e07f714badb34e41a24fd3e200c8f28496f2e50a99e76d20e805964adc3"
+changelog = "Fixed on dedicated servers, where one level is in place at a time: doll shots, beams and swings show again, the doll bell lists and brings your dolls again, and scrolling or opening doll inventories, Alice panel orders, inventory changes and love from work are no longer lost. Needs the assets 0.15.1."
+
+[[versions]]
+version = "0.42.0"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.0.hnmod"
+sha256 = "13ebde3105a303a550c3521b3fce6c456c2a229d20c3b169fab1df26d2c30ade"
+changelog = "Dolls at work go and get experience orbs within 16 blocks when they have no dropped item to fetch."
+
+[[versions]]
+version = "0.41.0"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.41.0.hnmod"
+sha256 = "086d1a7cfdbc27631c7db5f6c19fe9dd27687db81971f29f5081366f4db63d74"
+changelog = "Moscow gains a slot and two more to a stack for each level after she evolves (54 slots of 128 to start, up to 64 slots). Stacks over 99 keep their own counts when a doll is saved or picked up; before, the extra went to the first stack of that item."
+
+[[versions]]
+version = "0.40.0"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.40.0.hnmod"
+sha256 = "26779bdaa2213d88cf73a630d2178ba261c8e9acb8deed21a6f97d9cee4e2b2a"
+changelog = "Each player can have one Horai out at a time (in any of its three forms), and two each of Patchouli, Reimu, Marisa, Yuuka and Wakasagi. Placing one more says so on the action bar."
+
+[[versions]]
 version = "0.39.1"
 published = "2026-11-20"
 game = "26.3"
