@@ -72,7 +72,7 @@ fn dye(item: &str) -> Option<u32> {
 }
 
 fn bow_color(data: &Compound) -> u32 {
-    match data.get(BOW_COLOR) {
+    match data.get(&BOW_COLOR.into()) {
         Some(Tag::Int(color)) => (*color as u32) & 0xffffff,
         _ => store::DEFAULT_BOW,
     }
