@@ -176,10 +176,12 @@ fn hit(menu: &Menu, layout: &Layout, width: f32, cursor: (f32, f32)) -> Hit {
 /// guest of someone else's world leaves `//schem` to that world's server, and
 /// a game without a window (a dedicated server's console) to the chat list.
 pub(super) fn open(game: &mut Game<'_>) -> bool {
-    if game.renderer.is_none() || !(game.integrated.is_some() || game.remote.is_none()) {
+    if game.renderer.is_none() {
         return false;
     }
-    let dir = if game.world_root.as_os_str().is_empty() {
+    let dir = if game.remote.is_some() {
+        std::env::current_dir().ok().map(|dir| dir.join("schematics"))
+    } else if game.world_root.as_os_str().is_empty() {
         worldedit_paths::schematics()
     } else {
         Some(worldedit_paths::ensure_world(&game.world_root))
@@ -190,6 +192,7 @@ pub(super) fn open(game: &mut Game<'_>) -> bool {
         ));
         return false;
     };
+    let _ = std::fs::create_dir_all(&dir);
     let mut menu = Menu {
         dir,
         ..Menu::default()
@@ -503,6 +506,10 @@ fn paste_picked(game: &mut Game<'_>) {
     };
     game.audio.play_button_click();
     close(game);
+    if game.remote.is_some() {
+        super::worldedit::remote_schematic(game, &entry.file, true);
+        return;
+    }
     // The server of this world owns the clipboard: send both commands to it,
     // in order, the way a typed line would go.
     send(game, &format!("//schem load {}", entry.file));

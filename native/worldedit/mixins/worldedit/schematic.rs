@@ -47,7 +47,14 @@ pub(super) fn read(
     resolve: &dyn Fn(&str) -> Option<BlockStateId>,
 ) -> Result<Loaded, String> {
     let bytes = std::fs::read(path).map_err(|error| format!("{}: {error}", path.display()))?;
-    let raw = decompress(&bytes)?;
+    read_bytes(&bytes, resolve)
+}
+
+pub(super) fn read_bytes(
+    bytes: &[u8],
+    resolve: &dyn Fn(&str) -> Option<BlockStateId>,
+) -> Result<Loaded, String> {
+    let raw = decompress(bytes)?;
     let (named, _) = nbt::read_named(&raw, Limits::templates()).map_err(|e| e.to_string())?;
     let root = &named.tag;
     let loaded = if root.get("Regions").is_some() {

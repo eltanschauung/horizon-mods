@@ -85,6 +85,8 @@ const OPS_BURST: f64 = 10.0;
 const SECRET_EVERY: Duration = Duration::from_secs(1);
 /// Messages waiting for one player at most; more are dropped.
 const MAX_QUEUED: usize = 512;
+/// Charge one durability point per 15 seconds of active send/receive ticks.
+const PHONE_WEAR_TICKS: u16 = 300;
 /// The nonces of a player's last control packets remembered, to drop exact
 /// replays; and how far behind the newest a voice packet's sequence may be.
 const SEEN_NONCES: usize = 64;
@@ -215,6 +217,8 @@ struct State {
     /// Players whose state changed since the last tick, to tell everyone.
     changed: HashSet<u128>,
     outbox: HashMap<u128, VecDeque<(String, Vec<u8>)>>,
+    phone_active: HashSet<u128>,
+    phone_ticks: HashMap<u128, u16>,
 }
 
 struct Shared {
@@ -248,6 +252,8 @@ impl Server {
                 config,
                 port,
                 clients: HashMap::new(),
+                phone_active: HashSet::new(),
+                phone_ticks: HashMap::new(),
                 players: HashMap::new(),
                 groups: HashMap::new(),
                 changed: HashSet::new(),
@@ -307,6 +313,24 @@ impl Server {
     /// Whether `player` was on the server at the last tick.
     pub fn knows(&self, player: u128) -> bool {
         lock(&self.shared.state).players.contains_key(&player)
+    }
+
+    /// Count each player at most once per game tick, even with several speakers.
+    pub fn take_phone_wear(&self) -> Vec<u128> {
+        let mut st = lock(&self.shared.state);
+        let mut wear = Vec::new();
+        for player in std::mem::take(&mut st.phone_active) {
+            if !st.players.get(&player).is_some_and(|p| p.broadcast) {
+                continue;
+            }
+            let ticks = st.phone_ticks.entry(player).or_default();
+            *ticks += 1;
+            if *ticks >= PHONE_WEAR_TICKS {
+                *ticks = 0;
+                wear.push(player);
+            }
+        }
+        wear
     }
 
     /// A player left the game.
@@ -572,6 +596,8 @@ impl State {
 
     fn forget(&mut self, uuid: u128) {
         self.outbox.remove(&uuid);
+        self.phone_active.remove(&uuid);
+        self.phone_ticks.remove(&uuid);
         self.changed.remove(&uuid);
         let Some(c) = self.clients.remove(&uuid) else {
             return;
@@ -764,6 +790,9 @@ fn datagram(shared: &Shared, datagram: &[u8], from: SocketAddr) {
                 return;
             }
             c.tokens -= 1.0;
+            if !data.is_empty() && st.players.get(&player).is_some_and(|p| p.broadcast) {
+                st.phone_active.insert(player);
+            }
             for (listener, addr, range) in st.listeners(player, whispering) {
                 let packet = match range {
                     Some(r) => ToClient::Positional {
@@ -780,6 +809,9 @@ fn datagram(shared: &Shared, datagram: &[u8], from: SocketAddr) {
                     },
                 };
                 send(shared, &st.clients[&listener].cipher, addr, &packet);
+                if !data.is_empty() && st.players.get(&listener).is_some_and(|p| p.broadcast) {
+                    st.phone_active.insert(listener);
+                }
             }
         }
         FromClient::Authenticate { .. } => {}

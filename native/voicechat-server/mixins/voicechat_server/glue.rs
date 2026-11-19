@@ -4,6 +4,7 @@
 // messages, and learns each tick where every player is. A player without a
 // voice chat client is never sent anything.
 
+use super::native_inventories::NativeInventoryKind;
 use crate::game::Game;
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
@@ -36,12 +37,10 @@ fn players(game: &Game<'_>) -> Vec<Player> {
             name: p.name,
             dimension: p.dimension,
             position: p.position,
-            // Optional Lunatic integration: possession in a backpack is not enough.
-            // Only authoritative equipped stacks can enable broadcast; clients cannot request it.
-            broadcast: [horizon_world::player_inventory::EquipmentSlot::MainHand,
-                horizon_world::player_inventory::EquipmentSlot::OffHand].into_iter().any(|slot|
-                game.native_player_equipment(p.uuid, slot)
-                    .is_some_and(|s| s.item.as_ref() == "lunatic:koishi_phone")),
+            // Lunatic maintains this effect from the authoritative hotbar.
+            broadcast: game.native_effects(p.uuid).is_some_and(|effects| {
+                effects.iter().any(|effect| effect.id == "lunatic:all_talk")
+            }),
         })
         .collect()
 }
@@ -122,19 +121,51 @@ pub(super) fn message(game: &mut Game<'_>, player: u128, channel: &str, data: &[
 
 /// Each server tick, once the relay runs.
 pub(super) fn tick(game: &mut Game<'_>) {
-    let out = {
+    let (out, wear) = {
         let relay = relay();
         let Relay::Running(server) = &*relay else {
             return;
         };
         server.tick(players(game));
-        server.outgoing(PER_TICK)
+        (server.outgoing(PER_TICK), server.take_phone_wear())
     };
+    for player in wear {
+        wear_phone(game, player);
+    }
     for (player, channel, data) in out {
         if let Err(e) = game.native_net_send_to_player(player, &channel, &data) {
             log::debug!("Voice chat: {channel} not sent: {e}");
         }
     }
+}
+
+fn wear_phone(game: &mut Game<'_>, player: u128) {
+    let kind = NativeInventoryKind::Player;
+    let Ok(inventory) = game.native_inventory(player, kind) else {
+        return;
+    };
+    if !inventory.online {
+        return;
+    }
+    let Some((slot, phone)) =
+        inventory
+            .slots
+            .iter()
+            .take(9)
+            .enumerate()
+            .find_map(|(slot, stack)| {
+                stack
+                    .as_ref()
+                    .filter(|stack| stack.item.as_ref() == "lunatic:koishi_phone")
+                    .map(|phone| (slot, phone))
+            })
+    else {
+        return;
+    };
+    let mut worn = phone.clone();
+    worn.damage = worn.damage.saturating_add(1);
+    let next = (worn.damage < 250).then_some(worn);
+    let _ = game.native_set_inventory_slot(player, kind, slot, Some(phone), next);
 }
 
 pub(super) fn left(player: u128) {

@@ -131,7 +131,10 @@ fn with_state<T>(game: &mut Game<'_>, run: impl FnOnce(&mut Game<'_>, &mut State
             });
         }
     }
-    let key = game.world_root.clone();
+    let mut key = game.world_root.clone();
+    if let Some(player) = game.lan_acting_uuid {
+        key = key.join(format!("worldedit-session-{player:032x}"));
+    }
     let state = STATES.with(|states| states.borrow_mut().remove(&key).unwrap_or_default());
     let mut lease = Lease { key, state };
     run(game, &mut lease.state)
@@ -1335,6 +1338,9 @@ fn redo(game: &mut Game<'_>, state: &mut State) -> bool {
 /// This world's schematics: `<world>/schematics`, where `//schem save` writes
 /// and `//schem load` looks first.
 fn schematics_dir(game: &Game<'_>) -> PathBuf {
+    if game.remote.is_some() {
+        return std::env::current_dir().map(|dir| dir.join("schematics")).unwrap_or_default();
+    }
     // The window of a world on its own server thread has no folder of its own:
     // the world it opened is the one the helpers remember.
     let world = if game.world_root.as_os_str().is_empty() {
@@ -1429,6 +1435,21 @@ pub(super) fn schem_input(game: &mut Game<'_>, message: &str) -> bool {
         Some((name, args)) if name == "schem" && args.is_empty() => {
             super::worldedit_menu::open(game)
         }
+        Some((name, args)) if name == "schem" && game.remote.is_some() => {
+            match args.split_first() {
+                Some((&"load", names)) => remote_schematic(game, &names.join(" "), false),
+                Some((&"list", _)) => list_schematics(game),
+                Some((&"folder", _)) => {
+                    let dir = schematics_dir(game);
+                    if !dir.as_os_str().is_empty() && std::fs::create_dir_all(&dir).is_ok() {
+                        super::packs::open_folder(&dir);
+                    }
+                    true
+                }
+                _ => return false,
+            };
+            true
+        }
         _ => false,
     }
 }
@@ -1482,6 +1503,10 @@ fn load_schematic(game: &mut Game<'_>, state: &mut State, args: &[&str]) -> bool
         .file_name()
         .map(|file| file.to_string_lossy().into_owned())
         .unwrap_or_else(|| path.display().to_string());
+    install_schematic(game, state, loaded, &label)
+}
+
+fn install_schematic(game: &mut Game<'_>, state: &mut State, loaded: worldedit_schem::Loaded, label: &str) -> bool {
     let (size, count, unknown) = (loaded.size, loaded.blocks.len(), loaded.unknown);
     let format = loaded.format;
     state.clipboard = loaded.blocks;
@@ -1645,4 +1670,125 @@ fn delete_schematic(game: &mut Game<'_>, args: &[&str]) -> bool {
         }
     }
     true
+}
+
+const SCHEMATIC_CHANNEL: &str = "worldedit:schematic";
+const SCHEMATIC_LIMIT: usize = 8 * 1024 * 1024;
+const SCHEMATIC_PACKET: usize = 28_000;
+
+struct SchematicUpload {
+    data: Vec<u8>,
+    offset: usize,
+}
+struct IncomingSchematic {
+    paste: bool,
+    started: std::time::Instant,
+    data: Vec<u8>,
+}
+thread_local! {
+    static OUTGOING_SCHEMATIC: std::cell::RefCell<Option<SchematicUpload>> = const { std::cell::RefCell::new(None) };
+    static INCOMING_SCHEMATICS: std::cell::RefCell<BTreeMap<u128, IncomingSchematic>> =
+        const { std::cell::RefCell::new(BTreeMap::new()) };
+}
+
+pub(super) fn remote_schematic(game: &mut Game<'_>, name: &str, paste: bool) -> bool {
+    use std::io::Read;
+    let Some(path) = schematic_path(game, name) else {
+        failure(game, format!("No local schematic {name} in {}", schematics_dir(game).display()));
+        return false;
+    };
+    let mut data = Vec::new();
+    let read = std::fs::File::open(&path)
+        .and_then(|file| file.take(SCHEMATIC_LIMIT as u64 + 1).read_to_end(&mut data));
+    if read.is_err() || data.is_empty() || data.len() > SCHEMATIC_LIMIT {
+        failure(game, "Unable to read the schematic, or it exceeds the 8 MiB upload limit");
+        return false;
+    }
+    if let Err(error) = game.native_net_send_to_server(SCHEMATIC_CHANNEL, &[u8::from(paste)]) {
+        failure(game, error);
+        return false;
+    }
+    OUTGOING_SCHEMATIC.with(|slot| {
+        *slot.borrow_mut() = Some(SchematicUpload { data, offset: 0 });
+    });
+    message(game, format!("Sending local schematic {name}"));
+    true
+}
+
+pub(super) fn schematic_client_tick(game: &mut Game<'_>) {
+    OUTGOING_SCHEMATIC.with(|slot| {
+        let mut slot = slot.borrow_mut();
+        if game.remote.is_none() {
+            slot.take();
+            return;
+        }
+        let Some(upload) = slot.as_mut() else { return; };
+        for _ in 0..4 {
+            if upload.offset == upload.data.len() {
+                if game.native_net_send_to_server(SCHEMATIC_CHANNEL, &[3]).is_ok() {
+                    slot.take();
+                }
+                break;
+            }
+            let end = (upload.offset + SCHEMATIC_PACKET).min(upload.data.len());
+            let mut packet = Vec::with_capacity(end - upload.offset + 1);
+            packet.push(2);
+            packet.extend_from_slice(&upload.data[upload.offset..end]);
+            if game.native_net_send_to_server(SCHEMATIC_CHANNEL, &packet).is_err() {
+                break;
+            }
+            upload.offset = end;
+        }
+    });
+}
+
+pub(super) fn schematic_from_client(game: &mut Game<'_>, player: u128, channel: &str, data: &[u8]) {
+    if channel != SCHEMATIC_CHANNEL {
+        return;
+    }
+    if game.native_player_permission(player).unwrap_or(0) < 2 {
+        return;
+    }
+    let complete = INCOMING_SCHEMATICS.with(|uploads| {
+        let mut uploads = uploads.borrow_mut();
+        uploads.retain(|_, v| v.started.elapsed() < std::time::Duration::from_secs(30));
+        match data {
+            [kind @ (0 | 1)] if uploads.len() < 8 || uploads.contains_key(&player) => {
+                uploads.insert(player, IncomingSchematic {
+                    paste: *kind == 1, data: Vec::new(), started: std::time::Instant::now(),
+                });
+            }
+            [2, bytes @ ..] if !bytes.is_empty() && bytes.len() <= SCHEMATIC_PACKET => {
+                if let Some(upload) = uploads.get_mut(&player) {
+                    if upload.data.len() + bytes.len() <= SCHEMATIC_LIMIT {
+                        upload.data.extend_from_slice(bytes);
+                    } else {
+                        uploads.remove(&player);
+                    }
+                }
+            }
+            [3] => return uploads.remove(&player),
+            _ => {}
+        }
+        None
+    });
+    let Some(upload) = complete else { return; };
+    let conn = game.lan.as_ref()
+        .and_then(|host| host.hub.guests.iter().find(|g| g.uuid == player))
+        .map(|g| g.conn);
+    if let Some(conn) = conn {
+        game.for_player(super::commands::Target::Guest(conn), |game| {
+            if !game.may_build() || game.spectator() {
+                return;
+            }
+            let loaded = worldedit_schem::read_bytes(&upload.data, &|spec| block_state(game, spec));
+            match loaded {
+                Ok(loaded) => with_state(game, |game, state| {
+                    install_schematic(game, state, loaded, "client schematic");
+                    if upload.paste { paste(game, state); }
+                }),
+                Err(error) => failure(game, format!("Could not load client schematic: {error}")),
+            }
+        });
+    }
 }

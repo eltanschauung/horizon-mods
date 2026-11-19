@@ -173,3 +173,22 @@ bindings = [
 # means changing this line to that tree's commit (or dropping the section: a
 # bundle without a pin builds on the installed version's commit).
 horizon_revision = "23572e0099525f0fba3a8a9cdf3fcda52832d1b1"
+
+[[injection]]
+id = "schem-upload"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_net_from_client"
+helper = "schem-upload.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "player", ty = "u128", value = "player" },
+  { name = "channel", ty = "&str", value = "channel" },
+  { name = "data", ty = "&[u8]", value = "data" },
+]
+
+[[injection]]
+id = "schem-upload-tick"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_client_tick_post"
+helper = "schem-upload-tick.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
