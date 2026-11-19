@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.40.0"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.40.0.hnmod"
+sha256 = "26779bdaa2213d88cf73a630d2178ba261c8e9acb8deed21a6f97d9cee4e2b2a"
+changelog = "Each player can have one Horai out at a time (in any of its three forms), and two each of Patchouli, Reimu, Marisa, Yuuka and Wakasagi. Placing one more says so on the action bar."
+
+[[versions]]
 version = "0.39.1"
 published = "2026-11-20"
 game = "26.3"
