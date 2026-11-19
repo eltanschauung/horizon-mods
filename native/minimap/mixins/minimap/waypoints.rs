@@ -5,7 +5,7 @@ use std::cell::RefCell;
 struct Waypoint { name:String, position:[f64;3], dimension:String, color:usize, enabled:bool }
 const COLORS:[u32;6]=[0xff5555ff,0xff55ff55,0xffffaa00,0xffff55ff,0xff55ffff,0xffffffff];
 #[derive(Default)]
-struct State { scope:String, points:Vec<Waypoint>, writable:bool, open:bool, selected:Option<usize>, form:[String;4], field:usize, replace_on_type:bool, color:usize, page:usize, rects:Vec<[f32;4]>, error:String }
+struct State { scope:String, points:Vec<Waypoint>, writable:bool, open:bool, selected:Option<usize>, form:[String;4], field:usize, replace_on_type:bool, color:usize, page:usize, rects:Vec<[f32;4]>, opacity_slider:[f32;4], dragging_opacity:Option<f32>, error:String }
 thread_local! { static STATE:RefCell<State> = RefCell::new(State::default()); }
 pub(super) fn scope(game:&Game<'_>)->String {
  let source=if game.integrated.is_none() { game.server_address().map(str::to_owned) } else { None }
@@ -32,10 +32,59 @@ fn save(game:&Game<'_>,s:&mut State){
 fn new_point(game:&Game<'_>,s:&mut State){s.selected=None;s.field=0;s.replace_on_type=true;s.form=["Waypoint".into(),"0".into(),"64".into(),"0".into()];if let Some(p)=game.native_player(){s.form[1]=format!("{:.0}",p.x);s.form[2]=format!("{:.0}",p.y);s.form[3]=format!("{:.0}",p.z);}}
 pub(super) fn open_key(game:&mut Game<'_>,key:&str,pressed:bool){
  if !pressed || key!=game.native_mod_key(super::official_minimap::ID,"waypoints_key","key.keyboard.u") || !game.native_on(super::official_minimap::ID) || game.screen!=Screen::Playing{return;}
- STATE.with_borrow_mut(|s|{load(game,s);s.open=true;new_point(game,s);});
+ STATE.with_borrow_mut(|s|{load(game,s);s.open=true;s.dragging_opacity=None;new_point(game,s);});
  game.open_options(false);game.options_to_game=true;game.capture(false);
 }
 fn active(s:&State,screen:&super::native_hooks::NativeScreenView<'_>)->bool{s.open && screen.id=="options"}
+const OPACITY: &str = "waypoint_opacity";
+
+thread_local! {
+    static WAYPOINT_OPACITY: std::cell::Cell<Option<f32>> = const { std::cell::Cell::new(None) };
+}
+
+fn opacity(game: &Game<'_>) -> f32 {
+    if let Some(value) = WAYPOINT_OPACITY.get() {
+        return value;
+    }
+    let value = game.native_setting(super::official_minimap::ID, OPACITY)
+        .and_then(|value| value.trim().parse::<f32>().ok())
+        .filter(|value| value.is_finite())
+        .map_or(1.0, |value| value.clamp(0.0, 1.0));
+    WAYPOINT_OPACITY.set(Some(value));
+    value
+}
+
+fn alpha(color: u32, opacity: f32) -> u32 {
+    (color & 0xffffff) | ((((color >> 24) as f32 * opacity).round() as u32) << 24)
+}
+
+fn slider_value(rect: [f32; 4], x: f32) -> f32 {
+    ((x - rect[0] - 4.0) / (rect[2] - 8.0)).clamp(0.0, 1.0)
+}
+
+pub(super) fn drag(game: &Game<'_>, screen: &super::native_hooks::NativeScreenView<'_>, button: i32, canceled: &mut bool) {
+    STATE.with_borrow_mut(|s| {
+        if active(s, screen) && button == 0 && s.dragging_opacity.is_some() {
+            s.dragging_opacity = Some(slider_value(s.opacity_slider, screen.mouse[0]));
+            *canceled = true;
+        }
+    });
+}
+
+pub(super) fn release(game: &Game<'_>, screen: &super::native_hooks::NativeScreenView<'_>, button: i32, canceled: &mut bool) {
+    STATE.with_borrow_mut(|s| {
+        if active(s, screen) {
+            *canceled = true;
+            if button == 0 && s.dragging_opacity.take().is_some() {
+                let value = slider_value(s.opacity_slider, screen.mouse[0]);
+                let value = (value * 100.0).round() / 100.0;
+                game.native_set_setting(super::official_minimap::ID, OPACITY, &format!("{value:.2}"));
+                WAYPOINT_OPACITY.set(Some(value));
+            }
+        }
+    });
+}
+
 pub(super) fn draw(game:&Game<'_>,screen:&super::native_hooks::NativeScreenView<'_>,batch:&mut HudBatch){
  STATE.with_borrow_mut(|s|{
  if !active(s,screen){return;}
@@ -48,13 +97,20 @@ pub(super) fn draw(game:&Game<'_>,screen:&super::native_hooks::NativeScreenView<
  for i in 0..4 {let rect=[fx,fy+i as f32*21.0,w*0.46-4.0,20.0];s.rects.push(rect);ui::button(batch,a,rect[0],rect[1],rect[2],rect[3],&Text::literal(format!("{}: {}{}",["Name","X","Y","Z"][i],s.form[i].chars().rev().take(13).collect::<String>().chars().rev().collect::<String>(),if s.field==i{"_"}else{""})),true,s.field==i);}
  let labels=["New","Save","Delete","Toggle","Color","<",">"];
  for (i,label) in labels.iter().enumerate(){let bw=w/7.0;let rect=[x+i as f32*bw,fy+110.0,bw-1.0,20.0];s.rects.push(rect);ui::button(batch,a,rect[0],rect[1],rect[2],rect[3],&Text::literal(*label),s.writable,false);}
- batch.text(a,"Esc: close / Tab: field",x,fy+134.0,COLORS[s.color%6],true);
- if !s.error.is_empty(){batch.text(a,&s.error,x,fy+146.0,0xff5555ff,true);}
+ s.opacity_slider = [x, fy + 133.0, w, 20.0];
+ let value = s.dragging_opacity.unwrap_or_else(|| opacity(game));
+ let label = Text::literal(format!("Waypoint Opacity: {:.0}%", value * 100.0));
+ ui::slider(batch, a, x, s.opacity_slider[1], w, &label, value, hit(s.opacity_slider, screen.mouse), true, s.dragging_opacity.is_some());
+ if !s.error.is_empty(){batch.text(a,&s.error,x,fy+157.0,0xff5555ff,true);}
  });
 }
 fn hit(r:[f32;4],p:[f32;2])->bool{p[0]>=r[0]&&p[0]<r[0]+r[2]&&p[1]>=r[1]&&p[1]<r[1]+r[3]}
 pub(super) fn press(game:&Game<'_>,screen:&super::native_hooks::NativeScreenView<'_>,button:i32,canceled:&mut bool){
  STATE.with_borrow_mut(|s|{if !active(s,screen){return;}*canceled=true;if button!=0{return;}
+ if hit(s.opacity_slider, screen.mouse) {
+     s.dragging_opacity = Some(slider_value(s.opacity_slider, screen.mouse[0]));
+     return;
+ }
  let Some(i)=s.rects.iter().position(|r|hit(*r,screen.mouse)) else{return;};
  if i<5{let idx=s.page*5+i;if let Some(p)=s.points.get(idx){s.selected=Some(idx);s.form=[p.name.clone(),p.position[0].to_string(),p.position[1].to_string(),p.position[2].to_string()];s.color=p.color%6;s.replace_on_type=true;}return;}
  if i<9{s.field=i-5;s.replace_on_type=true;return;}
@@ -77,17 +133,33 @@ fn skin_rects(game:&Game<'_>,skin:&str)->Option<(Rect,Rect)>{let r=*game.gui.atl
 pub(super) fn markers(game:&Game<'_>,settings:super::official_minimap::Settings){
  use horizon_client::extras_hud::minimap_coordinates::{MARKERS,OWN_HEAD,Marker};
  let Some(p)=game.native_player()else{return;};let (size,bpp)=settings.view();let yaw=game.yaw as f64;let (sin,cos)=yaw.to_radians().sin_cos();
- let project=|x:f64,z:f64,clamp:bool|{let reach = size / 2.0 - if clamp { 15.0 } else { 7.0 };let (dx,dz)=((x-p.x)/f64::from(bpp),(z-p.z)/f64::from(bpp));let (x,y)=if settings.rotate{(-cos*dx-sin*dz,sin*dx-cos*dz)}else{(dx,dz)};let (mut x,mut y)=(x as f32,y as f32);let d=if settings.round{x.hypot(y)}else{x.abs().max(y.abs())};if d>reach {if !clamp{return None;}x*=reach/d;y*=reach/d;}Some((x,y))};
+ let project = |x: f64, z: f64| {
+     let (dx, dz) = ((x - p.x) / f64::from(bpp), (z - p.z) / f64::from(bpp));
+     let (x, y) = if settings.rotate { (-cos * dx - sin * dz, sin * dx - cos * dz) } else { (dx, dz) };
+     (x as f32, y as f32)
+ };
+ let radius = size / 2.0;
+ let norm = |x: f32, y: f32| if settings.round { x.hypot(y) } else { x.abs().max(y.abs()) };
  let mut markers=Vec::new();
- for m in game.mobs.iter().filter(|m|m.kind.id.as_str()=="minecraft:player" && !m.is_invisible()) {if let Some((x,y))=project(m.position.x,m.position.z,false) && let Some((face,hat))=m.skin.as_deref().and_then(|skin|skin_rects(game,skin)){let opacity=game.player_presentation_opacity(m,glam::DVec3::new(p.x,p.y,p.z)).clamp(0.0,1.0);let color=(((opacity*255.0).round() as u32)<<24)|0x00ffffff;markers.push(Marker{x,y,face:Some(face),hat:Some(hat),color,label:String::new()});}}
- if settings.player_head && let Some((face,hat))=game.player_model.as_ref().and_then(|m|m.skin.as_deref()).and_then(|skin|skin_rects(game,skin)){markers.push(Marker{x:0.0,y:0.0,face:Some(face),hat:Some(hat),color:u32::MAX,label:String::new()});OWN_HEAD.with(|v|v.set(true));}
- for_each_waypoint(game, |point, _, glyph, color| {
-     if let Some((x, y)) = project(point[0], point[2], true) {
-         markers.push(Marker {
-             x, y, face: None, hat: None, color, label: glyph.to_string(),
-         });
-     }
- });
+ for m in game.mobs.iter().filter(|m|m.kind.id.as_str()=="minecraft:player" && !m.is_invisible()) {let (x,y)=project(m.position.x,m.position.z); if norm(x,y) <= radius - 7.0 && let Some((face,hat))=m.skin.as_deref().and_then(|skin|skin_rects(game,skin)){let opacity=game.player_presentation_opacity(m,glam::DVec3::new(p.x,p.y,p.z)).clamp(0.0,1.0);let color=(((opacity*255.0).round() as u32)<<24)|0x00ffffff;markers.push(Marker{x,y,face:Some(face),hat:Some(hat),color,label:String::new(),size:0.0});}}
+ if settings.player_head && let Some((face,hat))=game.player_model.as_ref().and_then(|m|m.skin.as_deref()).and_then(|skin|skin_rects(game,skin)){markers.push(Marker{x:0.0,y:0.0,face:Some(face),hat:Some(hat),color:u32::MAX,label:String::new(),size:0.0});OWN_HEAD.with(|v|v.set(true));}
+ let opacity = opacity(game);
+ if opacity > 0.0 {
+     for_each_waypoint(game, |point, _, glyph, color| {
+         let (mut x, mut y) = project(point[0], point[2]);
+         let distance = norm(x, y);
+         let size = 10.0 * (1.0 - 0.75 * (distance / radius).clamp(0.0, 1.0));
+         // The entire square badge stays inside the map, even on a round map.
+         let half = size / 2.0;
+         let inset = if settings.round { std::f32::consts::SQRT_2 * half } else { half };
+         let reach = radius - inset;
+         if distance > reach {
+             x *= reach / distance;
+             y *= reach / distance;
+         }
+         markers.push(Marker { x, y, face: None, hat: None, color: alpha(color, opacity), label: glyph.to_string(), size });
+     });
+ }
  MARKERS.with_borrow_mut(|v|*v=markers);
 }
 
@@ -113,6 +185,8 @@ pub(super) fn draw_world(game: &Game<'_>, batch: &mut HudBatch) {
     if game.screen != Screen::Playing || !game.native_on(super::official_minimap::ID) {
         return;
     }
+    let opacity = opacity(game);
+    if opacity == 0.0 { return; }
     let [width, height] = [batch.width, batch.height];
     let (eye, matrix) = if let Some(camera) = game.native_camera() {
         (
@@ -131,7 +205,9 @@ pub(super) fn draw_world(game: &Game<'_>, batch: &mut HudBatch) {
     };
 
     let mut labels = Vec::new();
+    let origin = game.native_player().map_or(eye, |p| [p.x, p.y, p.z]);
     for_each_waypoint(game, |point, title, glyph, color| {
+        let distance = (DVec3::from_array(point) - DVec3::from_array(origin)).length();
         let offset = DVec3::from_array(point) - DVec3::from_array(eye) + DVec3::Y;
         let clip = matrix * Vec4::from((offset.as_vec3(), 1.0));
         if clip.w <= 0.05 || !clip.is_finite() {
@@ -140,25 +216,26 @@ pub(super) fn draw_world(game: &Game<'_>, batch: &mut HudBatch) {
         let x = (0.5 + clip.x / (2.0 * clip.w)) * width;
         let y = (0.5 - clip.y / (2.0 * clip.w)) * height;
         if (7.0..=width - 7.0).contains(&x) && (7.0..=height - 19.0).contains(&y) {
-            labels.push((offset.length_squared(), x, y, Text::literal(title), glyph, color));
+            labels.push((distance, x, y, Text::literal(title), glyph, color));
         }
     });
     labels.sort_by(|a, b| b.0.total_cmp(&a.0));
 
     let atlas = &game.gui.atlas;
-    for (_, x, y, title, glyph, color) in labels {
+    for (distance, x, y, title, glyph, color) in labels {
+        let distance_scale = (1.0 - 0.9 * (distance / 1000.0).clamp(0.0, 1.0)) as f32;
         let mut letter = [0; 4];
-        draw_badge(batch, atlas, [x, y], glyph.encode_utf8(&mut letter), color, 12.0);
+        draw_badge(batch, atlas, [x, y], glyph.encode_utf8(&mut letter), alpha(color, opacity), 12.0 * distance_scale);
         let text_width = atlas.font.width_text(&title).max(1.0);
-        let scale = ((width - 8.0) / text_width).min(1.0);
-        let title_width = text_width * scale + 4.0;
+        let scale = ((width - 8.0) / text_width).min(distance_scale);
+        let title_width = text_width * scale + 4.0 * distance_scale;
         let tx = (x - title_width / 2.0).clamp(2.0, (width - title_width - 2.0).max(2.0)).round();
-        let ty = y.round() + 7.0;
-        batch.fill(atlas, tx, ty, title_width, 3.0 + 8.0 * scale, 0xb0000000);
+        let ty = y + 7.0 * distance_scale;
+        batch.fill(atlas, tx, ty, title_width, 3.0 * distance_scale + 8.0 * scale, alpha(0xb0000000, opacity));
         let start = batch.vertices.len();
-        batch.text_styled(atlas, &title, tx + 2.0, ty + 1.0, u32::MAX, true);
+        batch.text_styled(atlas, &title, tx + 2.0 * distance_scale, ty + distance_scale, alpha(u32::MAX, opacity), true);
         if scale < 1.0 {
-            batch.scale_since(start, tx + 2.0, ty + 1.0, scale, scale);
+            batch.scale_since(start, tx + 2.0 * distance_scale, ty + distance_scale, scale, scale);
         }
     }
 }

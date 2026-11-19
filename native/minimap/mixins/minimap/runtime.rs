@@ -9,7 +9,7 @@
 /// The mod's id (its settings folder), name and version.
 pub const ID: &str = "minimap";
 pub const NAME: &str = "Minimap";
-pub const VERSION: &str = "2.0.0";
+pub const VERSION: &str = "2.0.1";
 pub const DESCRIPTION: &str = "A map of the terrain around you in a corner, in map colours, square or round, north up or turning with you. Horizon's own.";
 /// The corners, as the settings files name them and the page labels them.
 pub const CORNERS: [(&str, &str); 4] = [

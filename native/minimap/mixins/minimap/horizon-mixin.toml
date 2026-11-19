@@ -1,6 +1,6 @@
 [mod]
 id = "minimap"
-version = "2.0.0"
+version = "2.0.1"
 priority = 100
 
 # Tested renderer layout. The map uses a stable hook; its outline/coordinate
@@ -167,6 +167,20 @@ helper="waypoint_release.rs"
 bindings=[
 {name="game",ty="&crate::game::Game<'_>",value="&*self"},
 {name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+{name="button",ty="i32",value="button"},
+{name="canceled",ty="&mut bool",value="&mut *canceled"}
+]
+
+[[injection]]
+id="waypoint-drag"
+kind="HEAD"
+hook="screen_mouse_dragged_pre"
+hook_version=1
+helper="waypoint_drag.rs"
+bindings=[
+{name="game",ty="&crate::game::Game<'_>",value="&*self"},
+{name="screen",ty="&crate::game::native_hooks::NativeScreenView<'_>",value="&*screen"},
+{name="button",ty="i32",value="button"},
 {name="canceled",ty="&mut bool",value="&mut *canceled"}
 ]
 

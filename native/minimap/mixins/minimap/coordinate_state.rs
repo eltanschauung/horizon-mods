@@ -13,6 +13,7 @@ pub struct Marker {
     pub hat: Option<crate::hud::Rect>,
     pub color: u32,
     pub label: String,
+    pub size: f32,
 }
 thread_local! {
  pub static MARKERS: std::cell::RefCell<Vec<Marker>> = const { std::cell::RefCell::new(Vec::new()) };
@@ -28,18 +29,22 @@ pub fn draw_badge(
     size: f32,
 ) {
     use crate::hud::HudBatch;
-    let left = (x - size / 2.0).round();
-    let top = (y - size / 2.0).round();
-    batch.fill(atlas, left, top, size, size, 0xd0000000);
-    batch.fill(atlas, left + 1.0, top + 1.0, size - 2.0, size - 2.0, color);
-
-    let scale = (size - 3.0) / 9.0;
-    let width = HudBatch::text_width(atlas, label);
-    let tx = (left + (size - width * scale) / 2.0).round();
-    let ty = (top + (size - 8.0 * scale) / 2.0).round();
+    let opacity = color >> 24;
+    if opacity == 0 { return; }
     let start = batch.vertices.len();
-    batch.text(atlas, label, tx, ty, u32::MAX, true);
-    batch.scale_since(start, tx, ty, scale, scale);
+    // Draw at a fixed logical size, then scale the entire badge around its centre.
+    let left = x - 6.0;
+    let top = y - 6.0;
+    let draw_size = 12.0;
+    batch.fill(atlas, left, top, draw_size, draw_size, (opacity * 0xd0 / 255) << 24);
+    batch.fill(atlas, left + 1.0, top + 1.0, draw_size - 2.0, draw_size - 2.0, color);
+
+    let scale = (draw_size - 3.0) / 9.0;
+    let width = HudBatch::text_width(atlas, label);
+    let tx = left + (draw_size - width * scale) / 2.0;
+    let ty = top + (draw_size - 8.0 * scale) / 2.0;
+    batch.text(atlas, label, tx, ty, (opacity << 24) | 0xffffff, true);
+    batch.scale_since(start, x, y, size / draw_size, size / draw_size);
 }
 
 pub fn draw_markers(
@@ -58,7 +63,7 @@ pub fn draw_markers(
                     batch.rect_uv(px - 4.5, py - 4.5, 9.0, 9.0, hat, m.color);
                 }
             } else {
-                draw_badge(batch, atlas, [px, py], &m.label, m.color, 10.0);
+                draw_badge(batch, atlas, [px, py], &m.label, m.color, m.size);
             }
         }
     });
