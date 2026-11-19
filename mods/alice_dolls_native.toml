@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.37.0"
+published = "2026-11-19"
+game = "26.3"
+file = "alice_dolls_native-0.37.0.hnmod"
+sha256 = "ef8a4ba2ed13bf615633807e280f319d4314cbea6b96921369615e5b18715880"
+changelog = "Alice's panel can put the ticked dolls in your inventory as their items, with all they carry; a doll that doesn't fit is called to you instead, so nothing is dropped. Alice patrols from the moment she is placed. A Diamond Horai that evolves into a Netherite Horai now quarries, and an evolved Netherite Goliath hits as hard as one. Russia and Moscow keep the Point items they carry. Assets unchanged (0.14.1)."
+
+[[versions]]
 version = "0.36.0"
 published = "2026-11-19"
 game = "26.3"
