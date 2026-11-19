@@ -1,0 +1,26 @@
+id = "biomesoplenty"
+kind = "mod"
+name = "Biomes O' Plenty (old textures)"
+summary = "Horizon's Biomes O' Plenty with 135 of its textures back to Biomes O' Plenty 1.12's."
+description = """
+Horizon's Biomes O' Plenty port (0.2.7) with the old look: 135 textures back to Biomes O' Plenty 1.12's, for the woods, leaves, saplings, doors, flowers, grasses and sands.
+
+**It is the whole BOP mod, in place of the one that comes with Horizon**, not an add-on: a content mod can only change its own namespace's files. The blocks, items, biomes and worlds are the same. Clover, the blood fluid, boats and everything added to BOP after 1.12 keep their 26.3 textures.
+
+Biomes O' Plenty by Adubbz, Amnet, Cheeserolls, Forstride and ted80 (CC BY-NC-ND 4.0), used with permission."""
+authors = ["Adubbz", "Amnet", "Cheeserolls", "Forstride", "ted80", "Horizon (26.3 port)", "mxpbxb (old textures)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "CC-BY-NC-ND-4.0"
+source = "https://github.com/mxpbxb/bop-old-textures"
+icon = "icons/biomesoplenty.png"
+categories = ["worldgen", "decoration"]
+tags = ["biomes", "textures", "old", "bop"]
+
+[[versions]]
+version = "0.2.8"
+published = "2026-11-20"
+game = "26.3"
+file = "biomesoplenty-0.2.8.hmod"
+sha256 = "f938eac64ca2eda585c9b86371561a63a7dc42ef457bb84ba3dc2dc300253ff0"
+changelog = "Horizon's BOP 0.2.7 with 135 textures back to Biomes O' Plenty 1.12's."
