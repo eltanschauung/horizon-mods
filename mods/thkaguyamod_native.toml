@@ -30,6 +30,14 @@ categories = ["adventure", "equipment"]
 tags = ["touhou", "weapons", "danmaku", "spell-cards"]
 
 [[versions]]
+version = "0.6.1"
+published = "2026-11-20"
+game = "26.3"
+file = "thkaguyamod_native-0.6.1.hnmod"
+sha256 = "fdcc32187790ca2eeb4b44adb51395a5c0f59f35836172058a8c7bd5b5e25dec"
+changelog = "Spell cards find their targets: one looked at, or the hostile nearest the line of sight. With none, a card isn't cast and costs nothing (before, it took the levels and the cards that need a target, such as Fantasy Seal, did nothing). A card keeps its target to its end, even once that dies. Needs thkaguyamod 0.7.1."
+
+[[versions]]
 version = "0.6.0"
 published = "2026-11-20"
 game = "26.3"
