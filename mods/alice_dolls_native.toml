@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.0"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.0.hnmod"
+sha256 = "13ebde3105a303a550c3521b3fce6c456c2a229d20c3b169fab1df26d2c30ade"
+changelog = "Dolls at work go and get experience orbs within 16 blocks when they have no dropped item to fetch."
+
+[[versions]]
 version = "0.41.0"
 published = "2026-11-20"
 game = "26.3"
