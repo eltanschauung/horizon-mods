@@ -9,7 +9,7 @@ Chipped (by Terrarium), Chisel (by the Chisel team) and Block Carpentry (by Pian
 
 - **4,629 block variants:** every Chipped block but its workbenches, and 2,371 of Chisel's variants, each a block of its own that behaves as its vanilla block does.
 - **The chisel:** right-click with it, holding blocks in your other hand, for a menu of every block of their group, and click one to turn the whole stack into it. Right-click a placed block with it to turn it into the group's next block (sneaking, the one before), keeping its facing and state.
-- **Frames:** 16 frames (block, slab, stairs, slope, wall, fence, gate, door, trapdoor, pane, carpet, ladder, button, pressure plate, layered block, illusion block) that take on the look of any block put in them. The hammer takes the block back out.
+- **Frames:** 37 frames (block, falling block, slab, stairs, slope, edged slope, wall, fence, gate, door, trapdoor, pane, carpet, ladder, button, pressure plate, layered block, bed, chest, daylight detector, and their illusion twins) that take on the look of any block put in them. The hammer takes the block back out.
 
 There are no Chipped workbenches: the chisel does it all.
 
@@ -22,6 +22,14 @@ source = "https://github.com/mxpbxb/block-variety"
 icon = "icons/block_variety_native.png"
 categories = ["decoration"]
 tags = ["blocks", "building", "chisel", "decoration"]
+
+[[versions]]
+version = "0.2.0"
+published = "2026-11-20"
+game = "26.3"
+file = "block_variety_native-0.2.0.hnmod"
+sha256 = "a44b8f168eb2221967b2334b0d8525f4e08d397fd4f8f69b077b506297f6affd"
+changelog = "The rest of Block Carpentry's frames: the Falling Frame Block, Edged Slope (a slope that turns corners), Bed, Chest (a chest's 27 slots) and Daylight Detector (powered by the sky), and an illusion twin of every frame shape. Needs block_variety 0.2.0."
 
 [[versions]]
 version = "0.1.0"
