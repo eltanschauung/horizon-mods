@@ -88,5 +88,10 @@
     "kind": "native",
     "url": "https://github.com/mxpbxb/minecraft-misogynist-unexpansion/releases/download/v0.16.0/misogynist_unexpansion_native-0.16.0.hnmod",
     "sha256": "5e3c4f634160f47f5a0307f25ea944bc0b9b99baba9340e39bd96e334db1f583"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/mxpbxb/bop-old-textures/releases/download/v0.2.8/biomesoplenty-0.2.8.hmod",
+    "sha256": "f938eac64ca2eda585c9b86371561a63a7dc42ef457bb84ba3dc2dc300253ff0"
   }
 ]
