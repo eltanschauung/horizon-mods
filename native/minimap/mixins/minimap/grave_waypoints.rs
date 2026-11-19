@@ -2,11 +2,11 @@
 use super::Game;
 use std::{
     cell::RefCell,
-    io::{BufRead, BufReader, Read},
+    io::Read,
     time::{Duration, Instant},
 };
 
-const CHANNEL: &str = "corpse_native:waypoints";
+const CHANNEL: &str = "gravestone_core:waypoints";
 const MAX: usize = 64;
 
 #[derive(Default)]
@@ -66,36 +66,19 @@ fn read_local(game: &Game<'_>, dimension: &str) -> Vec<[f64; 3]> {
     let Some(root) = game.native_world_dir() else {
         return Vec::new();
     };
-    let path = root.join("corpse").join("corpses.txt");
-    let Ok(file) = std::fs::File::open(path) else {
+    let path = root.join("gravestone").join("graves.json");
+    let Ok(file) = std::fs::File::open(path) else { return Vec::new(); };
+    let mut bytes = Vec::new();
+    if file.take(16 * 1024 * 1024 + 1).read_to_end(&mut bytes).is_err() {
         return Vec::new();
-    };
-    let owner = format!("{:032x}", game.command_actor_uuid());
-    BufReader::new(file.take(1_048_576))
-        .lines()
-        .map_while(Result::ok)
-        .filter_map(|line| {
-            let mut fields = line.split('\t');
-            if fields.next()? != "corpse" {
-                return None;
-            }
-            fields.next()?; // corpse id
-            if fields.next()? != owner {
-                return None;
-            }
-            fields.next()?; // owner name
-            if fields.next()? != dimension {
-                return None;
-            }
-            Some([
-                fields.next()?.parse().ok()?,
-                fields.next()?.parse().ok()?,
-                fields.next()?.parse().ok()?,
-            ])
-        })
-        .filter(valid)
-        .take(MAX)
-        .collect()
+    }
+    #[derive(serde::Deserialize)]
+    struct Grave { player_uuid: u128, dimension: String, pos: [i32; 3] }
+    let Ok(graves) = serde_json::from_slice::<Vec<Grave>>(&bytes) else { return Vec::new(); };
+    let owner = game.command_actor_uuid();
+    graves.into_iter().filter(|g| g.player_uuid == owner && g.dimension == dimension)
+        .map(|g| { let [x, y, z] = g.pos.map(f64::from); [x + 0.5, y, z + 0.5] })
+        .filter(valid).take(MAX).collect()
 }
 
 pub(super) fn points(game: &Game<'_>) -> Vec<[f64; 3]> {
@@ -104,7 +87,7 @@ pub(super) fn points(game: &Game<'_>) -> Vec<[f64; 3]> {
     SNAPSHOT.with_borrow_mut(|s| {
         let current = s.scope == scope && s.dimension == dimension;
         if game.remote.is_none()
-            && game.native_on("corpse_native")
+            && game.native_on("gravestone_core")
             && (!current
                 || s.received
                     .is_none_or(|at| at.elapsed() >= Duration::from_secs(1)))

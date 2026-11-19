@@ -1,0 +1,151 @@
+[mod]
+id = "gravestone_core"
+version = "1.0.1"
+priority = 100
+
+[compatibility]
+horizon_revision = "9f42064c11efe7ef3e5ed2baad7ddc2a3b36eea0"
+
+[[module]]
+id = "glue"
+file = "crates/horizon-client/src/game.rs"
+name = "gravestone_glue"
+source = "gravestone_glue.rs"
+
+[[injection]]
+id = "list"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper = "list.rs"
+bindings = [
+  { name = "mods", ty = "&mut Vec<crate::game::native_hooks::NativeMod>", value = "&mut *mods" },
+]
+
+[[injection]]
+id = "block-entity"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity"
+helper = "block_entity.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "entity", ty = "&mut Option<(String, horizon_world::nbt::Compound)>", value = "&mut *entity" },
+]
+
+[[injection]]
+id = "loot-drops"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_loot_drops"
+helper = "loot_drops.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "context", ty = "&horizon_client::mod_api::NativeLootDrops<'_>", value = "context" },
+  { name = "drops", ty = "&mut Vec<horizon_client::items::ItemStack>", value = "&mut *drops" },
+]
+
+[[injection]]
+id = "player-respawned"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_player_respawned"
+helper = "player_respawned.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "player", ty = "u128", value = "player" },
+  { name = "name", ty = "&str", value = "name" },
+]
+
+[[injection]]
+id = "right-click-block"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_right_click_block"
+helper = "right_click_block.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+
+[[injection]]
+id = "destroy-block"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_destroy_block"
+helper = "destroy_block.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+
+[[injection]]
+id = "tick"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_tick"
+helper = "tick.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[injection]]
+id = "use-item"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_use_item"
+helper = "use_item.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
+  { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
+]
+
+[[injection]]
+id = "player-inventory-changed"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_player_inventory_changed"
+helper = "player_inventory_changed.rs"
+bindings = [
+  { name = "player", ty = "u128", value = "player" },
+  { name = "stacks", ty = "&[Option<horizon_client::items::ItemStack>]", value = "stacks" },
+]
+
+[[injection]]
+id = "drop-inventory"
+kind = "HEAD"
+target = "horizon_client::game::item_entities::Game<'_>::drop_inventory"
+helper = "drop_inventory.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "at", ty = "[f64; 3]", value = "at" },
+  { name = "who", ty = "(u128, i32)", value = "who" },
+]
+
+[[injection]]
+id = "screen-post"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_render_post"
+helper = "screen_post.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *batch" },
+  { name = "screen", ty = "&crate::game::native_hooks::NativeScreenView<'_>", value = "screen" },
+]
+
+[[injection]]
+id = "mouse-press"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_mouse_button_pressed_pre"
+helper = "mouse_press.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "screen", ty = "&crate::game::native_hooks::NativeScreenView<'_>", value = "screen" },
+  { name = "button", ty = "i32", value = "button" },
+  { name = "modifiers", ty = "u32", value = "modifiers" },
+  { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+
+[[injection]]
+id = "grave-radar"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_level_tick_post"
+helper = "radar.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "dimension", ty = "&str", value = "dimension" },
+]

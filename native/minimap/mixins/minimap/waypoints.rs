@@ -101,8 +101,8 @@ fn for_each_waypoint(game: &Game<'_>, mut visit: impl FnMut([f64; 3], &str, char
             visit(w.position, &w.name, glyph, COLORS[w.color % COLORS.len()]);
         }
     });
-    for point in super::game_corpse_waypoints::points(game) {
-        visit(point, "Corpse", '×', 0xffff5555);
+    for point in super::game_grave_waypoints::points(game) {
+        visit(point, "Gravestone", '×', 0xffff5555);
     }
 }
 

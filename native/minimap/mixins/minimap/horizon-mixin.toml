@@ -183,16 +183,16 @@ bindings=[
 ]
 
 [[module]]
-id = "corpse-waypoints"
+id = "grave-waypoints"
 file = "crates/horizon-client/src/game.rs"
-name = "game_corpse_waypoints"
-source = "corpse_waypoints.rs"
+name = "game_grave_waypoints"
+source = "grave_waypoints.rs"
 
 [[injection]]
-id = "corpse-waypoint-snapshot"
+id = "grave-waypoint-snapshot"
 kind = "HEAD"
 target = "horizon_client::game::native_hooks::Game<'_>::native_net_from_server"
-helper = "corpse_message.rs"
+helper = "grave_message.rs"
 bindings = [
     {name="game",ty="&crate::game::Game<'_>",value="&*self"},
     {name="channel",ty="&str",value="channel"},
