@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.4"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.4.hnmod"
+sha256 = "5e76b3b73566b74ba5a3cd53eecf89126e2bc7830822d36b92f9fc6f2b95a950"
+changelog = "Fixes the same doll being listed more than once in the doll bell and counted more than once towards the doll limits, which refused a doll you had only one of out: a doll whose chunk or level is loaded again comes back under a new entity id, and the entry under its old id now goes. Needs the assets 0.15.1."
+
+[[versions]]
 version = "0.42.3"
 published = "2026-11-20"
 game = "26.3"
