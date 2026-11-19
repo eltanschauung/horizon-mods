@@ -1,0 +1,13 @@
+{
+  "jar": "BiomesOPlenty-forge-26.3-26.3.0.0.7.jar",
+  "sha256": "21fd459cf3a0a9a2af392729fe1ae6941eea988fadc0ebc265621e0fa16f8e76",
+  "version": "26.3.0.0.7",
+  "license": "All Rights Reserved",
+  "permission": "User states permission for faithful port and supplied this JAR for assets.",
+  "horizon_foundation_commit": "9877c631099464897e95554a6bc680a7d1a1da90",
+  "java_reference_commit": "cc292da4989591b081bc57326648a4ac3724ca8d",
+  "faithful_port_complete": false,
+  "implementation": "Native data-driven test port with finite BOP-generated custom-feature variants",
+  "environment_guards": "Sampled input states plus original direct local ground predicates; no automatic surface projection",
+  "rarity": "Java TerraBlender 26.3 seeded weighted regions and BOP five rarity-weight keys; region sizes fixed at defaults; End selection unchanged"
+}

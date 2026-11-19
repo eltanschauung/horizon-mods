@@ -1,0 +1,12 @@
+/upstream/
+/import/
+/baked/
+/content/
+/content-native-dev/
+/target/
+/tools/oracle/export/
+/tools/oracle/classpath.txt
+__pycache__/
+*.jar
+*.class
+*.log

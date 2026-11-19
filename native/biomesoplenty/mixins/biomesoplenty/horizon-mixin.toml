@@ -1,0 +1,21 @@
+[mod]
+id = "biomesoplenty"
+version = "0.3.0-dev"
+priority = 110
+
+[[module]]
+id = "native-algorithms"
+file = "crates/horizon-world/src/worldgen/native_feature.rs"
+name = "bop_runtime"
+source = "runtime.rs"
+
+[[injection]]
+id = "decode-native-features"
+kind = "HEAD"
+cancellable = true
+target = "horizon_world::worldgen::native_feature::decode"
+helper = "decode.rs"
+bindings = [
+ {name="kind",ty="&str",value="kind"},
+ {name="bindings",ty="&FeatureBlockBindings<'_>",value="bindings"},
+]
