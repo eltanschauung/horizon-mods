@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.38.0"
+published = "2026-11-19"
+game = "26.3"
+file = "alice_dolls_native-0.38.0.hnmod"
+sha256 = "e888b439b47e849fa82c0deca1a0c414e7bb643ae6ab707b65921893e5971c69"
+changelog = "When a giga quarry is done, or ended by another order, the Horai leaves a line of ladders down the pit's wall from the corner where she began. Dolls never drown. The Drown Protect Bauble is gone (assets 0.15.0), as no doll needs it."
+
+[[versions]]
 version = "0.37.0"
 published = "2026-11-19"
 game = "26.3"
