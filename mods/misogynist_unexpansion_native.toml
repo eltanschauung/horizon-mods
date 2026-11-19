@@ -31,6 +31,14 @@ categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
 
 [[versions]]
+version = "0.16.0"
+published = "2026-11-20"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.16.0.hnmod"
+sha256 = "5e3c4f634160f47f5a0307f25ea944bc0b9b99baba9340e39bd96e334db1f583"
+changelog = "Sneak and right-click a villager to pick it up: it becomes an item (Villager, or Baby Villager, with its profession and level) that keeps its trades, experience, job and gossip. Use it on a block to set it down again. The idea is Easy Villagers' (Max Henkel), written anew."
+
+[[versions]]
 version = "0.15.0"
 published = "2026-11-17"
 game = "26.3"
