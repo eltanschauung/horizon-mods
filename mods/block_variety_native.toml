@@ -1,0 +1,32 @@
+id = "block_variety_native"
+kind = "native-mod"
+name = "Block Variety"
+summary = "Every block of Chipped and Chisel, turned into one another with the chisel, and Block Carpentry's frames."
+description = """
+**This mod has two parts, and you need both.** Install this one, the native part, and [Block Variety (assets)](https://playhorizon.dev/mods/block_variety), then press Build.
+
+Chipped (by Terrarium), Chisel (by the Chisel team) and Block Carpentry (by PianoManu) in one mod, ported with their creators' permission:
+
+- **4,629 block variants:** every Chipped block but its workbenches, and 2,371 of Chisel's variants, each a block of its own that behaves as its vanilla block does.
+- **The chisel:** right-click with it, holding blocks in your other hand, for a menu of every block of their group, and click one to turn the whole stack into it. Right-click a placed block with it to turn it into the group's next block (sneaking, the one before), keeping its facing and state.
+- **Frames:** 16 frames (block, slab, stairs, slope, wall, fence, gate, door, trapdoor, pane, carpet, ladder, button, pressure plate, layered block, illusion block) that take on the look of any block put in them. The hammer takes the block back out.
+
+There are no Chipped workbenches: the chisel does it all.
+
+Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. The original mods' art and designs are their creators'. No Minecraft code or assets are included."""
+authors = ["Terrarium (Chipped)", "Chisel team (Chisel)", "PianoManu (Block Carpentry)", "mxpbxb (Horizon port)"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "All Rights Reserved"
+source = "https://github.com/mxpbxb/block-variety"
+icon = "icons/block_variety_native.png"
+categories = ["decoration"]
+tags = ["blocks", "building", "chisel", "decoration"]
+
+[[versions]]
+version = "0.1.0"
+published = "2026-11-20"
+game = "26.3"
+file = "block_variety_native-0.1.0.hnmod"
+sha256 = "27367f1f18c1aaba4e60d0106a68364763942bd5731cda612d3426389d9823a2"
+changelog = "First release: the chisel and Block Carpentry's frames. Needs block_variety 0.1.0."
