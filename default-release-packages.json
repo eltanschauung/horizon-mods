@@ -43,5 +43,40 @@
     "kind": "content",
     "url": "https://github.com/AdLf0208/mvs_moogs_voyager_structures/releases/download/mvs-0.1.0/mvs.hmod",
     "sha256": "e7cbcdadbac06c67909b5f83214a2e9fa214ead78ab76eec4d17803d4b95c0dc"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/alice_dolls-0.15.0/alice_dolls-0.15.0.hmod",
+    "sha256": "d5013078329b751b69fd4cb0d50b71e6a9ce05d81e9b1981fb9e0fa84bd41815"
+  },
+  {
+    "kind": "native",
+    "url": "https://github.com/mxpbxb/alice-dolls-restringed/releases/download/v0.39.1/alice_dolls_native-0.39.1.hnmod",
+    "sha256": "791262fd1af0730e6984b3ff9ad74eeb1ba96550ed31a5efbdbc0bea619b96d6"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/block_variety-0.1.0/block_variety-0.1.0.hmod",
+    "sha256": "492e70438de325150be9bd47972c16cf74a3825e22c1637d3f4ad2d6db7bba6b"
+  },
+  {
+    "kind": "native",
+    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/block_variety_native-0.1.0/block_variety_native-0.1.0.hnmod",
+    "sha256": "27367f1f18c1aaba4e60d0106a68364763942bd5731cda612d3426389d9823a2"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/structure_addon-0.4.0/structure_addon-0.4.0.hmod",
+    "sha256": "f75ed16e3c6b22a791434164a2102a563d61b5ef329f538c3dcafe8efbf5f6aa"
+  },
+  {
+    "kind": "content",
+    "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.7.0/thkaguyamod-0.7.0.hmod",
+    "sha256": "44047f8bc93830b1a973d327d48367f45af14f067031f24af648dfe27d550377"
+  },
+  {
+    "kind": "native",
+    "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.7.0/thkaguyamod_native-0.6.0.hnmod",
+    "sha256": "ae3966d010ea57b5d0b7f3068573675b419015ba3747c4745d87acac07d8c2b5"
   }
 ]
