@@ -81,11 +81,84 @@ pub(super) fn markers(game:&Game<'_>,settings:super::official_minimap::Settings)
  let mut markers=Vec::new();
  for m in game.mobs.iter().filter(|m|m.kind.id.as_str()=="minecraft:player" && !m.is_invisible()) {if let Some((x,y))=project(m.position.x,m.position.z,false) && let Some((face,hat))=m.skin.as_deref().and_then(|skin|skin_rects(game,skin)){let opacity=game.player_presentation_opacity(m,glam::DVec3::new(p.x,p.y,p.z)).clamp(0.0,1.0);let color=(((opacity*255.0).round() as u32)<<24)|0x00ffffff;markers.push(Marker{x,y,face:Some(face),hat:Some(hat),color,label:String::new()});}}
  if settings.player_head && let Some((face,hat))=game.player_model.as_ref().and_then(|m|m.skin.as_deref()).and_then(|skin|skin_rects(game,skin)){markers.push(Marker{x:0.0,y:0.0,face:Some(face),hat:Some(hat),color:u32::MAX,label:String::new()});OWN_HEAD.with(|v|v.set(true));}
- STATE.with_borrow_mut(|s|{load(game,s);for w in s.points.iter().filter(|w|w.enabled&&w.dimension==game.dim.id()){if let Some((x,y))=project(w.position[0],w.position[2],true){markers.push(Marker{x,y,face:None,hat:None,color:COLORS[w.color%6],label:w.name.chars().take(1).collect()});}}});
- for point in super::game_corpse_waypoints::points(game) {
+ for_each_waypoint(game, |point, _, glyph, color| {
      if let Some((x, y)) = project(point[0], point[2], true) {
-         markers.push(Marker { x, y, face: None, hat: None, color: 0xffff5555, label: "✕".into() });
+         markers.push(Marker {
+             x, y, face: None, hat: None, color, label: glyph.to_string(),
+         });
      }
- }
+ });
  MARKERS.with_borrow_mut(|v|*v=markers);
+}
+
+
+fn for_each_waypoint(game: &Game<'_>, mut visit: impl FnMut([f64; 3], &str, char, u32)) {
+    STATE.with_borrow_mut(|s| {
+        load(game, s);
+        for w in s.points.iter().filter(|w| w.enabled && w.dimension == game.dim.id()) {
+            let glyph = w.name.chars().find(|c| !c.is_whitespace() && !c.is_control())
+                .and_then(|c| c.to_uppercase().next()).unwrap_or('?');
+            visit(w.position, &w.name, glyph, COLORS[w.color % COLORS.len()]);
+        }
+    });
+    for point in super::game_corpse_waypoints::points(game) {
+        visit(point, "Corpse", '×', 0xffff5555);
+    }
+}
+
+pub(super) fn draw_world(game: &Game<'_>, batch: &mut HudBatch) {
+    use glam::{DVec3, Mat4, Vec4};
+    use horizon_client::extras_hud::minimap_coordinates::draw_badge;
+
+    if game.screen != Screen::Playing || !game.native_on(super::official_minimap::ID) {
+        return;
+    }
+    let [width, height] = [batch.width, batch.height];
+    let (eye, matrix) = if let Some(camera) = game.native_camera() {
+        (
+            camera.position,
+            Mat4::from_cols_array(&camera.projection) * Mat4::from_cols_array(&camera.view),
+        )
+    } else if let Some((eye, yaw, pitch, fov)) = game.locator_camera {
+        // A mixin-only build can use the last rendered camera when the native API has no listeners.
+        (
+            eye,
+            Mat4::perspective_infinite_rh(fov.to_radians(), width / height.max(1.0), 0.05)
+                * horizon_client::camera::view_matrix(yaw, pitch),
+        )
+    } else {
+        return;
+    };
+
+    let mut labels = Vec::new();
+    for_each_waypoint(game, |point, title, glyph, color| {
+        let offset = DVec3::from_array(point) - DVec3::from_array(eye) + DVec3::Y;
+        let clip = matrix * Vec4::from((offset.as_vec3(), 1.0));
+        if clip.w <= 0.05 || !clip.is_finite() {
+            return;
+        }
+        let x = (0.5 + clip.x / (2.0 * clip.w)) * width;
+        let y = (0.5 - clip.y / (2.0 * clip.w)) * height;
+        if (7.0..=width - 7.0).contains(&x) && (7.0..=height - 19.0).contains(&y) {
+            labels.push((offset.length_squared(), x, y, Text::literal(title), glyph, color));
+        }
+    });
+    labels.sort_by(|a, b| b.0.total_cmp(&a.0));
+
+    let atlas = &game.gui.atlas;
+    for (_, x, y, title, glyph, color) in labels {
+        let mut letter = [0; 4];
+        draw_badge(batch, atlas, [x, y], glyph.encode_utf8(&mut letter), color, 12.0);
+        let text_width = atlas.font.width_text(&title).max(1.0);
+        let scale = ((width - 8.0) / text_width).min(1.0);
+        let title_width = text_width * scale + 4.0;
+        let tx = (x - title_width / 2.0).clamp(2.0, (width - title_width - 2.0).max(2.0)).round();
+        let ty = y.round() + 7.0;
+        batch.fill(atlas, tx, ty, title_width, 3.0 + 8.0 * scale, 0xb0000000);
+        let start = batch.vertices.len();
+        batch.text_styled(atlas, &title, tx + 2.0, ty + 1.0, u32::MAX, true);
+        if scale < 1.0 {
+            batch.scale_since(start, tx + 2.0, ty + 1.0, scale, scale);
+        }
+    }
 }

@@ -198,3 +198,13 @@ bindings = [
     {name="channel",ty="&str",value="channel"},
     {name="data",ty="&[u8]",value="data"},
 ]
+
+[[injection]]
+id = "world-waypoint-labels"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_hud"
+helper = "waypoint_hud.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *batch" },
+]
