@@ -1,0 +1,6 @@
+{
+  "parent": "horizon_gensokyo_legacy:custom/nature/tower_grass_icon",
+  "textures": {
+    "plant": "horizon_gensokyo_legacy:block/nature/tower_grass_large"
+  }
+}

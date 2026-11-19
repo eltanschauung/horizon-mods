@@ -1,0 +1,20 @@
+{
+  "values": [
+    "horizon_gensokyo_legacy:blue_fir_log",
+    "horizon_gensokyo_legacy:blue_fir_wood",
+    "horizon_gensokyo_legacy:maple_log",
+    "horizon_gensokyo_legacy:maple_wood",
+    "horizon_gensokyo_legacy:locust_planks",
+    "horizon_gensokyo_legacy:stripped_locust_log",
+    "horizon_gensokyo_legacy:stripped_locust_wood",
+    "horizon_gensokyo_legacy:locust_log",
+    "horizon_gensokyo_legacy:locust_wood",
+    "horizon_gensokyo_legacy:locust_hollow_log",
+    "horizon_gensokyo_legacy:cyan_mushroom_stem",
+    "horizon_gensokyo_legacy:purple_mushroom_stem",
+    "horizon_gensokyo_legacy:red_mushroom_stem",
+    "horizon_gensokyo_legacy:ghost_fire_mushroom_block",
+    "horizon_gensokyo_legacy:dream_mushroom_block",
+    "horizon_gensokyo_legacy:demonic_miasma_mushroom_block"
+  ]
+}

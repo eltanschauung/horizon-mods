@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:stone",
+    "B": "minecraft:stone_slab",
+    "C": "minecraft:soul_soil"
+  },
+  "pattern": [
+    " A ",
+    " A ",
+    "BCB"
+  ],
+  "result": {
+    "id": "horizon_gensokyo_legacy:gravestone"
+  },
+  "show_notification": true
+}

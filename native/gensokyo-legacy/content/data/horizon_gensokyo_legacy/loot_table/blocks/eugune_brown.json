@@ -3,22 +3,13 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
-      "condition": [
-        {
-          "type": "minecraft:any_of",
-          "terms": [
-            {
-              "type": "minecraft:match_tool",
-              "predicate": {
-                "items": [
-                  "minecraft:shears"
-                ]
-              }
-            },
-            "minecraft:tool/can_silk_touch"
-          ]
-        }
-      ],
+      "condition": {
+        "type": "minecraft:any_of",
+        "terms": [
+          "minecraft:tool/can_shear",
+          "minecraft:tool/can_silk_touch"
+        ]
+      },
       "entries": [
         {
           "type": "minecraft:item",
@@ -29,25 +20,16 @@
     },
     {
       "bonus_rolls": 0.0,
-      "condition": [
-        {
-          "type": "minecraft:inverted",
-          "term": {
-            "type": "minecraft:any_of",
-            "terms": [
-              {
-                "type": "minecraft:match_tool",
-                "predicate": {
-                  "items": [
-                    "minecraft:shears"
-                  ]
-                }
-              },
-              "minecraft:tool/can_silk_touch"
-            ]
-          }
+      "condition": {
+        "type": "minecraft:inverted",
+        "term": {
+          "type": "minecraft:any_of",
+          "terms": [
+            "minecraft:tool/can_shear",
+            "minecraft:tool/can_silk_touch"
+          ]
         }
-      ],
+      },
       "entries": [
         {
           "type": "minecraft:item",

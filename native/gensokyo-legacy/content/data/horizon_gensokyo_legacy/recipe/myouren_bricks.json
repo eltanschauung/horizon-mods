@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": "minecraft:diorite",
+    "B": "minecraft:soul_soil"
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "count": 4,
+    "id": "horizon_gensokyo_legacy:myouren_bricks"
+  },
+  "show_notification": true
+}

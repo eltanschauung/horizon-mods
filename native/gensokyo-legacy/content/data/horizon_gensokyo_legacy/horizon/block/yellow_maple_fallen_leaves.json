@@ -19,7 +19,8 @@
     }
   },
   "properties": {
-    "occludes": false
+    "occludes": false,
+    "random_ticks": true
   },
   "collision_shapes": {
     "default": []

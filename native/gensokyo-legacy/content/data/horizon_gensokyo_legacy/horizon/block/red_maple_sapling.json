@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:oak_sapling",
+  "state_properties": {},
+  "properties": {
+    "occludes": false
+  }
+}

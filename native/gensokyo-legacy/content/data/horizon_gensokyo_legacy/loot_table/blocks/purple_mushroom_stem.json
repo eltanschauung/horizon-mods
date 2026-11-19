@@ -3,9 +3,7 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
-      "condition": [
-        "minecraft:tool/can_silk_touch"
-      ],
+      "condition": "minecraft:tool/can_silk_touch",
       "entries": [
         {
           "type": "minecraft:item",

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "horizon_gensokyo_legacy:mystical_straw",
+    "B": "horizon_gensokyo_legacy:jizo"
+  },
+  "pattern": [
+    "A",
+    "B"
+  ],
+  "result": {
+    "id": "horizon_gensokyo_legacy:jizo_straw_hat"
+  },
+  "show_notification": true
+}

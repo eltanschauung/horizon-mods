@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "horizon_gensokyo_legacy:item/ingredient/mystical_straw"
+  }
+}

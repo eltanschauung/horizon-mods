@@ -1,0 +1,28 @@
+{
+  "template": "minecraft:oak_leaves",
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "east",
+        "north",
+        "south",
+        "west"
+      ]
+    },
+    "layers": {
+      "type": "enum",
+      "values": [
+        "1",
+        "2"
+      ]
+    }
+  },
+  "properties": {
+    "occludes": false,
+    "random_ticks": true
+  },
+  "collision_shapes": {
+    "default": []
+  }
+}

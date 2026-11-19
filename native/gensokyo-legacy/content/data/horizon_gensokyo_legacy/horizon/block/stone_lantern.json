@@ -10,7 +10,13 @@
     }
   },
   "properties": {
-    "occludes": false
+    "occludes": false,
+    "hardness": 1.5,
+    "explosion_resistance": 1.5,
+    "requires_tool": false
+  },
+  "default_state": {
+    "half": "bottom"
   },
   "shapes": {
     "properties": [
@@ -20,14 +26,23 @@
       "bottom": [
         [
           0.0,
-          0.0,
+          0,
           0.0,
           1.0,
-          1.96875,
+          1,
           1.0
         ]
       ],
-      "top": []
+      "top": [
+        [
+          0.0,
+          0,
+          0.0,
+          1.0,
+          0.96875,
+          1.0
+        ]
+      ]
     }
   },
   "collision_shapes": {
@@ -38,14 +53,23 @@
       "bottom": [
         [
           0.0,
-          0.0,
+          0,
           0.0,
           1.0,
-          1.96875,
+          1,
           1.0
         ]
       ],
-      "top": []
+      "top": [
+        [
+          0.0,
+          0,
+          0.0,
+          1.0,
+          0.96875,
+          1.0
+        ]
+      ]
     }
   }
 }

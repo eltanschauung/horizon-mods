@@ -3,7 +3,7 @@ import subprocess,sys,json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];launcher=Path.home()/'.local/share/horizon-launcher';deps=launcher/'fork-native/target/fast/deps';work=ROOT/'.local/smoke';work.mkdir(parents=True,exist_ok=True)
 a=[str(launcher/'rust/1.99.1-x86_64-unknown-linux-gnu/bin/rustc'),'--edition=2024',str(ROOT/'tools/prepare.rs'),'-L','dependency='+str(deps),'-o',str(work/'prepare')]
-for n in ['horizon_client_lib','horizon_mods']:
+for n in ['horizon_assets','horizon_client_lib','horizon_core','horizon_items','horizon_mods','serde_json']:
  p=max(deps.glob('lib'+n+'-*.rlib'),key=lambda p:p.stat().st_mtime);a+=['--extern',n+'='+str(p)]
 for p in (launcher/'fork-native/target/fast/build').glob('*/out'):a+=['-L','native='+str(p)]
 subprocess.run(a,check=True)

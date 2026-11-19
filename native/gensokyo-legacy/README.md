@@ -23,6 +23,12 @@ copied. Out-of-climate regions fall back to vanilla, so the new pool does not
 replace deserts or cold biomes with temperate forests. Original plant-patch
 holders reuse the player's current vanilla patch definitions at runtime.
 
+The block port includes source inventory models, tool-specific loot and matching
+sapling features. Paired decorations, evergreen vines, golden lotus and leaf
+litter use the companion Horizon block behavior changes. Jizo spiritual-power
+offerings and the gravestone summoning ritual depend on systems outside the
+biome port.
+
 Maintained in `horizon-mods/native/gensokyo-legacy`. Build both bundles with
 `python tools/build.py`; `--install` installs them locally. Native changes require
 a game rebuild through Horizon’s frozen-manifest workflow.

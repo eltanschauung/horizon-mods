@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "condition": {
+        "type": "minecraft:any_of",
+        "terms": [
+          "minecraft:tool/can_shear",
+          "minecraft:tool/can_silk_touch"
+        ]
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "horizon_gensokyo_legacy:tower_grass_small"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "condition": {
+        "type": "minecraft:inverted",
+        "term": {
+          "type": "minecraft:any_of",
+          "terms": [
+            "minecraft:tool/can_shear",
+            "minecraft:tool/can_silk_touch"
+          ]
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "horizon_gensokyo_legacy:mystical_straw"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "horizon_gensokyo_legacy:blocks/tower_grass_small"
+}

@@ -1,0 +1,103 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "type": "minecraft:any_of",
+            "terms": [
+              "minecraft:tool/can_silk_touch",
+              "minecraft:tool/can_shear"
+            ]
+          },
+          "name": "horizon_gensokyo_legacy:purple_cherry_leaves"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "condition": {
+        "type": "minecraft:inverted",
+        "term": {
+          "type": "minecraft:any_of",
+          "terms": [
+            "minecraft:tool/can_silk_touch",
+            "minecraft:tool/can_shear"
+          ]
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "chances": [
+              0.00390625,
+              0.005859375,
+              0.0078125,
+              0.009765625
+            ],
+            "type": "minecraft:table_bonus",
+            "enchantment": "minecraft:fortune"
+          },
+          "modifier": [
+            {
+              "type": "minecraft:explosion_decay"
+            }
+          ],
+          "name": "horizon_gensokyo_legacy:purple_cherry_sapling"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "condition": {
+        "type": "minecraft:inverted",
+        "term": {
+          "type": "minecraft:any_of",
+          "terms": [
+            "minecraft:tool/can_silk_touch",
+            "minecraft:tool/can_shear"
+          ]
+        }
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "chances": [
+              0.02,
+              0.022222223,
+              0.025,
+              0.033333335,
+              0.1
+            ],
+            "type": "minecraft:table_bonus",
+            "enchantment": "minecraft:fortune"
+          },
+          "modifier": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "type": "minecraft:set_count"
+            },
+            {
+              "type": "minecraft:explosion_decay"
+            }
+          ],
+          "name": "minecraft:stick"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "horizon_gensokyo_legacy:blocks/purple_cherry_leaves"
+}

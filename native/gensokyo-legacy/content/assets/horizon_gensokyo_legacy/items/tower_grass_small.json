@@ -1,0 +1,19 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "horizon_gensokyo_legacy:item/tower_grass_small"
+    },
+    "cases": [
+      {
+        "when": "gui",
+        "model": {
+          "type": "minecraft:model",
+          "model": "horizon_gensokyo_legacy:item/tower_grass_small_gui"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "horizon_gensokyo_legacy:custom/nature/fallen_leaves",
+  "textures": {
+    "all": "horizon_gensokyo_legacy:block/nature/locust_fallen_leaves_layer1"
+  }
+}

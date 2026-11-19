@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:chiseled_stone_bricks",
+    "B": "horizon_gensokyo_legacy:myouren_bricks",
+    "C": "minecraft:polished_deepslate_slab"
+  },
+  "pattern": [
+    "A",
+    "B",
+    "C"
+  ],
+  "result": {
+    "id": "horizon_gensokyo_legacy:jizo"
+  },
+  "show_notification": true
+}

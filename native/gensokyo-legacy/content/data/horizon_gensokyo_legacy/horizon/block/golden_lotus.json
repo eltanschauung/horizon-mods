@@ -19,7 +19,14 @@
     }
   },
   "properties": {
-    "occludes": false
+    "occludes": false,
+    "random_ticks": {
+      "property": "size",
+      "values": [
+        "0",
+        "1"
+      ]
+    }
   },
   "default_state": {
     "part": "single",

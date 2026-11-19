@@ -16,6 +16,24 @@ MUSHROOM_GROWTH = [
     for kind in ('ghost_fire', 'dream', 'demonic_miasma')
     for size in ('small', 'medium', 'large')
 ]
+SAPLING_TREES = {
+    'blue_fir_sapling': 'blue_fir_tree',
+    'locust_sapling': 'locust_sapling_tree',
+    **{f'{color}_maple_sapling': f'{color}_maple_tree'
+       for color in ('orange', 'red', 'yellow')},
+    **{f'{color}_cherry_sapling': f'{color}_cherry_tree'
+       for color in ('pink', 'purple')},
+}
+DROP_ITEMS = ('mystical_straw',)
+HARVEST_BLOCKS = ('locust_planks', 'stripped_locust_log', 'stripped_locust_wood',
+                  'locust_fallen_leaves', 'mixed_fallen_leaves', 'myouren_bricks')
+BLOCK_RECIPES = (
+    'blue_fir_log_to_spruce_planks', 'blue_fir_wood_to_spruce_planks',
+    'maple_log_to_oak_planks', 'maple_wood_to_oak_planks',
+    'locust_log_to_locust_planks', 'locust_wood_to_locust_planks',
+    'stripped_locust_log_to_locust_planks', 'stripped_locust_wood_to_locust_planks',
+    'stone_lantern', 'gravestone', 'jizo', 'jizo_straw_hat', 'myouren_bricks',
+)
 def strings(v):
     if isinstance(v, str): yield v
     elif isinstance(v, list):
@@ -41,9 +59,16 @@ def read_nbt(b):
     t=n('b');s();return tag(t)
 def main():
     p=argparse.ArgumentParser();p.add_argument('jar',type=Path);a=p.parse_args()
+    previous = json.loads((ROOT/'inventory.json').read_text())
+    if hashlib.sha256(a.jar.read_bytes()).hexdigest() != previous['sha256']:
+        p.error('JAR checksum differs from the pinned Gensokyo Legacy source')
     with ZipFile(a.jar) as z:
         available=set(z.namelist());seen={};templates={};blocks=set();todo=[f'data/{NS}/worldgen/biome/{n}.json' for n in BIOMES]
         todo.extend(f'data/{NS}/worldgen/configured_feature/{name}.json' for name in MUSHROOM_GROWTH)
+        todo.extend(f'data/{NS}/worldgen/configured_feature/{name}.json'
+                    for name in SAPLING_TREES.values())
+        blocks.update(SAPLING_TREES)
+        blocks.update(HARVEST_BLOCKS)
         def add_refs(v):
             for s in strings(v):
                 if not s.startswith(NS+':'):continue
@@ -88,16 +113,18 @@ def main():
                     value=entry if isinstance(entry,str) else entry.get('id','')
                     if value.startswith(NS+':'):
                         path=value.split(':')[1]
-                        if path not in blocks and path not in BIOMES:continue
+                        if path not in blocks and path not in BIOMES and path not in DROP_ITEMS:continue
                     elif value.startswith('#'+NS+':'):pass
                     elif n.startswith('data/'+NS+'/'):pass
                     else:continue
                     values.append(entry)
                 if values:files[n]=(json.dumps(dict(tag,values=values),indent=2)+'\n').encode()
         for block in sorted(blocks):
-            if 'mushroom' in block or block.startswith('eugune_'):
-                name = f'data/{NS}/loot_tables/blocks/{block}.json'
-                files[name] = z.read(name)
+            name = f'data/{NS}/loot_tables/blocks/{block}.json'
+            files[name] = z.read(name)
+        for recipe in BLOCK_RECIPES:
+            name = f'data/{NS}/recipes/{recipe}.json'
+            files[name] = z.read(name)
         files.update({n:(json.dumps(v,indent=2)+'\n').encode() for n,v in seen.items()});files.update(templates)
         files['META-INF/mods.toml']=z.read('META-INF/mods.toml')
         out=ROOT/'upstream'

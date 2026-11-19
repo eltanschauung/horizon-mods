@@ -1,0 +1,15 @@
+{
+  "textures": [
+    "horizon_gensokyo_legacy:locust_leaf_01",
+    "horizon_gensokyo_legacy:locust_leaf_02",
+    "horizon_gensokyo_legacy:locust_leaf_03",
+    "horizon_gensokyo_legacy:locust_leaf_04",
+    "horizon_gensokyo_legacy:locust_leaf_05",
+    "horizon_gensokyo_legacy:locust_leaf_06",
+    "horizon_gensokyo_legacy:locust_leaf_07",
+    "horizon_gensokyo_legacy:locust_leaf_08"
+  ],
+  "horizon:behaviour": {
+    "falling_petal": true
+  }
+}

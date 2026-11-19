@@ -9,9 +9,7 @@
           "children": [
             {
               "type": "minecraft:item",
-              "condition": [
-                "minecraft:tool/can_silk_touch"
-              ],
+              "condition": "minecraft:tool/can_silk_touch",
               "name": "horizon_gensokyo_legacy:demonic_miasma_mushroom_block"
             },
             {

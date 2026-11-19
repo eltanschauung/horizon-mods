@@ -14,6 +14,12 @@ def shape(root,b):
     v=json.loads((root/f'assets/{NS}/blockstates/{b}.json').read_text());variants=v.get('variants',{})
     props=sorted({s.split('=')[0] for key in variants for s in key.split(',') if '=' in s});out={}
     for key,entries in variants.items():
+        state=dict(s.split('=') for s in key.split(',') if '=' in s)
+        half = state.get('half')
+        if half == 'top':
+            # The source renders the full model from the bottom half. Its
+            # invisible top still needs its own targeting and collision bounds.
+            entries = variants[key.replace('half=top', 'half=bottom')]
         if isinstance(entries,dict):entries=[entries]
         points=[]
         for entry in entries:
@@ -26,11 +32,16 @@ def shape(root,b):
                         else:x,z=x*c+z*a,-x*a+z*c
                     points.append([(x+8)/16,(y+8)/16,(z+8)/16])
         if not points:
-            state=dict(s.split('=') for s in key.split(',') if '=' in s)
             out[','.join(state[p] for p in props)]=[]
             continue
         bounds=[min(p[i] for p in points) for i in range(3)]+[max(p[i] for p in points) for i in range(3)]
-        state=dict(s.split('=') for s in key.split(',') if '=' in s)
+        if half in ('top', 'bottom'):
+            origin = 1 if half == 'top' else 0
+            bounds[1] = max(0, bounds[1] - origin)
+            bounds[4] = min(1, bounds[4] - origin)
+            if bounds[4] <= bounds[1]:
+                out[','.join(state[p] for p in props)]=[]
+                continue
         out[','.join(state[p] for p in props)]=[[round(x,8) for x in bounds]]
     if not out:return None
     return {'properties':props,'values':out} if props else {'default':next(iter(out.values()))}

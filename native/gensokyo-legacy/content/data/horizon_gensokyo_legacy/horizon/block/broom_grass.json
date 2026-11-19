@@ -1,5 +1,5 @@
 {
-  "template": "minecraft:tall_grass",
+  "template": "minecraft:short_grass",
   "state_properties": {},
   "properties": {
     "occludes": false
