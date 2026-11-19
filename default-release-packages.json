@@ -46,23 +46,23 @@
   },
   {
     "kind": "content",
-    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/alice_dolls-0.15.0/alice_dolls-0.15.0.hmod",
-    "sha256": "d5013078329b751b69fd4cb0d50b71e6a9ce05d81e9b1981fb9e0fa84bd41815"
+    "url": "https://github.com/mxpbxb/alice-dolls-restringed/releases/download/v0.42.3/alice_dolls-0.15.1.hmod",
+    "sha256": "44b9b43cbfbb5bb6c7a41c2977224bf7e60ac7a3a96ee9e1abcdbae8bf2180be"
   },
   {
     "kind": "native",
-    "url": "https://github.com/mxpbxb/alice-dolls-restringed/releases/download/v0.39.1/alice_dolls_native-0.39.1.hnmod",
-    "sha256": "791262fd1af0730e6984b3ff9ad74eeb1ba96550ed31a5efbdbc0bea619b96d6"
+    "url": "https://github.com/mxpbxb/alice-dolls-restringed/releases/download/v0.42.3/alice_dolls_native-0.42.3.hnmod",
+    "sha256": "d26eb138ce7e06f8d0205076cf954297155e70eb0e330f230148b38a52b3e552"
   },
   {
     "kind": "content",
-    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/block_variety-0.1.0/block_variety-0.1.0.hmod",
-    "sha256": "492e70438de325150be9bd47972c16cf74a3825e22c1637d3f4ad2d6db7bba6b"
+    "url": "https://github.com/mxpbxb/block-variety/releases/download/v0.4.0/block_variety-0.4.0.hmod",
+    "sha256": "1d6c707d5a707f9b28bd3ec73f9618d4eaf3d780a2628ef99cb70e6dae4735bb"
   },
   {
     "kind": "native",
-    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/block_variety_native-0.1.0/block_variety_native-0.1.0.hnmod",
-    "sha256": "27367f1f18c1aaba4e60d0106a68364763942bd5731cda612d3426389d9823a2"
+    "url": "https://github.com/mxpbxb/block-variety/releases/download/v0.5.0/block_variety_native-0.5.0.hnmod",
+    "sha256": "645473dcbdff7bd80cb1219902e82d58c9f6c88184998a4daffbff0bd14d7d84"
   },
   {
     "kind": "content",
@@ -71,17 +71,22 @@
   },
   {
     "kind": "content",
-    "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.7.0/thkaguyamod-0.7.0.hmod",
-    "sha256": "44047f8bc93830b1a973d327d48367f45af14f067031f24af648dfe27d550377"
+    "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.7.2/thkaguyamod-0.7.2.hmod",
+    "sha256": "1550d00f1750b948299a8b9e4127d334a9c2befbb817989c01df57f3db53dda0"
   },
   {
     "kind": "native",
-    "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.7.0/thkaguyamod_native-0.6.0.hnmod",
-    "sha256": "ae3966d010ea57b5d0b7f3068573675b419015ba3747c4745d87acac07d8c2b5"
+    "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.7.1/thkaguyamod_native-0.6.1.hnmod",
+    "sha256": "fdcc32187790ca2eeb4b44adb51395a5c0f59f35836172058a8c7bd5b5e25dec"
   },
   {
     "kind": "content",
     "url": "https://github.com/mxpbxb/yukari-gaps/releases/download/v0.7.0/yukari_gap-0.7.0.hmod",
     "sha256": "9f255397987318c963312f1b01be30f60353d2a4bf76f4bfe112745627b26a0e"
+  },
+  {
+    "kind": "native",
+    "url": "https://github.com/mxpbxb/minecraft-misogynist-unexpansion/releases/download/v0.16.0/misogynist_unexpansion_native-0.16.0.hnmod",
+    "sha256": "5e3c4f634160f47f5a0307f25ea944bc0b9b99baba9340e39bd96e334db1f583"
   }
 ]
