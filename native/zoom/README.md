@@ -5,8 +5,7 @@ further in or out (1.25x to 10x). The hotbar stays put while you zoom.
 
 ## Install
 
-In the Horizon launcher: **Mods**, find Zoom, **Install**. It is a WebAssembly mod, so nothing is built on your
-computer.
+The fork distribution installs Zoom with the other native SDK mods. The Horizon launcher builds it for your platform.
 
 ## Settings
 
@@ -21,7 +20,7 @@ With [`cargo horizon-mod`](https://github.com/horizon-rust/horizon/tree/main/doc
 
 ```sh
 cargo test                       # the zoom logic
-cargo horizon-mod build --wasm   # target/horizon-mod/zoom.hmod
+cargo horizon-mod build         # target/horizon-mod/zoom.hmod
 cargo horizon-mod check
 ```
 
