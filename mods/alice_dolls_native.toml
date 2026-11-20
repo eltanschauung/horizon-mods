@@ -25,6 +25,30 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.7"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.7.hnmod"
+sha256 = "3259f527d9c9e25549575881ac82eeaf38478f9004f34402ebbd46cf2029bf60"
+changelog = "Diamond and Netherite Horai quarries now void Structure Add-on's rocks and their cobble like stone, unless keep-rock is on. Its bricks and lignite (which gives coal) still drop. Needs the assets 0.15.1."
+
+[[versions]]
+version = "0.42.6"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.6.hnmod"
+sha256 = "ac5ad2b6e1cbc0f048201e1ef1baf8dd62580b797ba97c8bcd766312e5a42aba"
+changelog = "Patchouli's attacks no longer hurt dolls. A doll can be taken off the doll bell with a shift-click on it, for one that died or was lost; one that is still about comes back on the bell by itself. Needs the assets 0.15.1."
+
+[[versions]]
+version = "0.42.5"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.5.hnmod"
+sha256 = "d0fb686d5bb2435f76fdf87a9f306bdd63f3d7a3098107a60ec3ac76d108bfd2"
+changelog = "Dolls no longer attack any player's dolls, tamed or owned animals, or mounts such as Magic Brooms brooms. A doll that dies, whatever killed it (another doll included), now always gives its item and everything it carried to its owner, or drops them where it fell, and leaves the doll bell. And each doll now saves its own id, so a doll loaded again is listed once in the bell and counted once towards the limits even where its entity's UUID can't be relied on. Needs the assets 0.15.1."
+
+[[versions]]
 version = "0.42.4"
 published = "2026-11-20"
 game = "26.3"
