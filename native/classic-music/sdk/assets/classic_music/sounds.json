@@ -1,0 +1,154 @@
+{
+  "music.menu": {
+    "sounds": [
+      {
+        "name": "minecraft:music/menu/beginning_2",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/menu/floating_trees",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/menu/moog_city_2",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/menu/mutation",
+        "stream": true
+      }
+    ]
+  },
+  "music.overworld": {
+    "sounds": [
+      {
+        "name": "minecraft:music/game/clark",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/danny",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/dry_hands",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/haggstrom",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/key",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/living_mice",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/mice_on_venus",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/minecraft",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/oxygene",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/subwoofer_lullaby",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/sweden",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/wet_hands",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/creative/aria_math",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/creative/biome_fest",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/creative/blind_spots",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/creative/dreiton",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/creative/haunt_muskie",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/creative/taswell",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/water/axolotl",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/water/dragon_fish",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/water/shuniji",
+        "stream": true
+      }
+    ]
+  },
+  "music.nether": {
+    "sounds": [
+      {
+        "name": "minecraft:music/game/nether/concrete_halls",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/nether/dead_voxel",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/nether/ballad_of_the_cats",
+        "stream": true
+      },
+      {
+        "name": "minecraft:music/game/nether/warmth",
+        "stream": true
+      }
+    ]
+  },
+  "music.end": {
+    "sounds": [
+      {
+        "name": "minecraft:music/game/end/the_end",
+        "stream": true
+      }
+    ]
+  },
+  "music.dragon": {
+    "sounds": [
+      {
+        "name": "minecraft:music/game/end/boss",
+        "stream": true
+      }
+    ]
+  },
+  "music.credits": {
+    "sounds": [
+      {
+        "name": "minecraft:music/game/end/alpha",
+        "stream": true
+      }
+    ]
+  }
+}

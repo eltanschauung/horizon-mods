@@ -1,0 +1,14 @@
+id = "classic_music"
+name = "Classic Music"
+version = "0.2.0"
+description = "Classic Overworld, Nether, End, and title screen music."
+authors = ["eltanschauung"]
+license = "MIT"
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "0a875da91dbb0fdcb7ba8c42c11341aa229af51a"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
