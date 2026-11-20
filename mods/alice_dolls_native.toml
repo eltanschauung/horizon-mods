@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.5"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.5.hnmod"
+sha256 = "d0fb686d5bb2435f76fdf87a9f306bdd63f3d7a3098107a60ec3ac76d108bfd2"
+changelog = "Dolls no longer attack any player's dolls, tamed or owned animals, or mounts such as Magic Brooms brooms. A doll that dies, whatever killed it (another doll included), now always gives its item and everything it carried to its owner, or drops them where it fell, and leaves the doll bell. And each doll now saves its own id, so a doll loaded again is listed once in the bell and counted once towards the limits even where its entity's UUID can't be relied on. Needs the assets 0.15.1."
+
+[[versions]]
 version = "0.42.4"
 published = "2026-11-20"
 game = "26.3"
