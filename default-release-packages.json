@@ -51,8 +51,8 @@
   },
   {
     "kind": "native",
-    "url": "https://github.com/mxpbxb/alice-dolls-restringed/releases/download/v0.42.3/alice_dolls_native-0.42.3.hnmod",
-    "sha256": "d26eb138ce7e06f8d0205076cf954297155e70eb0e330f230148b38a52b3e552"
+    "url": "https://github.com/mxpbxb/alice-dolls-restringed/releases/download/v0.42.4/alice_dolls_native-0.42.4.hnmod",
+    "sha256": "5e76b3b73566b74ba5a3cd53eecf89126e2bc7830822d36b92f9fc6f2b95a950"
   },
   {
     "kind": "content",
