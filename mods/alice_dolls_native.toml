@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.7"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.7.hnmod"
+sha256 = "3259f527d9c9e25549575881ac82eeaf38478f9004f34402ebbd46cf2029bf60"
+changelog = "Diamond and Netherite Horai quarries now void Structure Add-on's rocks and their cobble like stone, unless keep-rock is on. Its bricks and lignite (which gives coal) still drop. Needs the assets 0.15.1."
+
+[[versions]]
 version = "0.42.6"
 published = "2026-11-20"
 game = "26.3"
