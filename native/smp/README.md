@@ -1,5 +1,8 @@
 # SMP (Horizon native server mod)
 
+> [!WARNING]
+> **Legacy.** This is the old `.hnmod` source. Launchers from 0.2.70 on can't load it. A port to the new mod SDK is tracked in [#1214](https://github.com/horizon-rust/horizon-mods/issues/1214).
+
 The official Horizon server's survival layer ([design](https://github.com/horizon-rust/horizon/blob/main/docs/smp.md)).
 It is **not** part of Horizon's own server: only a server that builds this mod into its engine has it. It isn't listed
 in the registry.
@@ -38,12 +41,12 @@ header and footer).
 | `/lottery`, `/lottery buy <tickets>` | the pot, your tickets and the time to the draw; buys tickets (off unless `gambling.enabled`) |
 | `/casino`, `/casino roulette\|slots\|crash\|blackjack` | the casino's lobby menu, or a game's table (needs `gambling.enabled` and `casino.enabled`) |
 | `/casino help`, `/casino top`, `/casino stats` | every game's odds and house edge and the limits; today's biggest wins; what you bet, won and may still lose today |
-| `/coinflip accept <player>`, `/coinflip cancel`, `/coinflip list` | takes an offer (a fair coin decides, the winner gets both stakes), withdraws yours, lists those waiting |
+| `/coinflip accept <player>`, `/coinflip cancel`, `/coinflip list` | takes an offer (a fair coin decides, the winner gets both stakes), withdraws yours, lists those waiting that you may see: yours, those open to anyone and those named for you |
 | `/spawn` | to a safe spot within `places.spawn_radius` of the server's spawn; `/setspawn` (operators of level 3) sets it where you stand |
 | `/home [name]`, `/sethome [name]`, `/delhome [name]`, `/homes` | your homes (`home` when unnamed): go, set or move one where you stand, delete, list |
 | `/warp <name>`, `/warps` | to a warp, the list; `/setwarp <name>`, `/delwarp <name>` for operators of level 3 |
 | `/tpa <player>`, `/tpaccept [player]`, `/tpdeny [player]` | asks to go to a player (60 s to answer); answers a request |
-| `/rtp`, `/wild` | to a random safe spot 500 to 10,000 blocks from the spawn, in the Overworld only; once every 5 minutes |
+| `/rtp`, `/wild` | to a random safe spot 500 to 10,000 blocks from the spawn, in the Overworld only; once every 10 seconds |
 | `/rules` | the server's rules |
 | `/back` | back to where you died, or where your last teleport took you from (warmup and cooldown as any teleport) |
 | `/afk` | marks you away from the keyboard until you move, turn or run a command |
@@ -51,6 +54,7 @@ header and footer).
 | `/claim`, `/claim info`, `/unclaim` | claims the chunk you stand in (all its height), says whose it is, frees it (operators of level 3: anyone's) |
 | `/claim show` | draws the border of the chunk you stand in for 10 s, for you only: green yours or a trusting owner's, red someone else's, white free |
 | `/claims` | your chunks, how many you may hold, and who you trust |
+| `/claims map` | the claimed chunks around you in the chat, 11 by 11 chunks with north up: `O` where you stand, `#` yours, `+` an owner who trusts you, `X` someone else's, `-` free |
 | `/pingsound`, `/pingsound on`, `/pingsound off` | whether you hear a ding when someone names you in chat or `/msg`s you; turns it on or off |
 | `/trust <player>`, `/untrust <player>` | lets a player (or no longer) build and use things on all your land |
 | `/nick <name>`, `/nick off`, `/nick` | operators of level 3 (with `ops_only`, the default): another name for you in chat and the Tab list, shown as `~name` (hovering it gives your real one); `/nick off` (anyone with a nickname) takes it off; `/nick` alone says how |
@@ -86,7 +90,8 @@ money and the room before anything moves.
 - There are no daily coin or per-item limits on market sales, or daily limits on `/pay` receipts.
   The former `daily_sell_coins` and `daily_sell_items` settings and `market.json` counts are ignored,
   including in existing server files.
-- Amounts are checked: no price above 1,000,000,000,000, no sum that overflows.
+- Amounts are checked: no price above 1,000,000,000,000, no sum that overflows. A typed amount or count is a whole number,
+  `1250` or `1,250`: a comma only groups thousands, so `1,5` is refused instead of read as 15.
 - The coinflip and the lottery give the winner all the stakes: they move money between players and never make any.
 
 Default prices (coins; "buy only": the market sells it but doesn't buy it, "sell only" the other way):
@@ -229,29 +234,36 @@ told to everyone. Settings in `config.json`'s `casino`, also `crash_edge_percent
 **Places.** A teleport waits `warmup_seconds` (3) in `config.json`'s `places`; a player who moves or is hurt meanwhile
 stays where they are, and `cooldown_seconds` (10) passes between two of one player's teleports. Teleports are free (an older config's
 `places.fees` is ignored). `/tpa` takes the
-asker to where the other player is when the warmup ends. Homes grow with the time played on the server since the mod
-was on (`homes`: `[hours, homes]`, by default 1 home, 2 from 5 hours, 3 from 20, 5 from 100). `rules` holds `/rules`'
+asker to where the other player is when the warmup ends; `/tpaccept` while the asker's cooldown still runs is refused with the
+seconds left, and the request stays for a new `/tpaccept`. Homes grow with the time played on the server since the mod
+was on (`homes`: `[hours, homes]`, by default 2 to start, one more every 10 hours played, up to 7). `rules` holds `/rules`'
 lines. `/spawn` lands on a random safe column within `spawn_radius` (250) blocks of the spawn point, like vanilla's `respawn_radius` for a first join or a respawn: after the `tp`, vanilla's `spreadplayers` moves the player off fluid, fire and magma onto solid ground (0: exactly the spawn point; if no column is found the player stays at the spawn point). Teleports are vanilla's `tp`, run as the server (`execute in <level> run tp`), so they cross levels and land
 as any teleport does.
 
-`/rtp` (or `/wild`) draws `rtp_attempts` (6) chunks at random between `rtp_min_distance` (500) and `rtp_max_distance`
+`/rtp` (or `/wild`) draws 96 columns at random between `rtp_min_distance` (500) and `rtp_max_distance`
 (10000) blocks from the spawn (`/setspawn`'s point, 0 0 without one), uniform over the ring's area and at least 16 blocks
-inside the world border (as last saved in `world_border.dat`), then holds them loaded one after another with vanilla's
-`forceload` while the warmup runs: the game generates them on its worker threads, never on the server tick. Once a
-chunk is loaded, the Overworld's tick reads its 256 columns (`native_read_columns`, the top block below the
-`MOTION_BLOCKING_NO_LEAVES` height and the two above it) and the player lands, still standing still, on a random one
-whose top block is solid ground (no fluid, fire, cactus, magma, powder snow, berry bush or dripstone) with air or grass
-above it, outside another player's claim and still in the ring and the border; with none the next chunk is tried. With
-no spot after the six, or no land loaded `rtp_search_seconds` (30) after the warmup, it says so and nothing is spent.
-A teleport made starts `rtp_cooldown_seconds` (300) for that player, kept in `places.json` over restarts ("Wait 2 min
+inside the world border (as last saved in `world_border.dat`), and asks the game's terrain generator about all of them at
+once (`native_terrain_surface`: no chunk is loaded for it). It keeps the dry land: no water over the ground, solid ground
+that is not a hazard, not an ocean or river biome; the chunks of up to `rtp_attempts` (6) of those are the ones it tries.
+It holds the first with a chunk ticket while the warmup runs, never on the server tick, so an ocean costs no chunk load.
+Trees, lava and cacti come with the chunk's decoration, so once it is loaded, the Overworld's tick reads its 256 columns
+(`native_read_columns`, the top block below the `MOTION_BLOCKING_NO_LEAVES` height and the two above it) and the player
+lands, still standing still, on a random one whose top block is solid ground (no fluid, fire, cactus, magma, powder snow,
+berry bush or dripstone) with air or grass above it, outside another player's claim and still in the ring and the border;
+with none the next chunk is tried. On a game that cannot say what the terrain is, every drawn column counts. With no dry
+land among the 96, no spot after the six, or no land loaded `rtp_search_seconds` (30) after the warmup, it says so and
+nothing is spent.
+A teleport made starts `rtp_cooldown_seconds` (10) for that player, kept in `places.json` over restarts ("Wait 8 s
 before your next /rtp."); a teleport called off (a move, a hit, the game failing it) doesn't. Elsewhere than the
 Overworld it refuses. The chunks it forced are let go 10 s after the landing, or at the next start if the server
 stopped first; a chunk an operator forced already is used and left forced. `/back` returns from it as from any teleport.
 
+**Random start.** A player who joins for the first time, with no spawn point (bed, respawn anchor or command), is sent to a random spot as `/rtp` finds one, at once: no warmup, no cooldown, and moving doesn't call it off. They are placed at the world spawn first and move when the land has loaded. Every death after that sends a player without a spawn point the SMP has seen set to a random spot, including veterans: a bed set before this feature isn't known to it, so it is overridden until the player sleeps in a bed again (or sets an anchor). Players with one it has seen are left where vanilla puts them.
+
 **Claims.** In a claimed chunk, only its owner, the players they trust and operators of level 3 break blocks or right
 click blocks: doors, chests, levers, buttons, placing a block, a bucket or flint on a block. Anyone else's click does
 nothing, and the action bar says whose land it is. The chunks a player may hold grow with the time played here
-(`claims.chunks`: `[hours, chunks]`, by default 4, 16 from 5 hours, 36 from 20, 64 from 100); `claims.enabled`
+(`claims.chunks`: `[hours, chunks]`, by default 10 to start, one more for every hour played, up to 200); `claims.enabled`
 turns them off. `claims.free_radius` (0, none) keeps the land within that many blocks of 0 0, in every dimension, free
 for all: no one claims a chunk that touches it, and claims already there are dropped at start (each logged). The world stays out too: no water or lava flows, no fire spreads or burns, and no piston pushes into
 a claim from land that isn't its owner's (or a player's they trust), and explosions break no claimed block, whoever
@@ -314,7 +326,7 @@ itself (its tooltip), with the listing's price, seller and time under it. A stac
 back the same (its data written and read back equal); not market charts (free at `/market`), nor a stack holding
 more than 32 KiB of data (a box of books). Listings and mail from before 0.31 hold plain items and are given back as
 before. Survival and adventure players only. `config.json`'s `auction`:
-`enabled`, `max_listings` (8 a player), `listing_hours` (48), `auction_hours` (12),
+`enabled`, `start_listings` (5 a player to start), `listing_every_hours` (2: one more listing per this many hours played), `max_listings` (50), `listing_hours` (48), `auction_hours` (12),
 `auction_hours_max` (24), `bid_step_percent` (5: the smallest raise), `snipe_seconds` (60). Ended listings are
 looked at once a second (a pass over the open listings).
 
@@ -391,7 +403,7 @@ acting player's items (API 9), the server menus and `native_exchange_items` (API
 action bar (API 21), `native_block_spread`, `native_piston_move`, `native_explosion_detonate`, `native_fill_bucket` and
 `native_attack_entity` (API 22), `native_sidebar`, `native_tab_list` and `native_tick_stats` (API 49),
 `native_set_nickname` and `native_text_allowed` (API 62), `native_hide_player` (API 314, horizon#7003), the server tick and the world lifecycle.
-`compatibility.json` names `"hooks": 58`.
+`compatibility.json` names `"hooks": 645`.
 
 | File | What it is |
 |---|---|

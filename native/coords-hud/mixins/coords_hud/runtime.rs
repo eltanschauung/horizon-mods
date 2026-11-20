@@ -22,18 +22,30 @@ pub fn facing(yaw: f32) -> &'static str {
 /// The box's lines, as the WebAssembly mod wrote them.
 pub fn lines(x: f64, y: f64, z: f64, yaw: f32) -> [String; 2] {
     [
-        format!("XYZ {x:.1} / {y:.1} / {z:.1}"),
+        format!(
+            "XYZ {} / {} / {}",
+            one_decimal(x),
+            one_decimal(y),
+            one_decimal(z)
+        ),
         format!("Facing {}", facing(yaw)),
     ]
 }
 
+/// A coordinate with one decimal; a small negative that rounds to zero is `0.0`, not `-0.0`.
+fn one_decimal(v: f64) -> String {
+    let text = format!("{v:.1}");
+    if text == "-0.0" { "0.0".into() } else { text }
+}
+
 /// `/where`'s line: `12, 70, -4 in minecraft:the_nether`.
 pub fn where_line(x: f64, y: f64, z: f64, dimension: &str) -> String {
+    // `+ 0.0` turns a floored -0.0 into 0.0, which prints without a minus sign.
     format!(
         "{:.0}, {:.0}, {:.0} in {dimension}",
-        x.floor(),
-        y.floor(),
-        z.floor()
+        x.floor() + 0.0,
+        y.floor() + 0.0,
+        z.floor() + 0.0
     )
 }
 
@@ -79,6 +91,31 @@ mod tests {
     }
 
     #[test]
+    fn facing_turns_at_the_half_way_yaws() {
+        // Direction.fromYRot: each side owns 90 degrees centred on its own yaw, so it
+        // changes half way (45, 135, 225, 315), the half way yaw itself going to the next.
+        let south = "South (+Z)";
+        let (west, north, east) = ("West (-X)", "North (-Z)", "East (+X)");
+        for (yaw, side) in [
+            (44.9, south),
+            (45.0, west),
+            (134.9, west),
+            (135.0, north),
+            (224.9, north),
+            (225.0, east),
+            (314.9, east),
+            (315.0, south),
+            (-44.9, south),
+            (-45.0, south),
+            (-45.1, east),
+            (-135.0, east),
+            (-135.1, north),
+        ] {
+            assert_eq!(facing(yaw), side, "yaw {yaw}");
+        }
+    }
+
+    #[test]
     fn lines_read_as_the_webassembly_mods() {
         assert_eq!(
             lines(12.5, 64.0, -3.25, 180.0),
@@ -87,6 +124,22 @@ mod tests {
         assert_eq!(
             where_line(12.5, 70.2, -3.25, "minecraft:the_nether"),
             "12, 70, -4 in minecraft:the_nether"
+        );
+    }
+
+    #[test]
+    fn a_coordinate_just_below_zero_is_never_written_as_negative_zero() {
+        // `{:.1}` of -0.04 and `{:.0}` of -0.0 both print a minus sign.
+        assert_eq!(lines(-0.04, 64.0, -0.04, 0.0)[0], "XYZ 0.0 / 64.0 / 0.0");
+        assert_eq!(
+            where_line(-0.0, 70.0, -0.0, "minecraft:overworld"),
+            "0, 70, 0 in minecraft:overworld"
+        );
+        // Real negatives keep their sign.
+        assert_eq!(lines(-0.06, 64.0, -3.25, 0.0)[0], "XYZ -0.1 / 64.0 / -3.2");
+        assert_eq!(
+            where_line(-0.3, 70.0, -4.0, "minecraft:overworld"),
+            "-1, 70, -4 in minecraft:overworld"
         );
     }
 

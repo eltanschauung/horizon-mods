@@ -243,6 +243,49 @@ fn voices_reach_who_is_near_in_the_same_dimension() {
 }
 
 #[test]
+fn a_player_may_send_75_voice_packets_a_second_in_bursts_of_30() {
+    // README: "75 voice packets a second a player (burst 30)". Alice sends 100 packets at
+    // once, waits 0.2 s and sends 100 more; bob counts what reaches him by sequence number.
+    let s = server();
+    let a = Voice::connect(A, &ask_secret(&s, A));
+    let b = Voice::connect(B, &ask_secret(&s, B));
+    s.tick(world());
+    s.outgoing(64);
+    let burst = |from: i64| {
+        let start = Instant::now();
+        for i in from..from + 100 {
+            a.talk(i, false);
+        }
+        start.elapsed().as_secs_f64()
+    };
+    let first_took = burst(0);
+    let waited = Instant::now();
+    std::thread::sleep(Duration::from_millis(200));
+    let gap = waited.elapsed().as_secs_f64();
+    let second_took = burst(100);
+    let (mut first, mut second) = (0.0, 0.0);
+    while let Some(p) = b.hears() {
+        let sequence = i64::from_be_bytes(p[p.len() - 13..p.len() - 5].try_into().unwrap());
+        if sequence < 100 {
+            first += 1.0;
+        } else {
+            second += 1.0;
+        }
+    }
+    // The bucket holds 30 and fills at 75 a second (a little extra for the time the sending
+    // itself took, and a little less for the packets still on their way).
+    assert!(
+        (30.0..=30.0 + 75.0 * (first_took + 0.05) + 1.0).contains(&first),
+        "first burst: {first} heard, sent in {first_took} s"
+    );
+    let filled = 75.0 * gap;
+    assert!(
+        (filled - 5.0..=filled + 75.0 * (second_took + 0.05) + 1.0).contains(&second),
+        "after {gap} s: {second} heard, sent in {second_took} s"
+    );
+}
+
+#[test]
 fn groups_follow_their_kind() {
     let s = server();
     let a = Voice::connect(A, &ask_secret(&s, A));
@@ -451,6 +494,36 @@ fn outgoing_is_paced_per_player() {
 }
 
 #[test]
+fn at_most_512_messages_wait_for_a_player() {
+    // README: "at most 512 waiting". 600 players with voice chat each turn it off: the next
+    // tick tells every client 600 state changes, and a client that does not collect them
+    // keeps the first 512 and loses the rest.
+    let s = server();
+    let many: Vec<Player> = (0..600u128)
+        .map(|i| player(0x2000 + i, &format!("r{i}"), "minecraft:overworld", 0.0))
+        .collect();
+    s.tick(many.clone());
+    for p in &many {
+        s.message(p.uuid, proto::REQUEST_SECRET, &20i32.to_be_bytes());
+    }
+    s.tick(many.clone());
+    s.outgoing(usize::MAX);
+    for p in &many {
+        s.message(p.uuid, proto::UPDATE_STATE, &[1]);
+    }
+    s.tick(many.clone());
+    let out = s.outgoing(usize::MAX);
+    let mine = for_player(&out, many[0].uuid);
+    assert_eq!(mine.len(), 512, "{} states told, 512 kept", many.len());
+    assert!(mine.iter().all(|m| m.0 == proto::STATE));
+    // Collected, the queue has room again.
+    s.message(many[0].uuid, proto::UPDATE_STATE, &[0]);
+    s.tick(many.clone());
+    let out = s.outgoing(usize::MAX);
+    assert_eq!(for_player(&out, many[0].uuid).len(), 1);
+}
+
+#[test]
 fn config_defaults_fill_in() {
     let c: Config = serde_json::from_str(r#"{"port": 25565}"#).unwrap();
     assert_eq!((c.port, c.distance, c.enabled), (25565, 48.0, true));
@@ -461,6 +534,33 @@ fn config_defaults_fill_in() {
         })
         .is_err()
     );
+}
+
+#[test]
+fn the_keep_alive_clients_are_told_stays_between_100_and_60000() {
+    // (the config's `keep_alive_ms`, the one the secret message carries)
+    for (set, told) in [
+        (0, 100),
+        (50, 100),
+        (100, 100),
+        (1000, 1000),
+        (60_000, 60_000),
+        (u32::MAX, 60_000),
+    ] {
+        let s = server_with(Config {
+            keep_alive_ms: set,
+            ..Config::default()
+        });
+        let message = ask_secret(&s, A);
+        let mut r = In::new(&message);
+        r.take(16).unwrap(); // the secret
+        r.int().unwrap(); // the port
+        r.uuid().unwrap();
+        r.byte().unwrap(); // the Opus application
+        r.int().unwrap(); // the MTU
+        r.take(8).unwrap(); // the distance
+        assert_eq!(r.int().unwrap(), told, "keep_alive_ms {set}");
+    }
 }
 
 /// A socket elsewhere that copies datagrams it saw and sends them as its own.
@@ -590,6 +690,47 @@ fn a_client_the_server_stops_hearing_gets_a_fresh_secret() {
 }
 
 #[test]
+fn at_most_128_groups_exist() {
+    // README: "128 groups". Players each make one group (a group is gone once empty, so a
+    // single player cannot hold more than one): the 129th and later are refused.
+    let s = server();
+    let many: Vec<Player> = (0..140u128)
+        .map(|i| player(0x1000 + i, &format!("q{i}"), "minecraft:overworld", 0.0))
+        .collect();
+    s.tick(many.clone());
+    let mut made = 0;
+    for p in &many {
+        ask_secret(&s, p.uuid);
+        s.message(
+            p.uuid,
+            proto::CREATE_GROUP,
+            &Out::default().text(&p.name).flag(false).short(0).done(),
+        );
+        made += s
+            .outgoing(usize::MAX)
+            .iter()
+            .filter(|m| m.0 == p.uuid && m.1 == proto::JOINED_GROUP)
+            .count();
+    }
+    assert_eq!(made, 128, "players who got into a group they made");
+    // Leaving empties a group, which goes away: that makes room for exactly one more.
+    s.message(many[0].uuid, proto::LEAVE_GROUP, &[]);
+    let creates = |who: u128, name: &str| {
+        s.message(
+            who,
+            proto::CREATE_GROUP,
+            &Out::default().text(name).flag(false).short(0).done(),
+        );
+        s.outgoing(usize::MAX)
+            .iter()
+            .filter(|m| m.0 == who && m.1 == proto::JOINED_GROUP)
+            .count()
+    };
+    assert_eq!(creates(many[128].uuid, "late"), 1, "one place was freed");
+    assert_eq!(creates(many[129].uuid, "later"), 0, "and it is full again");
+}
+
+#[test]
 fn repeated_secret_requests_and_group_changes_stay_bounded() {
     let s = server();
     // 40 players, each in a group of their own.
@@ -677,4 +818,47 @@ fn server_authorized_phone_broadcast_is_global_and_reverts_when_put_away() {
     let mut people = world(); people[0].broadcast = true; s.tick(people);
     a.talk(2, true);
     assert_eq!(far.hears().map(|p|p[0]), Some(3), "phone also carries whispered speech globally");
+}
+
+/// A `State` with no sockets: the rules a player's secret and buckets follow.
+fn bare_state() -> State {
+    State {
+        config: Config::default(),
+        port: 0,
+        clients: HashMap::new(),
+        players: HashMap::new(),
+        groups: HashMap::new(),
+        changed: HashSet::new(),
+        outbox: HashMap::new(),
+        phone_active: Default::default(),
+        phone_ticks: Default::default(),
+    }
+}
+
+#[test]
+fn a_new_secret_does_not_refill_the_rate_buckets() {
+    // Group and state changes: a burst of 10, then 2 a second. Asking for a
+    // new secret (once a second) must not hand the burst back.
+    let rng = SystemRandom::new();
+    let mut st = bare_state();
+    st.give_secret(&rng, A, false);
+    let spent = (0..12).filter(|_| st.spend_op(A)).count();
+    assert_eq!(spent, OPS_BURST as usize, "a burst of 10");
+    st.give_secret(&rng, A, false);
+    let after = (0..12).filter(|_| st.spend_op(A)).count();
+    // Only what a second of refilling gives, not another burst.
+    assert!(
+        after <= 2,
+        "{after}: a client's own request is not a refill"
+    );
+    // The same for the voice packets' burst of 30.
+    st.clients.get_mut(&A).unwrap().tokens = 0.0;
+    st.give_secret(&rng, A, false);
+    assert!(st.clients[&A].tokens < 1.0, "{}", st.clients[&A].tokens);
+    // The server's own new secret already keeps them.
+    st.clients.get_mut(&A).unwrap().ops = 0.0;
+    st.clients.get_mut(&A).unwrap().tokens = 0.0;
+    st.give_secret(&rng, A, true);
+    assert!(!st.spend_op(A));
+    assert!(st.clients[&A].tokens < 1.0);
 }

@@ -239,7 +239,10 @@ impl Nicks {
                 ));
             }
         }
-        let own = skeleton(real);
+        // One's own name as a nickname hides nothing.
+        if nick.eq_ignore_ascii_case(real) {
+            return None;
+        }
         let others = names
             .known()
             .into_iter()
@@ -253,8 +256,9 @@ impl Nicks {
                     .map(|(_, n)| n),
             );
         for name in others {
-            let k = skeleton(&name);
-            if k != own && looks_like(&s, &k) {
+            // One's own name, also as an `ops.json` or `protected` entry, never counts;
+            // another player's does, even when it reads like one's own.
+            if !name.eq_ignore_ascii_case(real) && looks_like(&s, &skeleton(&name)) {
                 return Some(format!("{nick} looks like the name of another player."));
             }
         }
@@ -304,12 +308,14 @@ impl Nicks {
                 _,
                 ..,
             ] => 1,
-            ["eco" | "money", "give" | "take" | "set", _, _] => 2,
+            ["eco" | "money", "give" | "take", _, ..] => 2,
             _ => return None,
         };
         let word = words[at];
         if word == "*"
-            || (at == 1 && ["accept", "deny", "cancel", "money"].contains(&word))
+            || (at == 1
+                && words[0] == "trade"
+                && ["accept", "deny", "cancel", "money"].contains(&word))
             || is_name(word)
         {
             return None;
@@ -574,6 +580,38 @@ mod tests {
     }
 
     #[test]
+    fn every_look_alike_of_the_readme_folds_and_the_limits_are_exact() {
+        // README: "look-alikes folded (`0`->o, `1`/`i`->l, `3`->e, `4`->a, `5`->s, `7`->t,
+        // `8`->b, `9`->g)", "3 to 16 letters, digits or `_`", "containing (from 4 letters)".
+        for (digit, letter) in [
+            ('0', "o"),
+            ('1', "l"),
+            ('3', "e"),
+            ('4', "a"),
+            ('5', "s"),
+            ('7', "t"),
+            ('8', "b"),
+            ('9', "g"),
+        ] {
+            assert_eq!(skeleton(&digit.to_string()), letter, "{digit}");
+        }
+        assert_eq!(skeleton("i"), "l");
+        assert_eq!(skeleton("a2b6c"), "abc", "the other digits are dropped");
+        assert!(
+            !valid(&"a".repeat(2)) && valid(&"a".repeat(3)),
+            "3 at least"
+        );
+        assert!(
+            valid(&"a".repeat(16)) && !valid(&"a".repeat(17)),
+            "16 at most"
+        );
+        assert!(valid("a_1") && !valid("a-1") && !valid("a b"));
+        // A name of 3 letters is copied only by being equal to it, one of 4 by being contained.
+        assert!(looks_like("bob", "bob") && !looks_like("xbobx", "bob"));
+        assert!(looks_like("xbobbx", "bobb") && !looks_like("xbobx", "bobb"));
+    }
+
+    #[test]
     fn the_form_and_the_letters() {
         let (mut n, dir) = setup("form");
         for bad in ["ab", "way_too_long_nickname", "bad-name", "no.dots"] {
@@ -670,6 +708,46 @@ mod tests {
         for bad in ["rocky", "R0cky", "Rocky_2", "RockyRoad"] {
             assert!(try_nick(&mut n, bad).contains("another player"), "{bad}");
         }
+        fs::remove_dir_all(dir).ok();
+    }
+
+    #[test]
+    fn a_look_alike_of_another_real_name_is_refused_even_when_it_reads_like_ones_own() {
+        let (mut n, dir) = setup("lookalike");
+        // "AIex" (capital i) and "Rd8t" read like "Alex" and the Team's "rdbt".
+        let k = Known(vec![
+            (ALEX, "Alex"),
+            (4, "AIex"),
+            (STEVE, "Steve"),
+            (5, "Rd8t"),
+            (OP, "SomeOp"),
+        ]);
+        let mut ask = |uuid, name, level, nick: &str| {
+            n.command(
+                &player(uuid, name, level),
+                &k,
+                HOUR,
+                0,
+                &format!("nick {nick}"),
+            )
+            .unwrap()
+        };
+        assert_eq!(
+            ask(4, "AIex", 0, "Alex"),
+            [Out::Error(
+                "Alex looks like the name of another player.".into()
+            )]
+        );
+        assert_eq!(
+            ask(5, "Rd8t", 0, "RDBT"),
+            [Out::Error(
+                "RDBT looks like the name of another player.".into()
+            )]
+        );
+        // One's own name in another case is no disguise, even with a look-alike around.
+        assert_eq!(ask(ALEX, "Alex", 0, "~alex"), []);
+        // An operator's own name is also listed without a UUID (`ops.json`).
+        assert_eq!(ask(OP, "SomeOp", 4, "SomeOp_the_Great"), []);
         fs::remove_dir_all(dir).ok();
     }
 
@@ -773,11 +851,55 @@ mod tests {
             Some("trade accept Steve")
         );
         assert_eq!(r("eco give Rocky 5").as_deref(), Some("eco give Steve 5"));
+        // `/eco give` needs a reason, so the words after the amount are kept.
+        assert_eq!(
+            r("eco give Rocky 5 event prize").as_deref(),
+            Some("eco give Steve 5 event prize")
+        );
+        assert_eq!(
+            r("eco take ~rocky 5 cheat").as_deref(),
+            Some("eco take Steve 5 cheat")
+        );
+        assert_eq!(
+            r("money give Rocky 5 bug refund").as_deref(),
+            Some("money give Steve 5 bug refund")
+        );
+        assert_eq!(r("eco give Steve 5 prize"), None, "a real name stays");
+        assert_eq!(r("eco give * 5 prize"), None);
+        assert_eq!(r("eco stats"), None);
         assert_eq!(r("pay Steve 50"), None, "a real name stays");
         assert_eq!(r("trade accept"), None);
         assert_eq!(r("eco give * 5"), None);
         assert_eq!(r("pay Nobody 5"), None);
         assert_eq!(r("balance"), None);
+        fs::remove_dir_all(dir).ok();
+    }
+
+    #[test]
+    fn a_nickname_that_is_a_trade_word_still_resolves_outside_trade() {
+        let (mut n, dir) = setup("resolve-words");
+        for (uuid, nick, real) in [(STEVE, "Money", "Steve"), (ALEX, "Accept", "Alex")] {
+            let change = Change {
+                uuid,
+                nick: Some(nick.into()),
+                by: uuid,
+                own: true,
+            };
+            n.apply(&change, real, 0);
+        }
+        let is_name = |w: &str| ["alex", "steve"].contains(&w.to_ascii_lowercase().as_str());
+        let name_of = |u: u128| known().name_of(u);
+        let r = |line: &str| n.resolve(line, &is_name, &name_of);
+        assert_eq!(r("pay money 5").as_deref(), Some("pay Steve 5"));
+        assert_eq!(r("tpa ~accept").as_deref(), Some("tpa Alex"));
+        assert_eq!(r("playtime Money").as_deref(), Some("playtime Steve"));
+        // `/trade money 5` is the subcommand, as `/trade accept` is.
+        assert_eq!(r("trade money 5"), None);
+        assert_eq!(r("trade accept"), None);
+        assert_eq!(
+            r("trade accept Money").as_deref(),
+            Some("trade accept Steve")
+        );
         fs::remove_dir_all(dir).ok();
     }
 

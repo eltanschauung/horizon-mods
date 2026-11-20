@@ -608,6 +608,10 @@ impl Economy {
                             balance: start,
                         },
                     );
+                    if start > 0 {
+                        // The log marks it minted: `/eco stats` counts it too.
+                        self.count_flow("open", start);
+                    }
                     self.touch();
                 }
             }
@@ -875,7 +879,12 @@ impl Economy {
         let top = self.top();
         let pages = top.len().div_ceil(PAGE).max(1);
         let mut out = vec![Out::Reply(format!("Richest players ({page}/{pages}):"))];
-        for (i, (name, balance)) in top.iter().enumerate().skip((page - 1) * PAGE).take(PAGE) {
+        for (i, (name, balance)) in top
+            .iter()
+            .enumerate()
+            .skip((page - 1).saturating_mul(PAGE))
+            .take(PAGE)
+        {
             out.push(Out::Reply(format!(
                 "{}. {name}: {}",
                 i + 1,
@@ -939,8 +948,17 @@ impl Economy {
     }
 }
 
-/// A positive whole amount, `1250` or `1,250`.
+/// A positive whole amount, `1250` or `1,250` (a comma only groups thousands).
 pub fn parse_amount(s: &str) -> Option<i64> {
+    // A comma only groups thousands: 1 to 3 digits, then groups of exactly 3.
+    // `1,5` is refused, not read as 15.
+    if s.contains(',') {
+        let mut groups = s.split(',');
+        let first = groups.next().unwrap_or_default();
+        if !(1..=3).contains(&first.len()) || !groups.all(|g| g.len() == 3) {
+            return None;
+        }
+    }
     let digits: String = s.chars().filter(|c| *c != ',').collect();
     if digits.is_empty() || !digits.chars().all(|c| c.is_ascii_digit()) {
         return None;
@@ -1047,6 +1065,42 @@ mod tests {
     }
 
     #[test]
+    fn parse_amount_refuses_misplaced_commas() {
+        // `1250` and `1,250`: a comma only groups thousands.
+        for (text, amount) in [
+            ("1250", 1250),
+            ("999", 999),
+            ("1,250", 1250),
+            ("12,345,678", 12_345_678),
+            ("1,000,000,000,000", MAX_AMOUNT),
+        ] {
+            assert_eq!(parse_amount(text), Some(amount), "{text}");
+        }
+        // A player who writes a decimal comma must be refused, not paid 15.
+        for text in [
+            "1,5", "12,34", "1,2,3", ",5", "5,", "1,,000", "1,25,000", "1250,000", ",", "",
+        ] {
+            assert_eq!(parse_amount(text), None, "{text}");
+        }
+    }
+
+    #[test]
+    fn a_decimal_comma_is_not_a_payment() {
+        let (mut e, dir) = economy("decimal-comma");
+        let out = e
+            .command(&player(ALEX, "Alex", 0), &[], "pay Steve 1,5")
+            .unwrap();
+        assert_eq!(
+            out,
+            vec![Out::Error(
+                "The amount must be a positive whole number.".into()
+            )]
+        );
+        assert_eq!((e.balance(ALEX), e.balance(STEVE)), (100, 100));
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
     fn balances_survive_a_restart_and_a_damaged_file_stops_the_economy() {
         let (mut e, dir) = economy("restart");
         e.command(&player(ALEX, "Alex", 0), &[], "pay Steve 1,000")
@@ -1130,6 +1184,22 @@ mod tests {
     }
 
     #[test]
+    fn starting_balances_count_as_money_the_server_made() {
+        // Two accounts opened with 100 coins each (the log marks them minted).
+        let (mut e, dir) = economy("start-flow");
+        assert_eq!(e.flows().minted["open"], 200);
+        // A player who comes back does not open an account again.
+        e.seen(ALEX, "Alex");
+        assert_eq!(e.flows().minted["open"], 200);
+        // With no starting balance nothing is made.
+        let dir = dir.with_extension("none");
+        let _ = fs::remove_dir_all(&dir);
+        let mut none = Economy::open(&dir, Config::default()).unwrap();
+        none.seen(ALEX, "Alex");
+        assert!(none.flows().minted.is_empty());
+    }
+
+    #[test]
     fn pools_pay_only_what_they_hold_and_survive_a_restart() {
         let (mut e, dir) = economy("pools");
         e.to_pool("ah_bid", ALEX, "ah", 30, "").unwrap();
@@ -1196,7 +1266,7 @@ mod tests {
             .collect();
         assert_eq!(kinds, ["bank_closed", "bank_closed", "futures_closed"]);
         e.save().unwrap();
-        assert!(super::super::smp_store::flush().is_empty());
+        assert!(super::super::smp_store::flush_dir(&dir).is_empty());
         let saved = fs::read_to_string(dir.join("economy.json")).unwrap();
         assert!(!saved.contains("treasury"), "{saved}");
         // Only once.
@@ -1253,6 +1323,23 @@ mod tests {
             last.last().unwrap(),
             &Out::Reply("14. Alex: 50 coins".into())
         );
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn a_page_number_near_the_largest_is_an_empty_page() {
+        let (mut e, dir) = economy("baltop-huge");
+        for i in 0..12u128 {
+            e.seen(100 + i, &format!("P{i:02}"));
+        }
+        // `usize::MAX / PAGE + 2` is the page whose first row, counted as
+        // (page - 1) * PAGE, wraps round to row 4 when it overflows.
+        for page in [usize::MAX, usize::MAX / PAGE + 2] {
+            let out = e
+                .command(&player(ALEX, "Alex", 0), &[], &format!("baltop {page}"))
+                .unwrap();
+            assert_eq!(out, [Out::Reply(format!("Richest players ({page}/2):"))]);
+        }
         fs::remove_dir_all(dir).unwrap();
     }
 

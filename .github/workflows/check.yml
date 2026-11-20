@@ -1,14 +1,17 @@
-# A pull request's checks: what it changes compared with main, each new file's
-# own check (its kind's, its signature, a trial run of a mod in the sandbox), and
-# the index it would publish. Runs with a read-only token and no secrets; the tool
-# comes from Horizon, never from the pull request, and a submission's code only
-# runs inside Horizon's mod sandbox.
+# Non-executing package validation, review and candidate index generation.
+# Native Rust is never compiled here; wasm remains kind `mod`.
+# Only the trusted base's scripts and exact reviewed engine checker run.
+# No job restores a cache: third-party build jobs must not influence reviewers.
 name: check
 on:
   pull_request:
     branches: [main]
+    # ready_for_review too: owner-update.yml passes over a draft, and marking it ready pushes no commit.
+    types: [opened, synchronize, reopened, ready_for_review]
 permissions:
   contents: read
+  # The last successful publish run and its verified-files artifact.
+  actions: read
 concurrency:
   group: check-${{ github.event.pull_request.number }}
   cancel-in-progress: true
@@ -19,33 +22,34 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      HORIZON_REV: ${{ vars.HORIZON_REV || 'main' }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-          path: base
-      - uses: actions/checkout@v4
+      # The main the pull request is merged into, not the event's base.sha: a re-run (or a run that waited in the
+      # queue) keeps the old base.sha while GitHub rebuilds the merge commit on today's main, so everything main
+      # gained in between would count as the pull request's own (the same as native-compat.yml's #425).
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           path: head
           persist-credentials: false
-      # A fork's run gets no repository variables, so HORIZON_REV is a branch name: pin it to its commit, or the
-      # cache below keeps serving the tool built the first time (#136 failed on 2026-11-07 with an 11-03 tool).
-      - name: Pin the tool's revision
+          fetch-depth: 2
+      - name: The main commit it is merged into
+        id: merged
+        run: echo "base=$(git -C head rev-parse HEAD^1)" >> "$GITHUB_OUTPUT"
+      # Every published input (entries, icons, screenshots) is read from disk later, and Pages follows links:
+      # a link or submodule anywhere in the tree could expose the runner's files.
+      - name: Only regular files
         run: |
-          case "$HORIZON_REV" in
-            *[!0-9a-f]*|'')
-              sha=$(git ls-remote https://github.com/horizon-rust/horizon "refs/heads/$HORIZON_REV" | cut -f1)
-              test -n "$sha"
-              echo "HORIZON_REV=$sha" >> "$GITHUB_ENV" ;;
-          esac
-      - uses: actions/cache@v4
+          bad=$(git -C head ls-tree -r HEAD | awk '$1 != "100644" && $1 != "100755"')
+          if [ -n "$bad" ]; then
+            echo "::error::only regular files can be submitted, not links or submodules:"
+            echo "$bad"
+            exit 1
+          fi
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          path: |
-            ~/.cargo/bin
-            ~/.cargo/horizon-rev
-          key: cargo-horizon-mod-${{ env.HORIZON_REV }}
-      # main's scripts, not the pull request's.
+          ref: ${{ steps.merged.outputs.base }}
+          path: base
+          persist-credentials: false
+      # main's scripts and tool pin (base/.github/horizon-rev), not the pull request's.
       - run: base/scripts/install-tool.sh
       - name: Who submitted it
         id: author
@@ -62,22 +66,44 @@ jobs:
           fi
           echo "login=${author:-$LOGIN}" >> "$GITHUB_OUTPUT"
       - name: What it changes
+        env:
+          # GitHub's own numeric id of who opened the pull request, never a login or a claim in its body:
+          # archived ids reactivate only for an account in their owner_ids.
+          PR_AUTHOR_ID: ${{ github.event.pull_request.user.id }}
         run: |
           set -o pipefail
           { echo "## Changes"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           status=0
-          cargo horizon-mod registry review base head --author "${{ steps.author.outputs.login }}" 2>&1 \
+          # An unconfirmed owner of a reactivated archived id is only recorded here; the last step fails on it,
+          # after every other check has run on this head.
+          python3 base/scripts/catalogue.py review-base base "${{ steps.merged.outputs.base }}" \
+            head "$(git -C head rev-parse HEAD)" review-base --author-id "$PR_AUTHOR_ID" \
+            --unconfirmed-owners "$RUNNER_TEMP/unconfirmed-owners.txt"
+          cargo horizon-mod registry review review-base head --author "${{ steps.author.outputs.login }}" 2>&1 \
             | tee -a "$GITHUB_STEP_SUMMARY" || status=1
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit $status
-      # main's files, kept by publish: each download from a release counts as a
-      # player's.
-      - uses: actions/cache/restore@v4
+      # Every live file, not only the new ones, goes into the candidate index. The files the last successful
+      # publish verified (publish.yml's artifact, unpacked outside the checkouts; fetch.sh rehashes each against
+      # the entry) are reused when they match, and only the rest is downloaded: one download per live file on every
+      # check doesn't hold up when many pull requests come at once.
+      - name: The last successful publish
+        id: last
+        run: |
+          run=$(base/scripts/last-publish.sh 2>/dev/null) || run=
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+      - if: steps.last.outputs.run != ''
+        id: kept
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          path: files
-          key: files-${{ hashFiles('head/mods/*.toml') }}
-          restore-keys: files-
+          name: verified-files
+          path: ${{ runner.temp }}/kept-files
+          run-id: ${{ steps.last.outputs.run }}
+          github-token: ${{ github.token }}
       - name: Download its files
+        env:
+          FILES_KEPT: ${{ runner.temp }}/kept-files
         run: base/scripts/fetch.sh head
       - name: Check each new file
         run: |
@@ -90,6 +116,7 @@ jobs:
       - name: The index it would publish
         run: |
           cargo horizon-mod registry build head --files files --out index.json --generated "$(date -u +%FT%TZ)"
+          python3 base/scripts/catalogue.py history head "$(git -C head rev-parse HEAD)" history
           python3 - >> "$GITHUB_STEP_SUMMARY" <<'PY'
           import json
           index = json.load(open("index.json"))
@@ -97,3 +124,26 @@ jobs:
           for p in index["projects"]:
               print(f"- {p['kind']} `{p['id']}` {p['versions'][0]['version']}")
           PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: registry-candidate
+          path: |
+            index.json
+            history/
+          if-no-files-found: error
+      - name: Owner of a reactivated archived id (last, after every other check)
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          file="$RUNNER_TEMP/unconfirmed-owners.txt"
+          [ -s "$file" ] || exit 0
+          cat "$file"
+          if [ "$JOB_STATUS" = success ]; then
+            msg="owner not confirmed; every other check passed on this head. A maintainer may admin-merge only after confirming the owner by hand."
+          else
+            msg="owner not confirmed, and other checks failed too: fix those first."
+          fi
+          { echo "## Owner"; echo "$msg"; echo '```'; cat "$file"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::$msg"
+          exit 1
