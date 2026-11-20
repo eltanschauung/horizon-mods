@@ -1,0 +1,24 @@
+id = "invis_armor"
+name = "Invisible Armor"
+version = "0.2.0"
+description = "Adjust the visibility of armor and elytra on your client."
+authors = ["eltanschauung"]
+license = "MIT"
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "0a875da91dbb0fdcb7ba8c42c11341aa229af51a"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "opacity"
+kind = "RETURN"
+target = "horizon_client::game::armor_stands::Game<'_>::equipment_render_opacity"
+helper = "src/mixins/opacity.rs"
+bindings = [
+    { name = "original", ty = "f32", value = "$value" },
+    { name = "slot", ty = "&str", value = "_slot" },
+]
