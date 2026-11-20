@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.42.6"
+published = "2026-11-20"
+game = "26.3"
+file = "alice_dolls_native-0.42.6.hnmod"
+sha256 = "ac5ad2b6e1cbc0f048201e1ef1baf8dd62580b797ba97c8bcd766312e5a42aba"
+changelog = "Patchouli's attacks no longer hurt dolls. A doll can be taken off the doll bell with a shift-click on it, for one that died or was lost; one that is still about comes back on the bell by itself. Needs the assets 0.15.1."
+
+[[versions]]
 version = "0.42.5"
 published = "2026-11-20"
 game = "26.3"
