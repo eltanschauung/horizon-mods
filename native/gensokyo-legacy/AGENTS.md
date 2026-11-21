@@ -5,6 +5,7 @@
 - `tools/import_jar.py` imports only the biome dependency closure; `inventory.json`
   pins the supplied jar and all imported hashes. Do not substitute a newer jar silently.
 - `tools/assemble.py` migrates codecs and namespaces into disposable `content/`.
-- Run `tools/check_native.py` and `tools/run_smoke.py` before installation; both use
-  private scratch directories and the managed native compiler/cache.
+- Use `tools/build.py` for the combined SDK package, then run Horizon's frozen
+  preflight with Biomes O’ Plenty and Tectonic before installation. Verify
+  decoration for all 17 biomes in a scratch world.
 - Never treat a successfully packaged hmod as proof that world generation works.

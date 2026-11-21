@@ -1,0 +1,64 @@
+id = "horizon_gensokyo_legacy"
+name = "Gensokyo Legacy – Horizon"
+version = "0.1.1"
+description = "Gensokyo's forests, fields, lakes and Youkai Mountain biomes in the Overworld."
+authors = ["lcy0x1", "Signifier-Dollhouse", "eltanschauung (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "d41d7ceb2e874cc68f2cc08fc5b4c8a06daa7a83"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "features"
+file = "crates/horizon-world/src/worldgen/native_feature.rs"
+name = "gensokyo"
+visibility = "pub"
+source = "src/mixins/features.rs"
+
+[[native.module]]
+id = "placements"
+file = "crates/horizon-world/src/worldgen/native_feature.rs"
+name = "gensokyo_placements"
+source = "src/mixins/placements.rs"
+
+[[native.module]]
+id = "bamboo-grove"
+file = "crates/horizon-world/src/worldgen/native_feature.rs"
+name = "bamboo_grove"
+visibility = "pub"
+source = "src/mixins/bamboo_grove.rs"
+
+[[native.mixin]]
+id = "feature-decode"
+kind = "HEAD"
+cancellable = true
+target = "horizon_world::worldgen::native_feature::decode"
+helper = "src/mixins/feature_decode.rs"
+bindings = [
+ {name="kind", ty="&str", value="kind"},
+ {name="json", ty="&str", value="json"},
+ {name="bindings", ty="&FeatureBlockBindings<'_>", value="bindings"},
+]
+
+[[native.mixin]]
+id = "placement-decode"
+kind = "HEAD"
+cancellable = true
+target = "horizon_world::worldgen::native_feature::decode_native_placement"
+helper = "src/mixins/placement_decode.rs"
+bindings = [{name="json", ty="&str", value="json"}]
+
+[[native.mixin]]
+id = "current-vanilla-feature-order"
+kind = "HEAD"
+target = "horizon_world::worldgen::overrides::WorldgenOverrides::apply"
+helper = "src/mixins/biome_order.rs"
+bindings = [
+ {name="overrides",ty="&WorldgenOverrides",value="self"},
+ {name="bundle",ty="&str",value="bundle"},
+ {name="base",ty="&mut BTreeMap<String,String>",value="&mut base"},
+]

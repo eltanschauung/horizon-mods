@@ -1,5 +1,8 @@
 # Validation
 
+The results below are the baseline from before the SDK migration. The SDK
+package needs a fresh terrain run on the frozen distribution before deployment.
+
 - Input jar and reference source are pinned in `inventory.json` and `upstream.json`.
 - All 17 biomes: direct terrain generation and decoration, first in isolation and
   then with BOP and Tectonic; zero unsupported or failed feature roots.

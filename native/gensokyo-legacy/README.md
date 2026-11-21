@@ -6,9 +6,10 @@ The mod ID and content namespace are `horizon_gensokyo_legacy`.
 
 Build input: the jar pinned in `inventory.json`. Import it with
 `python tools/import_jar.py /home/xxlib/Desktop/horizon-lunatic/gensokyolegacy-1.0.7.1-1.20.1.jar`, then run
-`python tools/assemble.py`. Package the generated `content/` with
-`cargo-horizon-mod build`. The native bundle in `mixins/` is required;
-a content-only installation cannot execute the custom feature types.
+`python tools/assemble.py`. The SDK project in `sdk/` contains the feature
+and placement algorithms. `python tools/build.py` bundles them with the
+maintained content snapshot as a single `target/horizon-mod/horizon_gensokyo_legacy.hmod`.
+The packaging tool uses the Horizon SDK revision pinned in `sdk/horizon-mod.toml`.
 
 Overworld placement adds its own regional pool (weight 4, the shared region grid
 and a 1536-block minimum tier footprint) alongside BOP. Temperature, humidity, continentalness and erosion
@@ -23,6 +24,6 @@ copied. Out-of-climate regions fall back to vanilla, so the new pool does not
 replace deserts or cold biomes with temperate forests. Original plant-patch
 holders reuse the player's current vanilla patch definitions at runtime.
 
-Maintained in `horizon-mods/native/gensokyo-legacy`. Build both bundles with
-`python tools/build.py`; `--install` installs them locally. Native changes require
-a game rebuild through Horizon’s frozen-manifest workflow.
+Use the combined package in Horizon’s frozen-manifest workflow. Native changes
+require a game rebuild. Verify all 17 biomes with Biomes O’ Plenty and Tectonic
+in the frozen selection before deploying.
