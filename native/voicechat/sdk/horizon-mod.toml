@@ -1,0 +1,36 @@
+id = "voicechat"
+name = "Horizon Voice Chat"
+version = "1.1.0"
+description = "Proximity voice and groups with the Simple Voice Chat protocol."
+authors = ["Nirokx", "eltanschauung"]
+license = "MIT"
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "remote_tick"
+kind = "HEAD"
+target = "horizon_client::game::remote::Game::tick_remote"
+helper = "src/mixins/tick.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+[[native.mixin]]
+id = "corner_hud"
+kind = "AFTER_CALL"
+target = "horizon_client::game::extras::Game::draw_extras"
+selector = "self.native_render_gui_post"
+require = 1
+ordinal = 0
+result = "()"
+helper = "src/mixins/hud.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *batch" },
+  { name = "corners", ty = "&mut horizon_client::extras_hud::Corners", value = "&mut *corners" },
+]

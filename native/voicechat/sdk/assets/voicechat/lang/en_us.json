@@ -1,0 +1,22 @@
+{
+  "voicechat.menu": "Open voice chat",
+  "voicechat.push_to_talk": "Push to talk",
+  "voicechat.whisper": "Whisper",
+  "voicechat.mute": "Mute microphone",
+  "voicechat.disable": "Toggle voice chat",
+  "voicechat.mode": "Activation",
+  "voicechat.muted": "Microphone muted",
+  "voicechat.disabled": "Voice chat disabled",
+  "voicechat.volume": "Voice volume",
+  "voicechat.mic_gain": "Microphone gain",
+  "voicechat.threshold": "Voice activation level",
+  "voicechat.protocol": "Protocol",
+  "voicechat.hud": "Status on screen",
+  "voicechat.group_labels": "Group names above players",
+  "voicechat.hide_tooltip": "Hide tooltip",
+  "voicechat.ptt": "Push to talk",
+  "voicechat.voice": "Voice activation",
+  "voicechat.auto": "Automatic",
+  "voicechat.v26": "2.6.x",
+  "voicechat.v27": "2.7"
+}
