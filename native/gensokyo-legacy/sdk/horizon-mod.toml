@@ -9,7 +9,7 @@ capabilities = ["registries"]
 
 [native]
 game = "26.3"
-horizon = "d41d7ceb2e874cc68f2cc08fc5b4c8a06daa7a83"
+horizon = "4044a6091e78a11c574031ef6b53f01b2654a00c"
 mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
 
 [[native.module]]
