@@ -1,0 +1,30 @@
+# SDK port of Emojiful 4.2.0. Chat glyphs and local completions use the same
+# Twemoji name table. See LICENSE, LICENSE-GRAPHICS and NOTICE.
+id = "emojiful"
+name = "Emojiful"
+version = "0.4.1"
+description = "Twemoji in chat by :short_name: (Emojiful 4.2.0 by HorizonStudio, MIT)"
+authors = ["lavoide", "HorizonStudio"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "0a875da91dbb0fdcb7ba8c42c11341aa229af51a"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+
+[[native.module]]
+id = "completion-names"
+file = "crates/horizon-client-render/src/chat.rs"
+name = "emojiful_names"
+source = "src/table.rs"
+
+[[native.mixin]]
+id = "complete-emoji"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client_render::chat::chat_word_completions"
+helper = "src/mixins/complete.rs"
+bindings = [{ name = "word", ty = "&str", value = "word" }]
