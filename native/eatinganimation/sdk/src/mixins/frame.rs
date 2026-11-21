@@ -1,6 +1,5 @@
-use core::ops::ControlFlow;
-
-fn frame(item: &str, model: &str, elapsed_ticks: i32, has_food: bool) -> ControlFlow<Option<String>> {
+fn frame(item: &str, model: &str, elapsed_ticks: i32, has_food: bool) -> core::ops::ControlFlow<Option<String>> {
+    use core::ops::ControlFlow;
     if !has_food && !matches!(item, "minecraft:potion" | "minecraft:milk_bucket") {
         return ControlFlow::Continue(());
     }
