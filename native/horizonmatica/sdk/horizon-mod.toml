@@ -1,0 +1,65 @@
+id = "horizonmatica"
+name = "Horizonmatica"
+version = "0.4.0"
+description = "Litematica for Horizon: load .litematic schematics as a ghost overlay, verify, save areas, material list and printer."
+authors = ["keksi2k"]
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+# The mod uses the game's own renderer and block placement where the API has no counterpart
+# ([[native.mixin]] rows), so it is pinned to one Horizon build: the synchronized fork.
+[native]
+game = "26.3"
+horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+# ---------------------------------------------------------------- the overlay
+# The mod API can't draw this much geometry each frame or give the game's full block models, so
+# the overlay goes through the native route (see src/overlay.rs).
+
+# The game side: block models and world sections for the overlay -> crate::game::horizonmatica_game
+[[native.module]]
+id = "game"
+file = "crates/horizon-client/src/game.rs"
+name = "horizonmatica_game"
+source = "src/native/game_support.rs"
+
+# Once a client tick: the overlay is built with the game side's help.
+[[native.mixin]]
+id = "tick_pre"
+target = "horizon_client::game::native_hooks::client_tick_pre::Game<'_>::native_client_tick_pre"
+kind = "HEAD"
+helper = "src/native/tick_pre.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+# The render side: the overlay drawn in a pass of its own once the world is drawn.
+[[native.mixin]]
+id = "world_drawn"
+target = "horizon_mod_render::render::world_drawn"
+kind = "HEAD"
+helper = "src/native/world_drawn.rs"
+bindings = [{ name = "world", ty = "&mut WorldDrawn<'_>", value = "&mut *world" }]
+
+# The world's depth kept for that pass (the overlay hides behind terrain).
+[[native.mixin]]
+id = "render_needs"
+target = "horizon_mod_render::render::render_needs"
+kind = "HEAD"
+helper = "src/native/render_needs.rs"
+bindings = [{ name = "needs", ty = "&mut RenderNeeds", value = "&mut *needs" }]
+
+# ---------------------------------------------------------------- the hands
+# The printer and easy place click with a look of their own on a chosen face and ask the game's
+# placement what a click would place (see src/hands.rs); the mouse buttons go through here first.
+[[native.mixin]]
+id = "mouse"
+target = "horizon_client::game::play_input::Game<'_>::play_mouse"
+kind = "HEAD"
+cancellable = true
+helper = "src/native/mouse.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "button", ty = "winit::event::MouseButton", value = "button" },
+  { name = "pressed", ty = "bool", value = "pressed" },
+]
