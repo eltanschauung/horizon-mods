@@ -12,7 +12,7 @@ gravestone = "=1.0.0"
 
 [native]
 game = "26.3"
-horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+horizon = "f4ca44d078d55504aefae11dd7e2fca251cef12e"
 mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
 
 [[native.module]]
