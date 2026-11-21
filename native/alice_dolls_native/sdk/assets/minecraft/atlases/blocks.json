@@ -1,0 +1,7 @@
+{
+  "sources": [
+    {"type": "single", "resource": "thkaguyamod:entity/shot/light"},
+    {"type": "single", "resource": "thkaguyamod:entity/shot/small"},
+    {"type": "single", "resource": "thkaguyamod:entity/shot/talisman"}
+  ]
+}
