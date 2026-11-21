@@ -1,0 +1,24 @@
+id = "block_variety_native"
+name = "Block Variety"
+version = "0.6.0"
+description = "Chisel block variants, camouflage frames and item trash cans."
+authors = ["mxpbxb"]
+license = "All Rights Reserved"
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[dependencies]
+block_variety = "=0.4.0"
+
+[native]
+game = "26.3"
+horizon = "6d47d3b4fe4731cd5b3eb81e458377d6eeaeec11"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "upgrade-legacy-entity-type"
+kind = "RETURN"
+target = "horizon_client_lib::save::native_block_entity_type::read"
+helper = "src/mixins/legacy_id.rs"
+bindings = [{name="id",ty="Option<String>",value="$value"}]
