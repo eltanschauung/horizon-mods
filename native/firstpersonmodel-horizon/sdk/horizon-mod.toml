@@ -1,0 +1,63 @@
+id = "firstpersonmodel_horizon"
+name = "First Person Model"
+version = "0.3.0"
+description = "See your character and held items when looking down in first person."
+authors = ["eltanschauung"]
+license = "MIT"
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "body_support"
+file = "crates/horizon-client/src/game/interface/perspective.rs"
+name = "fork_first_person_body"
+source = "src/body.rs"
+
+[[native.mixin]]
+id = "frame_pre"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::render_frame_pre::Game::native_render_frame_pre"
+helper = "src/hooks/frame_pre.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+[[native.mixin]]
+id = "frame_post"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::render_frame_post::Game::native_render_frame_post"
+helper = "src/hooks/frame_post.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+[[native.mixin]]
+id = "in_view"
+kind = "RETURN"
+target = "horizon_client::game::perspective::Game::own_body_in_view"
+helper = "src/hooks/in_view.rs"
+bindings = [{ name = "value", ty = "bool", value = "$value" }, { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" }]
+
+[[native.mixin]]
+id = "body"
+kind = "HEAD"
+target = "horizon_client::game::perspective::Game::player_model_geometry"
+helper = "src/hooks/body.rs"
+cancellable = true
+bindings = [{ name = "game", ty = "&crate::game::Game<'_>", value = "&*self" }, { name = "camera", ty = "glam::DVec3", value = "camera" }, { name = "alpha", ty = "f64", value = "alpha" }, { name = "out", ty = "&mut Vec<horizon_client_render::render_geometry::Vertex>", value = "&mut *out" }]
+
+[[native.mixin]]
+id = "held"
+kind = "HEAD"
+target = "horizon_client::game::mob_blocks::Game::held_item_geometry"
+helper = "src/hooks/held.rs"
+cancellable = true
+
+[[native.mixin]]
+id = "head"
+kind = "HEAD"
+target = "horizon_client::game::mob_blocks::Game::head_item_geometry"
+helper = "src/hooks/head.rs"
+cancellable = true

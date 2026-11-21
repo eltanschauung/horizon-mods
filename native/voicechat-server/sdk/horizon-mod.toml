@@ -1,0 +1,14 @@
+id = "voicechat_server"
+name = "Voice chat server"
+version = "1.2.0"
+description = "The server half of proximity voice chat: the handshake for voice chat clients and the UDP relay of their voices."
+authors = ["Horizon"]
+license = "MIT"
+api = "0.2"
+side = "server"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"

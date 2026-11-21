@@ -1,0 +1,25 @@
+id = "chatheads"
+name = "ChatHeads"
+version = "0.2.0"
+description = "Show the speaker's skin face next to their first chat line."
+authors = ["Domanffe", "eltanschauung"]
+license = "MIT"
+homepage = "https://github.com/Domanffe/chatheads"
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "draw-chat-heads"
+kind = "HEAD"
+target = "horizon_client::game::chat::Game::decorate_chat_lines"
+helper = "src/mixins/draw.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "draws", ty = "&mut Vec<horizon_client::hud_layout::GuiDraw>", value = "&mut *_draws" },
+]
