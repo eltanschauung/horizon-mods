@@ -1,0 +1,10 @@
+Nature's Compass by ChaosTheDude
+https://github.com/MattCzyr/NaturesCompass
+
+Horizon port by mxpbxb
+https://github.com/mxpbxb/natures-compass
+
+This SDK port adapts the Horizon native source to the new typed APIs,
+negotiated payloads and exact-pin mixin format. Distributed under the
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+license: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
