@@ -1,0 +1,202 @@
+id = "minimap"
+name = "Minimap"
+version = "2.1.0"
+description = "Biome-colored minimap, coordinates, player heads and waypoints."
+authors = ["Horizon", "eltanschauung"]
+license = "GPL-3.0-or-later"
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "coordinate-state"
+file = "crates/horizon-client/src/extras_hud.rs"
+name = "minimap_coordinate_render"
+visibility = "pub"
+source = "src/mixins/coordinate_render.rs"
+
+[[native.module]]
+id = "waypoints"
+file = "crates/horizon-client/src/game.rs"
+name = "minimap_waypoints"
+source = "src/mixins/waypoints.rs"
+
+[[native.module]]
+id = "grave-waypoints"
+file = "crates/horizon-client/src/game.rs"
+name = "game_grave_waypoints"
+source = "src/mixins/grave_waypoints.rs"
+
+[[native.mixin]]
+id = "minimap"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_minimap"
+helper = "src/mixins/minimap.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "minimap", ty = "&mut Option<mod_api::Minimap>", value = "&mut *minimap" },
+]
+
+[[native.mixin]]
+id = "coordinates-before"
+kind = "HEAD"
+target = "horizon_client_lib::extras_hud::draw_minimap"
+helper = "src/mixins/coordinates_before.rs"
+bindings = [
+    { name = "corners", ty = "&mut Corners", value = "&mut *corners" },
+    { name = "look", ty = "&MinimapLook", value = "look" },
+]
+
+[[native.mixin]]
+id = "coordinates-after"
+kind = "RETURN"
+target = "horizon_client_lib::extras_hud::draw_minimap"
+helper = "src/mixins/coordinates_after.rs"
+bindings = [
+    { name = "_result", ty = "()", value = "$value" },
+    { name = "corners", ty = "&mut Corners", value = "&mut *corners" },
+    { name = "look", ty = "&MinimapLook", value = "look" },
+    { name = "batch", ty = "&mut HudBatch", value = "&mut *batch" },
+    { name = "atlas", ty = "&HudAtlas", value = "atlas" },
+]
+
+[[native.mixin]]
+id = "waypoint-key"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::client_tick_post::Game::native_client_tick_post"
+helper = "src/mixins/open_waypoints.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[native.mixin]]
+id = "own-head"
+kind = "MODIFY_EXPRESSION_VALUE"
+target = "horizon_client_lib::extras_hud::draw_minimap"
+helper = "src/mixins/own_head.rs"
+bindings = [
+    { name = "visible", ty = "bool", value = "$value" },
+]
+selector = "minimap_player_arrow_visible()"
+require = 1
+ordinal = 0
+
+[[native.mixin]]
+id = "waypoint-draw"
+kind = "HEAD"
+helper = "src/mixins/waypoint_draw.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+    { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *draw" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_render_post"
+
+[[native.mixin]]
+id = "waypoint-press"
+kind = "HEAD"
+helper = "src/mixins/waypoint_press.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+    { name = "button", ty = "i32", value = "button" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_mouse_button_pressed_pre"
+
+[[native.mixin]]
+id = "waypoint-key-ui"
+kind = "HEAD"
+helper = "src/mixins/waypoint_input.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+    { name = "key", ty = "&str", value = "key" },
+    { name = "modifiers", ty = "u32", value = "modifiers" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_key_pressed_pre"
+
+[[native.mixin]]
+id = "waypoint-type"
+kind = "HEAD"
+helper = "src/mixins/waypoint_type.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+    { name = "character", ty = "char", value = "c" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_char_typed_pre"
+
+[[native.mixin]]
+id = "waypoint-release"
+kind = "HEAD"
+helper = "src/mixins/waypoint_release.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+    { name = "button", ty = "i32", value = "button" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_mouse_button_released_pre"
+
+[[native.mixin]]
+id = "waypoint-drag"
+kind = "HEAD"
+helper = "src/mixins/waypoint_drag.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+    { name = "button", ty = "i32", value = "button" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_mouse_dragged_pre"
+
+[[native.mixin]]
+id = "waypoint-wheel"
+kind = "HEAD"
+helper = "src/mixins/waypoint_wheel.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_mouse_scrolled_pre"
+
+[[native.mixin]]
+id = "grave-waypoint-snapshot"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game::observe_client_packet"
+helper = "src/mixins/grave_packet.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "packet", ty = "&horizon_protocol::packets::play::Clientbound", value = "packet" },
+]
+
+[[native.mixin]]
+id = "world-waypoint-labels"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::render_gui_post::Game::native_render_gui_post"
+helper = "src/mixins/waypoint_hud.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *draw" },
+]
+
+[[native.mixin]]
+id = "radar-compass-north"
+kind = "MODIFY_EXPRESSION_VALUE"
+target = "horizon_client::game::extras::Game<'_>::draw_extras"
+selector = "Some(view.north())"
+require = 1
+ordinal = 0
+helper = "src/mixins/compass_north.rs"
+bindings = [
+    { name = "north", ty = "Option<(f32, f32)>", value = "$value" },
+]
