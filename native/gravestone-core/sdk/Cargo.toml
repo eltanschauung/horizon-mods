@@ -1,0 +1,9 @@
+[package]
+name = "gravestone_core"
+version = "1.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
