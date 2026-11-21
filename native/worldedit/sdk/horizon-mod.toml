@@ -1,0 +1,163 @@
+id = "worldedit"
+name = "WorldEdit"
+version = "1.3.0+fork.1"
+description = "World editing commands, selections and schematic imports."
+authors = ["Horizon", "eltanschauung"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "runtime"
+file = "crates/horizon-client/src/game.rs"
+name = "worldedit"
+source = "src/mixins/runtime.rs"
+
+[[native.module]]
+id = "schematic"
+file = "crates/horizon-client/src/game.rs"
+name = "worldedit_schem"
+source = "src/mixins/schematic.rs"
+
+[[native.module]]
+id = "legacy"
+file = "crates/horizon-client/src/game.rs"
+name = "worldedit_legacy"
+source = "src/mixins/legacy_ids.rs"
+visibility = "pub"
+
+[[native.module]]
+id = "menu"
+file = "crates/horizon-client/src/game.rs"
+name = "worldedit_menu"
+source = "src/mixins/schem-menu.rs"
+
+[[native.module]]
+id = "chat"
+file = "crates/horizon-client-render/src/chat.rs"
+name = "worldedit_chat"
+source = "src/mixins/chat-suggestions.rs"
+
+[[native.mixin]]
+id = "command"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::commands::Game::run_command"
+helper = "src/mixins/command.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "command", ty = "&str", value = "command" },
+]
+
+[[native.mixin]]
+id = "guest-command"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::lan_actions::commands::Game::guest_command"
+helper = "src/mixins/guest-command.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "conn", ty = "u32", value = "conn" },
+    { name = "command", ty = "&str", value = "command" },
+]
+
+[[native.mixin]]
+id = "chat-suggestions"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client_render::chat::ChatScreen::update_command_info"
+helper = "src/mixins/chat-hook.rs"
+bindings = [
+    { name = "screen", ty = "&mut crate::chat::ChatScreen", value = "self" },
+    { name = "m", ty = "&crate::screen_draw::Measure", value = "m" },
+    { name = "c", ty = "&crate::chat::Commands<'_>", value = "c" },
+]
+
+[[native.mixin]]
+id = "schem-input"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::chat::Game::handle_chat_input"
+helper = "src/mixins/schem-input.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "message", ty = "&str", value = "message" },
+]
+
+[[native.mixin]]
+id = "schem-draw"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::screens::Game::draw_pause_menu"
+helper = "src/mixins/schem-draw.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "batch" },
+]
+
+[[native.mixin]]
+id = "schem-click"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::screens::Game::pause_click"
+helper = "src/mixins/schem-click.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[native.mixin]]
+id = "schem-key"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::play_keys::Game::key_pressed"
+helper = "src/mixins/schem-key.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "key", ty = "winit::keyboard::KeyCode", value = "key" },
+]
+
+[[native.mixin]]
+id = "open-world"
+kind = "HEAD"
+target = "horizon_client::game::world_session::Game::open_world"
+helper = "src/mixins/open-world.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "folder", ty = "&str", value = "folder" },
+]
+
+[[native.mixin]]
+id = "wand"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::play_input::Game::play_mouse"
+helper = "src/mixins/wand.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "button", ty = "winit::event::MouseButton", value = "button" },
+    { name = "pressed", ty = "bool", value = "pressed" },
+]
+
+[[native.mixin]]
+id = "schem-upload"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_server_tick"
+helper = "src/mixins/schem-upload.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "phase", ty = "mod_api::ServerTickPhase", value = "phase" },
+]
+
+[[native.mixin]]
+id = "schem-upload-tick"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::client_tick_post::Game::native_client_tick_post"
+helper = "src/mixins/schem-upload-tick.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
