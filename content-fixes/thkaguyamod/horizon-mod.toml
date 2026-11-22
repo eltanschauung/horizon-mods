@@ -1,0 +1,11 @@
+id = "thkaguyamod"
+name = "Touhou Items Mod (assets)"
+version = "0.7.2"
+description = "The art and items of the Horizon port of Touhou Items Mod (Itutu no Nandai MOD+, by kuro-anco), with the spell cards of SPELLCARD PLUS and Journey To Gensokyo (by Katrix), weapons and point items from Grimoire of Alice (by Arekkuusu), and the Giga Torch: Torchmaster's Mega Torch (by Xalcon, MIT). Needs thkaguyamod_native."
+authors = ["kuro-anco (Touhou Items Mod)", "SPELLCARD PLUS authors", "Katrix (Journey To Gensokyo)", "Arekkuusu (Grimoire of Alice)", "Xalcon (Torchmaster)", "mxpbxb (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[dependencies]
+thkaguyamod_native = "=0.6.1"

@@ -1,0 +1,11 @@
+id = "gravestone"
+name = "Gravestone (assets)"
+version = "1.0.0"
+description = "Gravestone block and obituary note resources."
+authors = ["wareal-nah"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[dependencies]
+gravestone_core = "=1.1.0"

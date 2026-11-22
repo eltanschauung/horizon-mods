@@ -1,0 +1,11 @@
+id = "naturescompass"
+name = "Nature's Compass"
+version = "1.9.7-horizon.1"
+description = "Horizon port of Nature's Compass by ChaosTheDude (CC BY-NC-SA 4.0): the compass item, its art and recipe. Needs naturescompass_native for the biome search."
+authors = ["ChaosTheDude (original)", "mxpbxb (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[dependencies]
+naturescompass_native = "=1.9.7-horizon.3"

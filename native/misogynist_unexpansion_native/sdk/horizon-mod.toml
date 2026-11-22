@@ -139,6 +139,3 @@ cancellable = true
 target = "horizon_client_render::key_mapping_search::matches"
 helper = "src/mixins/keybind_search.rs"
 bindings = [{ name = "key", ty = "&str", value = "_bound_key" }, { name = "query", ty = "&str", value = "query" }]
-
-[dependencies]
-misogynist_unexpansion = "*"

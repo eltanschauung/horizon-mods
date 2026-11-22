@@ -53,7 +53,3 @@ kind = "RETURN"
 target = "horizon_client::game::menu_screens::blockless_menu_screen"
 helper = "src/mixins/doll_menu_screen.rs"
 bindings = [{ name = "value", ty = "Option<mod_api::Screen>", value = "$value" }, { name = "menu", ty = "&str", value = "_menu" }]
-
-[dependencies]
-alice_dolls = "*"
-thkaguyamod = "*"
