@@ -1,0 +1,27 @@
+{
+  "template": "minecraft:iron_sword",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.folding_chair"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 200,
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:folding_chair_attack_damage",
+        "type": "minecraft:attack_damage",
+        "amount": 3,
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "id": "arcadiandream:folding_chair_attack_speed",
+        "type": "minecraft:attack_speed",
+        "amount": -3.1,
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ]
+  },
+  "max_stack_size": 1
+}

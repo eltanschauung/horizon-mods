@@ -1,0 +1,24 @@
+{
+  "template": "minecraft:leather_helmet",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.ordinary_hat"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 44,
+    "minecraft:equippable": {
+      "slot": "head",
+      "asset_id": "arcadiandream:ordinary"
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:ordinary_hat_armor",
+        "type": "minecraft:armor",
+        "amount": 1,
+        "operation": "add_value",
+        "slot": "head"
+      }
+    ]
+  },
+  "max_stack_size": 1
+}

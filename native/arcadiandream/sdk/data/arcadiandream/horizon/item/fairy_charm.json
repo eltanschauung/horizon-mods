@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.fairy_charm"
+    },
+    "!minecraft:cooking_fuel": {}
+  },
+  "max_stack_size": 1,
+  "rarity": "uncommon"
+}

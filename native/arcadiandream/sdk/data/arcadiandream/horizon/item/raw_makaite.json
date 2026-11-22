@@ -1,0 +1,12 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.raw_makaite"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    }
+  }
+}

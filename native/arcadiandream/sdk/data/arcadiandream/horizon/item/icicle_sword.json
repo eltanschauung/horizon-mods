@@ -1,0 +1,28 @@
+{
+  "template": "minecraft:stone_sword",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.icicle_sword"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 150,
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:icicle_sword_attack_damage",
+        "type": "minecraft:attack_damage",
+        "amount": 4,
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "id": "arcadiandream:icicle_sword_attack_speed",
+        "type": "minecraft:attack_speed",
+        "amount": -2.4,
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ]
+  },
+  "rarity": "uncommon",
+  "max_stack_size": 1
+}

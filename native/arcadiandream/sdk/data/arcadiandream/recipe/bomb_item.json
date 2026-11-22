@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "arcadiandream:extend_item",
+    "X": "#arcadiandream:items"
+  },
+  "pattern": [
+    "XXX",
+    "X#X",
+    "XXX"
+  ],
+  "result": {
+    "count": 3,
+    "id": "arcadiandream:bomb_item"
+  },
+  "show_notification": true
+}

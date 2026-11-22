@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.8,
+  "group": "makaite_ingot",
+  "ingredient": "arcadiandream:raw_makaite",
+  "result": "arcadiandream:makaite_ingot"
+}

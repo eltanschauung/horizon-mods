@@ -1,0 +1,43 @@
+{
+  "template": "minecraft:netherite_shovel",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.hihiirokane_shovel"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 2561,
+    "minecraft:repairable": {
+      "items": "arcadiandream:hihiirokane_ingot"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:tool": {
+      "rules": [
+        {
+          "blocks": "#minecraft:mineable/shovel",
+          "speed": 11,
+          "correct_for_drops": true
+        }
+      ],
+      "default_mining_speed": 1.0,
+      "damage_per_block": 1
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:hihiirokane_shovel_attack_damage",
+        "type": "minecraft:attack_damage",
+        "amount": 6.5,
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "id": "arcadiandream:hihiirokane_shovel_attack_speed",
+        "type": "minecraft:attack_speed",
+        "amount": -3,
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ]
+  }
+}

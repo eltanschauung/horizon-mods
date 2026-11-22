@@ -1,0 +1,9 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.dragon_gem"
+    },
+    "!minecraft:cooking_fuel": {}
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "asset_id": "arcadiandream:reimaden",
+  "width": 1,
+  "height": 1,
+  "title": {
+    "translate": "painting.arcadiandream.reimaden.title"
+  },
+  "author": {
+    "translate": "painting.arcadiandream.reimaden.author"
+  }
+}

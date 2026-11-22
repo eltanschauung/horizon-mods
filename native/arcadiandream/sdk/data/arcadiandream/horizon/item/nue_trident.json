@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:netherite_sword",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.nue_trident"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:max_damage": 2031,
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:nue_trident_attack_damage",
+        "type": "minecraft:attack_damage",
+        "amount": 9,
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "id": "arcadiandream:nue_trident_attack_speed",
+        "type": "minecraft:attack_speed",
+        "amount": -2.9,
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ]
+  },
+  "max_stack_size": 1
+}

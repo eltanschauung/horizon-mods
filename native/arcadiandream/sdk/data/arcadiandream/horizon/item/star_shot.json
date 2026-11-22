@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.star_shot"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 150
+  },
+  "max_stack_size": 1
+}

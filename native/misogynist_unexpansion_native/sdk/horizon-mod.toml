@@ -1,0 +1,144 @@
+id = "misogynist_unexpansion_native"
+name = "Minecraft Misogynist Unexpansion"
+version = "0.16.0+sdk.1"
+description = "Restores classic mob variants and sounds and adds survival rules for crafting, farming and exploration."
+authors = ["mxpbxb"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "2bc0efa5de2f57dc5b539f6904d7fabf5f92866c"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "no-sculk-edit"
+file = "crates/horizon-world/src/lib.rs"
+name = "no_sculk"
+visibility = "pub(crate)"
+source = "src/mixins/no_sculk_edit.rs"
+
+[[native.module]]
+id = "half-level-enchant-state"
+file = "crates/horizon-client/src/game/blocks/stations.rs"
+name = "unexpansion_enchant"
+visibility = "pub(crate)"
+source = "src/mixins/half_level_enchant_state.rs"
+
+[[native.module]]
+id = "crossbow-rocket-shooter-state"
+file = "crates/horizon-client/src/game/entities/fireworks.rs"
+name = "unexpansion_rocket"
+visibility = "pub(crate)"
+source = "src/mixins/crossbow_rocket_state.rs"
+
+[[native.mixin]]
+id = "powder-snow-walk"
+kind = "RETURN"
+target = "horizon_client_lib::motion::PlayerMotion::powder_snow_subject"
+helper = "src/mixins/powder_snow_walk.rs"
+bindings = [{ name = "value", ty = "crate::collisions::PowderSnowSubject<'static>", value = "$value" }]
+
+[[native.mixin]]
+id = "no-sculk-resource"
+kind = "RETURN"
+target = "horizon_world::worldgen_resources::expanded_feature"
+helper = "src/mixins/no_sculk_resource.rs"
+bindings = [{ name = "value", ty = "String", value = "$value" }]
+
+[[native.mixin]]
+id = "classic-sounds"
+kind = "RETURN"
+target = "horizon_client_lib::mob_variants::sound_id"
+helper = "src/mixins/classic_sounds.rs"
+bindings = [{ name = "value", ty = "String", value = "$value" }, { name = "species", ty = "crate::mobs::Species", value = "_species" }, { name = "kind", ty = "&str", value = "_kind" }]
+
+[[native.mixin]]
+id = "original-variants"
+kind = "RETURN"
+target = "horizon_client_lib::mob_variants::index"
+helper = "src/mixins/original_variants.rs"
+bindings = [{ name = "value", ty = "u8", value = "$value" }, { name = "s", ty = "crate::mobs::Species", value = "_species" }]
+
+[[native.mixin]]
+id = "half-level-enchant-before"
+kind = "HEAD"
+target = "horizon_client::game::stations::Game::click_enchant"
+helper = "src/mixins/half_level_enchant.rs"
+bindings = [{ name = "game", ty = "&crate::game::Game<'_>", value = "&*self" }, { name = "button", ty = "usize", value = "button" }]
+
+[[native.mixin]]
+id = "half-level-enchant-after"
+kind = "RETURN"
+target = "horizon_client::game::stations::Game::click_enchant"
+helper = "src/mixins/half_level_enchant_after.rs"
+bindings = [{ name = "value", ty = "()", value = "$value" }, { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+[[native.mixin]]
+id = "kelp-biomes"
+kind = "RETURN"
+target = "horizon_world::worldgen_resources::biome_resource"
+helper = "src/mixins/kelp_biomes.rs"
+bindings = [{ name = "value", ty = "&str", value = "$value" }]
+
+[[native.mixin]]
+id = "powder-snow-slow"
+kind = "RETURN"
+target = "horizon_world::movement_properties::MovementProperties::bind"
+helper = "src/mixins/powder_snow_slow.rs"
+bindings = [{ name = "value", ty = "io::Result<BoundMovementProperties>", value = "$value" }, { name = "props", ty = "&MovementProperties<'_>", value = "&*self" }]
+
+[[native.mixin]]
+id = "powder-snow-cold"
+kind = "HEAD"
+target = "horizon_client_lib::motion::MotionWorld::effects_from_blocks"
+helper = "src/mixins/powder_snow_cold.rs"
+bindings = [{ name = "world", ty = "&mut MotionWorld<'_, '_, '_>", value = "&mut *self" }]
+
+[[native.mixin]]
+id = "crossbow-rocket-shooter-hook"
+kind = "HEAD"
+target = "horizon_client::game::fireworks::Game::explode_rocket"
+helper = "src/mixins/crossbow_rocket_shooter.rs"
+bindings = [{ name = "r", ty = "&crate::game::fireworks::Rocket", value = "r" }]
+
+[[native.mixin]]
+id = "crossbow-rocket-spares-shooter"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::fireworks::Game::rocket_blast_player"
+helper = "src/mixins/crossbow_rocket_spares_shooter.rs"
+bindings = [{ name = "game", ty = "&crate::game::Game<'_>", value = "&*self" }]
+
+[[native.mixin]]
+id = "crossbow-inventory-rockets"
+kind = "RETURN"
+target = "horizon_client::game::crossbow::projectile_slot"
+helper = "src/mixins/crossbow_inventory_rockets.rs"
+bindings = [{ name = "value", ty = "Option<usize>", value = "$value" }, { name = "weapon", ty = "&str", value = "weapon" }, { name = "hands", ty = "&[(usize, Option<&horizon_client::items::ItemStack>); 2]", value = "&hands" }, { name = "inventory", ty = "&[Option<horizon_client::items::ItemStack>]", value = "inventory" }]
+
+[[native.mixin]]
+id = "shield-half-block"
+kind = "RETURN"
+target = "horizon_client::game::shield::Game::blocks_attacks"
+helper = "src/mixins/shield_half_block.rs"
+bindings = [{ name = "value", ty = "Option<std::borrow::Cow<'_, horizon_client::items::BlocksAttacks>>", value = "$value" }]
+
+[[native.mixin]]
+id = "piercing-with-multishot"
+kind = "RETURN"
+target = "horizon_items::enchant_compatibility::compatible"
+helper = "src/mixins/piercing_with_multishot.rs"
+bindings = [{ name = "value", ty = "bool", value = "$value" }, { name = "a", ty = "&str", value = "_a" }, { name = "b", ty = "&str", value = "_b" }]
+
+[[native.mixin]]
+id = "keybind-search-by-key"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client_render::key_mapping_search::matches"
+helper = "src/mixins/keybind_search.rs"
+bindings = [{ name = "key", ty = "&str", value = "_bound_key" }, { name = "query", ty = "&str", value = "query" }]
+
+[dependencies]
+misogynist_unexpansion = "*"

@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:music_disc_13",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.music_disc_fairy_playground"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:jukebox_playable": {
+      "song": "arcadiandream:fairy_playground"
+    }
+  },
+  "max_stack_size": 1,
+  "rarity": "rare"
+}

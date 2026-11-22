@@ -1,0 +1,5 @@
+{
+  "template": "minecraft:snowball",
+  "item": "arcadiandream:bubble_shot",
+  "damage": 2.0
+}

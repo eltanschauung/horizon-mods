@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "arcadiandream:max_point_item"
+  ],
+  "result": {
+    "count": 9,
+    "id": "arcadiandream:point_item"
+  }
+}

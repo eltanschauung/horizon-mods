@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "arcadiandream:star_item",
+    "U": "#c:undead_parts"
+  },
+  "pattern": [
+    "UU",
+    "##",
+    "##"
+  ],
+  "result": {
+    "id": "arcadiandream:amulet_bullet_core"
+  },
+  "show_notification": true
+}

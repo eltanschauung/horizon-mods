@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:amethyst_block",
+    "D": "arcadiandream:dragon_gem"
+  },
+  "pattern": [
+    " D ",
+    "D#D",
+    "###"
+  ],
+  "result": {
+    "id": "arcadiandream:ritual_shrine"
+  },
+  "show_notification": true
+}

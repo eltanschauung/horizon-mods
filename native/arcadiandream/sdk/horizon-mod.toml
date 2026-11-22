@@ -1,0 +1,117 @@
+id = "arcadiandream"
+name = "Arcadian Dream"
+version = "0.1.0+sdk.1"
+description = "Unofficial Rust-native Horizon port of Arcadian Dream by Maxmani and contributors."
+authors = ["Maxmani and contributors (original)", "eltanschauung (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "2bc0efa5de2f57dc5b539f6904d7fabf5f92866c"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "motion"
+file = "crates/horizon-client/src/client_lib.rs"
+name = "arcadian_motion"
+source = "src/mixins/motion.rs"
+visibility = "pub"
+
+[[native.mixin]]
+id = "bullet-motion"
+kind = "RETURN"
+target = "horizon_client_lib::projectile_behavior::custom_tick"
+helper = "src/mixins/bullet-motion.rs"
+bindings = [{ name = "value", ty = "Option<(bool, Hit)>", value = "$value" }, { name = "shot", ty = "&mut crate::projectiles::Projectile", value = "&mut *_shot" }, { name = "world", ty = "&dyn crate::projectiles::ProjectileWorld", value = "_world" }, { name = "impact", ty = "bool", value = "_impact" }]
+
+[[native.mixin]]
+id = "hourai-damage"
+kind = "HEAD"
+target = "horizon_client::game::creatures::Game::hurt_player_from"
+helper = "src/mixins/hourai-damage.rs"
+cancellable = true
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }, { name = "damage_type", ty = "&str", value = "damage_type" }]
+
+[[native.mixin]]
+id = "bullet-item"
+kind = "RETURN"
+target = "horizon_client_lib::projectile_behavior::custom_drawn_item"
+helper = "src/mixins/bullet-item.rs"
+bindings = [{ name = "value", ty = "Option<ItemStack>", value = "$value" }, { name = "shot", ty = "&crate::projectiles::Projectile", value = "_shot" }]
+
+[[native.mixin]]
+id = "save-shot"
+kind = "HEAD"
+target = "horizon_client_lib::projectile_behavior::save_custom_projectile"
+helper = "src/mixins/save-shot.rs"
+bindings = [{ name = "shot", ty = "&crate::projectiles::Projectile", value = "_shot" }, { name = "tag", ty = "&mut horizon_core::nbt::Tag", value = "&mut *_tag" }]
+
+[[native.mixin]]
+id = "load-shot"
+kind = "HEAD"
+target = "horizon_client_lib::projectile_behavior::load_custom_projectile"
+helper = "src/mixins/load-shot.rs"
+bindings = [{ name = "shot", ty = "&mut crate::projectiles::Projectile", value = "&mut *_shot" }, { name = "tag", ty = "&horizon_core::nbt::Tag", value = "_tag" }]
+
+[[native.mixin]]
+id = "danmaku-impact"
+kind = "RETURN"
+target = "horizon_client::game::projectile_dispatch::handle_custom_impact"
+helper = "src/mixins/danmaku-impact.rs"
+bindings = [{ name = "value", ty = "bool", value = "$value" }, { name = "host", ty = "&mut dyn mod_api::ServerHost", value = "&mut *_host" }, { name = "shot", ty = "&horizon_client::projectiles::Projectile", value = "_projectile" }, { name = "hit", ty = "horizon_client::projectiles::Hit", value = "_hit" }]
+
+[[native.mixin]]
+id = "bullet-pickable"
+kind = "HEAD"
+target = "horizon_client::game::deflect::attackable"
+helper = "src/mixins/bullet-pickable.rs"
+cancellable = true
+bindings = [{ name = "p", ty = "&Projectile", value = "p" }]
+
+[[native.mixin]]
+id = "necklace-pick"
+kind = "HEAD"
+target = "horizon_client::game::deflect::Game::redirectable_hit"
+helper = "src/mixins/necklace-pick.rs"
+cancellable = true
+bindings = [{ name = "game", ty = "&crate::game::Game<'_>", value = "&*self" }]
+
+[[native.mixin]]
+id = "necklace-punch"
+kind = "HEAD"
+target = "horizon_client::game::deflect::Game::deflect"
+helper = "src/mixins/necklace-punch.rs"
+cancellable = true
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }, { name = "index", ty = "usize", value = "i" }]
+
+[[native.mixin]]
+id = "seal-survival"
+kind = "HEAD"
+target = "horizon_client::game::level_access::<GameLevel as LevelAccess>::before_can_survive"
+helper = "src/mixins/seal-survival.rs"
+bindings = [{ name = "level", ty = "&crate::game::GameLevel<'_>", value = "&*self" }, { name = "pos", ty = "BlockPos", value = "pos" }, { name = "state", ty = "BlockStateId", value = "state" }, { name = "survives", ty = "&mut Option<bool>", value = "&mut *survives" }]
+
+[[native.mixin]]
+id = "fairy-flight"
+kind = "HEAD"
+target = "horizon_client_lib::entity_behavior::no_ai_travel"
+helper = "src/mixins/fairy-flight.rs"
+bindings = [{ name = "mob", ty = "&mut crate::mobs::Mob", value = "_mob" }, { name = "world", ty = "&crate::mobs::MobWorld<'_>", value = "_world" }, { name = "level", ty = "&mut crate::health::DamageLevel<'_>", value = "_level" }, { name = "events", ty = "&mut Vec<crate::mobs::MobEvent>", value = "_events" }]
+
+[[native.mixin]]
+id = "death-protection-ready"
+kind = "HEAD"
+target = "horizon_client::game::totem::Game::update_totem_ready"
+helper = "src/mixins/death-protection-ready.rs"
+cancellable = true
+bindings = [{ name = "game", ty = "&mut horizon_client::game::Game<'_>", value = "&mut *self" }]
+
+[[native.mixin]]
+id = "death-protection-apply"
+kind = "HEAD"
+target = "horizon_client::game::totem::Game::apply_totem"
+helper = "src/mixins/death-protection-apply.rs"
+cancellable = true
+bindings = [{ name = "game", ty = "&mut horizon_client::game::Game<'_>", value = "&mut *self" }]

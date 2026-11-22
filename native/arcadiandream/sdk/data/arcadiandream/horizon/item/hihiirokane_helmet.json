@@ -1,0 +1,40 @@
+{
+  "template": "minecraft:netherite_helmet",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.hihiirokane_helmet"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 451,
+    "minecraft:equippable": {
+      "slot": "head",
+      "asset_id": "arcadiandream:hihiirokane"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:hihiirokane_helmet_armor",
+        "type": "minecraft:armor",
+        "amount": 4,
+        "operation": "add_value",
+        "slot": "head"
+      },
+      {
+        "id": "arcadiandream:hihiirokane_helmet_armor_toughness",
+        "type": "minecraft:armor_toughness",
+        "amount": 4,
+        "operation": "add_value",
+        "slot": "head"
+      },
+      {
+        "id": "arcadiandream:hihiirokane_helmet_knockback_resistance",
+        "type": "minecraft:knockback_resistance",
+        "amount": 0.1,
+        "operation": "add_value",
+        "slot": "head"
+      }
+    ]
+  }
+}

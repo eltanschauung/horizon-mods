@@ -1,0 +1,32 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "thkaguyamod:entity/shot/light"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thkaguyamod:entity/shot/small"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thkaguyamod:entity/shot/pearl"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thkaguyamod:entity/shot/circle"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thkaguyamod:entity/shot/heart"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thkaguyamod:entity/shot/talisman"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thkaguyamod:entity/shot/big"
+    }
+  ]
+}

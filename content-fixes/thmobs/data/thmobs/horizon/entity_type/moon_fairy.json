@@ -1,0 +1,12 @@
+{
+  "template": "minecraft:wandering_trader",
+  "attributes": {
+    "minecraft:max_health": 5.0,
+    "minecraft:movement_speed": 0.7
+  },
+  "sounds": {
+    "ambient": "minecraft:entity.bat.ambient",
+    "hurt": "minecraft:entity.bat.hurt",
+    "death": "minecraft:entity.bat.death"
+  }
+}

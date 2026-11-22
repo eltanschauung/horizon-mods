@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:wooden_sword",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.mochi_mallet"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 190,
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:mochi_mallet_attack_damage",
+        "type": "minecraft:attack_damage",
+        "amount": 3,
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "id": "arcadiandream:mochi_mallet_attack_speed",
+        "type": "minecraft:attack_speed",
+        "amount": -3.2,
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ],
+    "minecraft:repairable": {
+      "items": "minecraft:rabbit_hide"
+    }
+  },
+  "max_stack_size": 1
+}

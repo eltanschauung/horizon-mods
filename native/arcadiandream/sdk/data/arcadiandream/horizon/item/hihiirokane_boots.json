@@ -1,0 +1,40 @@
+{
+  "template": "minecraft:netherite_boots",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.hihiirokane_boots"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 533,
+    "minecraft:equippable": {
+      "slot": "feet",
+      "asset_id": "arcadiandream:hihiirokane"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:hihiirokane_boots_armor",
+        "type": "minecraft:armor",
+        "amount": 4,
+        "operation": "add_value",
+        "slot": "feet"
+      },
+      {
+        "id": "arcadiandream:hihiirokane_boots_armor_toughness",
+        "type": "minecraft:armor_toughness",
+        "amount": 4,
+        "operation": "add_value",
+        "slot": "feet"
+      },
+      {
+        "id": "arcadiandream:hihiirokane_boots_knockback_resistance",
+        "type": "minecraft:knockback_resistance",
+        "amount": 0.1,
+        "operation": "add_value",
+        "slot": "feet"
+      }
+    ]
+  }
+}

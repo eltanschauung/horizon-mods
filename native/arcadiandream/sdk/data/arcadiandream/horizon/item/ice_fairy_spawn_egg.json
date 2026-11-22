@@ -1,0 +1,10 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.ice_fairy_spawn_egg"
+    },
+    "!minecraft:cooking_fuel": {}
+  },
+  "max_stack_size": 64
+}

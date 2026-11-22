@@ -1,0 +1,26 @@
+{
+  "template": "minecraft:iron_leggings",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.makaite_leggings"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 360,
+    "minecraft:equippable": {
+      "slot": "legs",
+      "asset_id": "arcadiandream:makaite"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:makaite_leggings_armor",
+        "type": "minecraft:armor",
+        "amount": 6,
+        "operation": "add_value",
+        "slot": "legs"
+      }
+    ]
+  }
+}

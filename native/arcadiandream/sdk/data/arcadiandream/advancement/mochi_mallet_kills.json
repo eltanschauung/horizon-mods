@@ -1,0 +1,33 @@
+{
+  "parent": "arcadiandream:ritual_crafting",
+  "criteria": {
+    "kills_accumulated": {
+      "trigger": "arcadiandream:mochi_mallet_kills",
+      "conditions": {
+        "kills": 100
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.arcadiandream.mochi_mallet_kills.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "nbt": "{Damage:0,kill_count:100}",
+      "id": "arcadiandream:mochi_mallet"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.arcadiandream.mochi_mallet_kills.title"
+    }
+  },
+  "requirements": [
+    [
+      "kills_accumulated"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "arcadiandream:extend_item"
+  ],
+  "result": {
+    "count": 9,
+    "id": "arcadiandream:life_fragment"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "arcadiandream:makaite"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "arcadiandream:makaite"
+      }
+    ]
+  }
+}
