@@ -268,6 +268,10 @@ fn frame(draw: &mut dyn DrawContext, r: Rect, fill: u32, edge: u32) {
     draw.fill(r, fill);
 }
 
+fn draw_text(draw: &mut dyn DrawContext, label: &str, at: [f32; 2], rgb: u32, shadow: bool) {
+    draw.text(label, at, rgb | 0xFF00_0000, shadow);
+}
+
 fn button(draw: &mut dyn DrawContext, r: Rect, label: &str, mouse: [f32; 2], colour: u32) {
     let fill = if inside(r, mouse) {
         0xFF_5A_3F_78
@@ -276,7 +280,8 @@ fn button(draw: &mut dyn DrawContext, r: Rect, label: &str, mouse: [f32; 2], col
     };
     frame(draw, r, fill, EDGE);
     let w = draw.text_width(label);
-    draw.text(
+    draw_text(
+        draw,
         label,
         [r[0] + (r[2] - w) / 2.0, r[1] + (r[3] - 8.0) / 2.0],
         colour,
@@ -327,8 +332,15 @@ pub fn draw(
             let l = ShareLayout::new(w, h, players.len());
             frame(draw, l.panel, PANEL, EDGE);
             let title = fit(draw, &format!("Share {current}"), l.panel[2] - 2.0 * PAD);
-            draw.text(&title, [l.panel[0] + PAD, l.panel[1] + 8.0], PURPLE, true);
-            draw.text(
+            draw_text(
+                draw,
+                &title,
+                [l.panel[0] + PAD, l.panel[1] + 8.0],
+                PURPLE,
+                true,
+            );
+            draw_text(
+                draw,
                 "Click a player to let them use it, again to revoke",
                 [l.panel[0] + PAD, l.panel[1] + 22.0],
                 GREY,
@@ -355,7 +367,8 @@ pub fn draw(
                     format!("{} (offline)", p.name)
                 };
                 let fitted = fit(draw, &name, r[2] - 80.0);
-                draw.text(
+                draw_text(
+                    draw,
                     &fitted,
                     [r[0] + 5.0, r[1] + 4.0],
                     if p.online { WHITE } else { GREY },
@@ -367,10 +380,17 @@ pub fn draw(
                     ("-", GREY)
                 };
                 let sw = draw.text_width(state);
-                draw.text(state, [r[0] + r[2] - 6.0 - sw, r[1] + 4.0], colour, false);
+                draw_text(
+                    draw,
+                    state,
+                    [r[0] + r[2] - 6.0 - sw, r[1] + 4.0],
+                    colour,
+                    false,
+                );
             }
             if players.is_empty() {
-                draw.text(
+                draw_text(
+                    draw,
                     "Nobody else is online",
                     [l.view[0], l.view[1] + 4.0],
                     GREY,
@@ -383,7 +403,13 @@ pub fn draw(
                     (first_row + l.visible_rows).min(players.len()),
                     players.len()
                 );
-                draw.text(&more, [l.panel[0] + PAD, l.back[1] + 6.0], GREY, false);
+                draw_text(
+                    draw,
+                    &more,
+                    [l.panel[0] + PAD, l.back[1] + 6.0],
+                    GREY,
+                    false,
+                );
             }
             button(draw, l.back, "Back", mouse, WHITE);
         }
@@ -398,7 +424,8 @@ pub fn draw(
             draw.fill(window, 0x90_00_00_00);
             let l = NamingLayout::new(w, h);
             frame(draw, l.panel, PANEL, EDGE);
-            draw.text(
+            draw_text(
+                draw,
                 "Name this gap",
                 [l.panel[0] + 12.0, l.panel[1] + 12.0],
                 PURPLE,
@@ -409,16 +436,12 @@ pub fn draw(
             let at = [l.field[0] + 5.0, l.field[1] + 6.0];
             if text.is_empty() {
                 // What it is called if nothing is typed.
-                draw.text(
-                    &fit(draw, current, l.field[2] - 14.0),
-                    at,
-                    0x60_60_60,
-                    false,
-                );
-                draw.text(cursor, at, WHITE, false);
+                let hint = fit(draw, current, l.field[2] - 14.0);
+                draw_text(draw, &hint, at, 0x60_60_60, false);
+                draw_text(draw, cursor, at, WHITE, false);
             } else {
                 let shown = fit(draw, text, l.field[2] - 14.0);
-                draw.text(&format!("{shown}{cursor}"), at, WHITE, false);
+                draw_text(draw, &format!("{shown}{cursor}"), at, WHITE, false);
             }
             let (label, colour) = if *locked {
                 ("Locked", GOLD)
@@ -445,7 +468,13 @@ pub fn draw(
                 (false, false) => "Players who have found it can use it".to_owned(),
             };
             let fitted = fit(draw, &hint, l.panel[2] - 24.0);
-            draw.text(&fitted, [l.panel[0] + 12.0, l.panel[1] + 96.0], GREY, false);
+            draw_text(
+                draw,
+                &fitted,
+                [l.panel[0] + 12.0, l.panel[1] + 96.0],
+                GREY,
+                false,
+            );
             let tip = if *locked {
                 ""
             } else if *global {
@@ -454,7 +483,8 @@ pub fn draw(
                 "Lock it to share it; a Yukari umbrella (used up) makes it a Giga Gap"
             };
             let fitted = fit(draw, tip, l.panel[2] - 24.0);
-            draw.text(
+            draw_text(
+                draw,
                 &fitted,
                 [l.panel[0] + 12.0, l.panel[1] + 110.0],
                 0x70_70_70,
@@ -467,7 +497,8 @@ pub fn draw(
             draw.fill(window, 0x90_00_00_00);
             let l = ListLayout::new(w, h, entries.len());
             frame(draw, l.panel, PANEL, EDGE);
-            draw.text(
+            draw_text(
+                draw,
                 "Yukari Gap",
                 [l.panel[0] + PAD, l.panel[1] + 8.0],
                 PURPLE,
@@ -475,7 +506,8 @@ pub fn draw(
             );
             let count = format!("{} gaps", entries.len());
             let cw = draw.text_width(&count);
-            draw.text(
+            draw_text(
+                draw,
                 &count,
                 [l.panel[0] + l.panel[2] - PAD - cw, l.panel[1] + 8.0],
                 GREY,
@@ -508,8 +540,8 @@ pub fn draw(
                 let cost = e.hunger.to_string();
                 let cost_x = r[0] + r[2] - 17.0 - draw.text_width(&cost);
                 let name = fit(draw, &name, (cost_x - text_x - 4.0).max(1.0));
-                draw.text(&name, [text_x, r[1] + 6.0], e.color, true);
-                draw.text(&cost, [cost_x, r[1] + 6.0], WHITE, false);
+                draw_text(draw, &name, [text_x, r[1] + 6.0], e.color, true);
+                draw_text(draw, &cost, [cost_x, r[1] + 6.0], WHITE, false);
                 draw.sprite(
                     "gui/sprites/hud/food_full",
                     [0.0, 0.0, 9.0, 9.0],
@@ -525,7 +557,8 @@ pub fn draw(
                     place.to_owned()
                 };
                 let fitted = fit(draw, &line, r[2] - 28.0);
-                draw.text(
+                draw_text(
+                    draw,
                     &fitted,
                     [text_x, r[1] + 19.0],
                     if e.locked { GOLD } else { GREY },
@@ -560,7 +593,7 @@ pub fn draw(
             };
             let fy = l.panel[1] + l.panel[3] - FOOTER + 2.0;
             let fitted = fit(draw, &footer, l.panel[2] - 2.0 * PAD);
-            draw.text(&fitted, [l.panel[0] + PAD, fy], GREY, false);
+            draw_text(draw, &fitted, [l.panel[0] + PAD, fy], GREY, false);
         }
     }
 }
