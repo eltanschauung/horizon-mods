@@ -4,7 +4,8 @@
 
 use std::sync::Mutex;
 
-use mod_api::{DrawContext, Host};
+use mod_api::client::hud_layout::Blend;
+use mod_api::{DrawContext, GuiDraw, Host};
 
 use crate::store::{self, Entry, Key, NAME_MAX, Player};
 
@@ -542,12 +543,16 @@ pub fn draw(
                 let name = fit(draw, &name, (cost_x - text_x - 4.0).max(1.0));
                 draw_text(draw, &name, [text_x, r[1] + 6.0], e.color, true);
                 draw_text(draw, &cost, [cost_x, r[1] + 6.0], WHITE, false);
-                draw.sprite(
-                    "gui/sprites/hud/food_full",
-                    [0.0, 0.0, 9.0, 9.0],
-                    [r[0] + r[2] - 13.0, r[1] + 5.0, 9.0, 9.0],
-                    None,
-                );
+                let _ = draw.gui_paint(&[GuiDraw::Sprite {
+                    sprite: "hud/food_full".into(),
+                    x: (r[0] + r[2] - 13.0).round() as i32,
+                    y: (r[1] + 5.0).round() as i32,
+                    w: 9,
+                    h: 9,
+                    region: None,
+                    color: u32::MAX,
+                    blend: Blend::Textured,
+                }]);
                 let place = dimension_label(&e.key.0);
                 let line = if e.locked {
                     format!("{place} - Locked")
