@@ -19,6 +19,7 @@ use mod_api::{
 
 const PILLAR: &str = "arcadiandream:onbashira";
 const SHRINE: &str = "arcadiandream:ritual_shrine";
+const RITUAL_CRAFTING: &str = "arcadiandream:ritual_crafting";
 const TABLE: &str = "arcadiandream:danmaku_crafting_table";
 const SEAL: &str = "arcadiandream:mysterious_seal";
 const DISPLAY: &str = "ArcadianDisplayItem";
@@ -43,6 +44,8 @@ const PEDESTALS: [[i32; 3]; 16] = [
 ];
 
 pub fn register(registrar: &mut dyn Registrar, context: &RegistrationContext) {
+    registrar.register_recipe_type(RITUAL_CRAFTING);
+    registrar.register_raw_recipe_serializer(RITUAL_CRAFTING, RITUAL_CRAFTING);
     for id in [PILLAR, SHRINE, TABLE, SEAL] {
         let name = id.strip_prefix("arcadiandream:").unwrap();
         let kind = registrar.block_entity_type(name).blocks(&[id]).build();
@@ -499,7 +502,7 @@ fn craft_ritual(
         if crafted {
             let _ = player.trigger_criterion(
                 host,
-                &Identifier::parse("arcadiandream:ritual_crafting").unwrap(),
+                &Identifier::parse(RITUAL_CRAFTING).unwrap(),
                 Arc::new(RitualCompleted),
             );
             return;
