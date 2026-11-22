@@ -9,5 +9,3 @@ horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
 
 [dev-dependencies]
 horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api", features = ["testing"] }
-
-[workspace]
