@@ -1,0 +1,8 @@
+{
+  "template": "minecraft:nether_gold_ore",
+  "properties": {
+    "hardness": 4,
+    "light": 0
+  },
+  "item": true
+}

@@ -1,0 +1,8 @@
+{
+  "template": "minecraft:diamond_ore",
+  "properties": {
+    "hardness": 20,
+    "light": 0
+  },
+  "item": true
+}

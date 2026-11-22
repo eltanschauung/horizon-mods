@@ -1,0 +1,42 @@
+{
+  "parent": "arcadiandream:root",
+  "criteria": {
+    "abandoned_shrine": {
+      "conditions": {
+        "player": [
+          {
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "arcadiandream:abandoned_shrine"
+              }
+            },
+            "type": "minecraft:entity_properties"
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.arcadiandream.find_abandoned_shrine.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "arcadiandream:mysterious_seal"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.arcadiandream.find_abandoned_shrine.title"
+    }
+  },
+  "requirements": [
+    [
+      "abandoned_shrine"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

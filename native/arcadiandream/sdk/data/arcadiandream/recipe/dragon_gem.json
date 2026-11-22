@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "arcadiandream:dragon_gem_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "arcadiandream:dragon_gem"
+  }
+}

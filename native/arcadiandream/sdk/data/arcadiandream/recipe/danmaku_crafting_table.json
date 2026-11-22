@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "#arcadiandream:bullet_cores",
+    "C": "minecraft:crafting_table"
+  },
+  "pattern": [
+    "###",
+    "#C#",
+    "###"
+  ],
+  "result": {
+    "id": "arcadiandream:danmaku_crafting_table"
+  },
+  "show_notification": true
+}

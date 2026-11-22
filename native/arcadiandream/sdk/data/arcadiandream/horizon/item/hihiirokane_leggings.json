@@ -1,0 +1,40 @@
+{
+  "template": "minecraft:netherite_leggings",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.hihiirokane_leggings"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 615,
+    "minecraft:equippable": {
+      "slot": "legs",
+      "asset_id": "arcadiandream:hihiirokane"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:hihiirokane_leggings_armor",
+        "type": "minecraft:armor",
+        "amount": 9,
+        "operation": "add_value",
+        "slot": "legs"
+      },
+      {
+        "id": "arcadiandream:hihiirokane_leggings_armor_toughness",
+        "type": "minecraft:armor_toughness",
+        "amount": 4,
+        "operation": "add_value",
+        "slot": "legs"
+      },
+      {
+        "id": "arcadiandream:hihiirokane_leggings_knockback_resistance",
+        "type": "minecraft:knockback_resistance",
+        "amount": 0.1,
+        "operation": "add_value",
+        "slot": "legs"
+      }
+    ]
+  }
+}

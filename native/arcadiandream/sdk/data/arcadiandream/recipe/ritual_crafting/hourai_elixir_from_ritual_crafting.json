@@ -1,0 +1,25 @@
+{
+  "type": "arcadiandream:ritual_crafting",
+  "dimension": "the_end",
+  "ingredients": [
+    "minecraft:nether_star",
+    "minecraft:enchanted_golden_apple",
+    "arcadiandream:time_orb",
+    "minecraft:enchanted_golden_apple",
+    "minecraft:nether_star",
+    "minecraft:enchanted_golden_apple",
+    "arcadiandream:time_orb",
+    "minecraft:enchanted_golden_apple",
+    "arcadiandream:life_fragment",
+    "arcadiandream:life_fragment",
+    "arcadiandream:life_fragment",
+    "arcadiandream:life_fragment",
+    "arcadiandream:life_fragment",
+    "arcadiandream:life_fragment",
+    "arcadiandream:life_fragment",
+    "arcadiandream:life_fragment"
+  ],
+  "result": {
+    "id": "arcadiandream:hourai_elixir"
+  }
+}

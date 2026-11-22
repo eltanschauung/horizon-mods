@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "arcadiandream:hihiirokane_ingot",
+  "base": "minecraft:netherite_hoe",
+  "result": {
+    "id": "arcadiandream:hihiirokane_hoe"
+  },
+  "template": "arcadiandream:hihiirokane_upgrade_smithing_template"
+}

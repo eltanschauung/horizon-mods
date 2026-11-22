@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:apple",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.cooked_lamprey"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:food": {
+      "nutrition": 10,
+      "saturation": 16.0,
+      "can_always_eat": false
+    }
+  }
+}

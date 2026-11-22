@@ -1,0 +1,15 @@
+{
+  "template": "minecraft:apple",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.heavenly_peach"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:food": {
+      "nutrition": 6,
+      "saturation": 4.800000000000001,
+      "can_always_eat": true
+    }
+  },
+  "max_stack_size": 16
+}

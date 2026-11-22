@@ -1,0 +1,57 @@
+{
+  "template": "minecraft:chest",
+  "properties": {
+    "hardness": 2.5,
+    "light": 0
+  },
+  "item": true,
+  "default_state": {
+    "type": "single",
+    "waterlogged": "false"
+  },
+  "shapes": {
+    "property": "facing",
+    "values": {
+      "north": [
+        [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ]
+      ],
+      "south": [
+        [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ]
+      ],
+      "east": [
+        [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ]
+      ],
+      "west": [
+        [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ]
+      ]
+    }
+  }
+}

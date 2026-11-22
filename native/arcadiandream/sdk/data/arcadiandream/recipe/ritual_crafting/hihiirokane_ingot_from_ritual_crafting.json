@@ -1,0 +1,24 @@
+{
+  "type": "arcadiandream:ritual_crafting",
+  "ingredients": [
+    "arcadiandream:hihiirokane_chunk",
+    "arcadiandream:hihiirokane_chunk",
+    "arcadiandream:hihiirokane_chunk",
+    "arcadiandream:hihiirokane_chunk",
+    "arcadiandream:hihiirokane_chunk",
+    "arcadiandream:hihiirokane_chunk",
+    "arcadiandream:hihiirokane_chunk",
+    "arcadiandream:hihiirokane_chunk",
+    "arcadiandream:makaite_ingot",
+    "arcadiandream:makaite_ingot",
+    "arcadiandream:makaite_ingot",
+    "arcadiandream:makaite_ingot",
+    "arcadiandream:makaite_ingot",
+    "arcadiandream:makaite_ingot",
+    "arcadiandream:makaite_ingot",
+    "arcadiandream:makaite_ingot"
+  ],
+  "result": {
+    "id": "arcadiandream:hihiirokane_ingot"
+  }
+}

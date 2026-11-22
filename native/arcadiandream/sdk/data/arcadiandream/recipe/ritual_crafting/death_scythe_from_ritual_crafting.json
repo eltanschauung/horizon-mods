@@ -1,0 +1,25 @@
+{
+  "type": "arcadiandream:ritual_crafting",
+  "dimension": "the_nether",
+  "ingredients": [
+    "minecraft:stick",
+    "minecraft:stick",
+    "minecraft:stick",
+    "#c:iron_ingots",
+    "#c:iron_ingots",
+    "#c:iron_ingots",
+    "#c:iron_ingots",
+    "#c:iron_ingots",
+    "#minecraft:soul_fire_base_blocks",
+    "#minecraft:soul_fire_base_blocks",
+    "#minecraft:soul_fire_base_blocks",
+    "#minecraft:soul_fire_base_blocks",
+    "#minecraft:soul_fire_base_blocks",
+    "#minecraft:soul_fire_base_blocks",
+    "#minecraft:soul_fire_base_blocks",
+    "#minecraft:soul_fire_base_blocks"
+  ],
+  "result": {
+    "id": "arcadiandream:death_scythe"
+  }
+}

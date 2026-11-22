@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:music_disc_13",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.music_disc_the_shrine_long_forgotten"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:jukebox_playable": {
+      "song": "arcadiandream:the_shrine_long_forgotten"
+    }
+  },
+  "max_stack_size": 1,
+  "rarity": "rare"
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 0.35,
+  "group": "cooked_lamprey",
+  "ingredient": "arcadiandream:lamprey",
+  "result": "arcadiandream:cooked_lamprey"
+}

@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_end",
+  "features": [
+    "arcadiandream:end_dragon_gem_ore"
+  ],
+  "step": "underground_ores"
+}

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "arcadiandream:hihiirokane"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "arcadiandream:hihiirokane"
+      }
+    ]
+  }
+}

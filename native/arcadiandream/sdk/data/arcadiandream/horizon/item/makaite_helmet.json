@@ -1,0 +1,26 @@
+{
+  "template": "minecraft:iron_helmet",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.makaite_helmet"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 264,
+    "minecraft:equippable": {
+      "slot": "head",
+      "asset_id": "arcadiandream:makaite"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:makaite_helmet_armor",
+        "type": "minecraft:armor",
+        "amount": 2,
+        "operation": "add_value",
+        "slot": "head"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "arcadiandream:star_item",
+    "U": "minecraft:arrow"
+  },
+  "pattern": [
+    "# #",
+    " U ",
+    "# #"
+  ],
+  "result": {
+    "id": "arcadiandream:star_bullet_core"
+  },
+  "show_notification": true
+}

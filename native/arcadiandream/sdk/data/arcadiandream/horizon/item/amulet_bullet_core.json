@@ -1,0 +1,9 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.amulet_bullet_core"
+    },
+    "!minecraft:cooking_fuel": {}
+  }
+}

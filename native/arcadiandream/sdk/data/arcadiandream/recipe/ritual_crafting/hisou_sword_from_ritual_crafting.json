@@ -1,0 +1,11 @@
+{
+  "type": "arcadiandream:ritual_crafting",
+  "ingredients": [
+    "minecraft:blaze_rod",
+    "arcadiandream:dragon_gem",
+    "arcadiandream:dragon_gem"
+  ],
+  "result": {
+    "id": "arcadiandream:hisou_sword"
+  }
+}

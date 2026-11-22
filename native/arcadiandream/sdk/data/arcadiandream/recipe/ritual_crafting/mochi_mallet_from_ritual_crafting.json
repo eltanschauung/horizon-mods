@@ -1,0 +1,15 @@
+{
+  "type": "arcadiandream:ritual_crafting",
+  "ingredients": [
+    "minecraft:rabbit_hide",
+    "minecraft:stick",
+    "minecraft:stick",
+    "#minecraft:planks",
+    "#minecraft:planks",
+    "#minecraft:planks"
+  ],
+  "moon_phase": 0,
+  "result": {
+    "id": "arcadiandream:mochi_mallet"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "arcadiandream:ritual_crafting",
+  "ingredients": [
+    "minecraft:ender_pearl",
+    "#c:gold_ingots",
+    "minecraft:stick",
+    "#c:gold_ingots"
+  ],
+  "result": {
+    "id": "arcadiandream:wall_passing_chisel"
+  }
+}
