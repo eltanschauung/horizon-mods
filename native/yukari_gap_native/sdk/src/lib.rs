@@ -35,8 +35,10 @@ use ui::{MOD_ID, UI, Ui};
 #[derive(Default)]
 struct Mod;
 
-/// The gap: its block, item and block entity type all have this id.
+/// The content block and item ID.
 const GAP: &str = "yukari_gap:yukari_gap";
+/// The SDK type shared by regular and Giga Gap block entities.
+pub const GAP_ENTITY: &str = "yukari_gap_native:gap";
 /// The Yukari umbrella: its owner right-clicks a gap with it to make it global, or not, which
 /// uses the umbrella up. It can't be crafted: Yukari drops it, 70 times in 100, and Yukari Great
 /// Doll every time (Touhou Mobs drops it, when one of its bosses is beaten for good).
@@ -538,10 +540,8 @@ fn share(host: &mut dyn ServerHost, uuid: u128, s: store::Share) {
     }
 }
 
-/// Makes the gap at `lower` a Giga Gap, or a Yukari Gap again, both halves, if it isn't already.
-/// Old saves used the content block's name as the entity type. The SDK drops that
-/// undeclared type on load, so a half-state rewrite runs the declared block factory
-/// and the world store supplies its dye. Both original block IDs stay in the save.
+/// Repair gaps already saved without an entity during the SDK migration.
+/// A half-state rewrite runs the declared block factory without replacing the gap block.
 fn restore_gap_entity(host: &mut dyn ServerHost, level: LevelRef, pos: [i32; 3], color: u32) {
     let Some(state) = level.block_state(host, pos) else {
         return;
@@ -578,6 +578,7 @@ fn block_id(host: &dyn Host, level: LevelRef, pos: [i32; 3]) -> String {
         .unwrap_or_default()
 }
 
+/// Switch both halves between regular and Giga Gap blocks.
 fn set_kind(host: &mut dyn ServerHost, dimension: &str, lower: [i32; 3], giga: bool, color: u32) {
     let block = if giga { GIGA } else { GAP };
     let Some(level) = host.level(dimension) else {
@@ -1039,7 +1040,7 @@ fn finish_placements(host: &mut dyn ServerHost, active: LevelRef) {
 #[mod_api::horizon_mod]
 impl Hooks for Mod {
     fn register(&self, r: &mut dyn Registrar, cx: &RegistrationContext) {
-        let kind = r.block_entity_type("gap").blocks(&[GAP, GIGA]).build();
+        let kind = r.block_entity_type(GAP_ENTITY).blocks(&[GAP, GIGA]).build();
         if let Err(error) = r.block_entity_part(&kind, GapBlock) {
             cx.refuse(&format!("cannot attach gap block behavior: {error:?}"));
             return;
