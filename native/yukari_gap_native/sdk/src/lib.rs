@@ -75,11 +75,20 @@ fn dye(item: &str) -> Option<u32> {
     )
 }
 
-fn bow_color(data: &Compound) -> u32 {
+fn saved_bow_color(data: &Compound) -> Option<u32> {
     match data.get(&BOW_COLOR.into()) {
-        Some(Tag::Int(color)) => (*color as u32) & 0xffffff,
-        _ => store::DEFAULT_BOW,
+        Some(Tag::Int(color)) => Some((*color as u32) & 0xffffff),
+        _ => None,
     }
+}
+
+fn bow_color(data: &Compound) -> u32 {
+    saved_bow_color(data).unwrap_or(store::DEFAULT_BOW)
+}
+
+fn current_bow_color(host: &dyn Host, level: LevelRef, pos: [i32; 3]) -> Option<u32> {
+    let data = host.block_entity(level, pos)?.data(host)?;
+    saved_bow_color(&data)
 }
 
 fn sync_bow(host: &mut dyn ServerHost, level: LevelRef, pos: [i32; 3], color: u32) {
@@ -107,7 +116,11 @@ fn recolor(
     stack: &ItemStack,
     color: u32,
 ) {
-    let previous = with_store(host, |s| (s.find(key).map(|gap| gap.color), false)).flatten();
+    let Some(level) = host.level(&key.0) else {
+        return;
+    };
+    let stored = with_store(host, |s| (s.find(key).map(|gap| gap.color), false)).flatten();
+    let previous = current_bow_color(host, level, key.1).or(stored);
     if previous.is_none_or(|previous| previous == color)
         || (!player.creative && !take_one(host, player.uuid, hand, stack))
     {
@@ -120,9 +133,8 @@ fn recolor(
         gap.color = color;
         (true, true)
     }) == Some(true)
-        && let Some(level) = host.level(&key.0)
     {
-        restore_gap_entity(host, level, key.1, color);
+        sync_bow(host, level, key.1, color);
         level.play_sound(
             host,
             "minecraft:item.dye.use",
@@ -564,7 +576,11 @@ fn restore_gap_entity(host: &mut dyn ServerHost, level: LevelRef, pos: [i32; 3],
             BlockUpdateFlags::CLIENTS | BlockUpdateFlags::KNOWN_SHAPE,
         );
     }
-    sync_bow(host, level, pos, color);
+    // Only a missing tag needs recovery from the world store. Keep the dye
+    // on a loaded entity, including tags migrated from the legacy type.
+    if current_bow_color(host, level, pos).is_none() {
+        sync_bow(host, level, pos, color);
+    }
 }
 
 fn block_updates() -> BlockUpdateFlags {
@@ -1271,6 +1287,7 @@ impl Hooks for Mod {
         let held = event.click.stack.map(|stack| stack.item().id(host));
         let umbrella = held.as_deref() == Some(UMBRELLA);
         let held_dye = held.as_deref().and_then(dye);
+        let saved_color = current_bow_color(host, level, key.1);
         let found = with_store(host, |s| {
             // A gap set with a command is taken in as it is found, as its finder's.
             if s.find(&key).is_none() {
@@ -1283,7 +1300,7 @@ impl Hooks for Mod {
                     owner: player.uuid,
                     locked: false,
                     global: false,
-                    color: store::DEFAULT_BOW,
+                    color: saved_color.unwrap_or(store::DEFAULT_BOW),
                     known: Vec::new(),
                     shared: Vec::new(),
                 };
