@@ -1,6 +1,6 @@
 id = "minimap"
 name = "Minimap"
-version = "2.1.0"
+version = "2.1.1"
 description = "Biome-colored minimap, coordinates, player heads and waypoints."
 authors = ["Horizon", "eltanschauung"]
 license = "GPL-3.0-or-later"
@@ -10,7 +10,7 @@ capabilities = ["registries"]
 
 [native]
 game = "26.3"
-horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+horizon = "b4c262b642851ba8c4ced94330db04c535504bb6"
 mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
 
 [[native.module]]

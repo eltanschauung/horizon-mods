@@ -1,6 +1,11 @@
 use super::{Game, Screen};
 use horizon_client::{hud::HudBatch, text::Text, ui};
-use std::cell::RefCell;
+use std::{
+    cell::RefCell,
+    fs::File,
+    io::{self, Read},
+    path::{Path, PathBuf},
+};
 #[derive(Clone, serde::Serialize, serde::Deserialize)]
 struct Waypoint {
     name: String,
@@ -45,43 +50,67 @@ pub(super) fn scope(game: &Game<'_>) -> String {
         });
     format!("waypoints-{hash:016x}.json")
 }
+fn waypoint_path(game: &Game<'_>, key: &str) -> PathBuf {
+    game.native_data_dir(minimap::runtime::ID).join(key)
+}
+
+fn read_waypoints(path: &Path) -> io::Result<Vec<Waypoint>> {
+    const MAX_BYTES: u64 = 1024 * 1024;
+    let file = match File::open(path) {
+        Ok(file) => file,
+        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(error) => return Err(error),
+    };
+    let mut bytes = Vec::new();
+    file.take(MAX_BYTES + 1).read_to_end(&mut bytes)?;
+    if bytes.len() as u64 > MAX_BYTES {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Waypoint file is too large",
+        ));
+    }
+    let points: Vec<Waypoint> = serde_json::from_slice(&bytes)?;
+    if points.len() > 512
+        || points.iter().any(|p| {
+            p.name.chars().count() > 64
+                || p.position
+                    .iter()
+                    .any(|v| !v.is_finite() || v.abs() > 30_000_000.0)
+        })
+    {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Invalid waypoint data",
+        ));
+    }
+    Ok(points)
+}
+
 fn load(game: &Game<'_>, s: &mut State) {
     let key = scope(game);
     if s.scope == key {
         return;
     }
-    let data = game.setting(minimap::runtime::ID, &key);
-    let parsed = data.as_deref().map(serde_json::from_str::<Vec<Waypoint>>);
-    let writable = parsed.as_ref().is_none_or(|r| {
-        r.as_ref().is_ok_and(|v| {
-            v.len() <= 512
-                && v.iter().all(|p| {
-                    p.name.chars().count() <= 64
-                        && p.position
-                            .iter()
-                            .all(|v| v.is_finite() && v.abs() <= 30_000_000.0)
-                })
-        })
-    });
-    let points = parsed
-        .and_then(Result::ok)
-        .filter(|v| writable && v.len() <= 512)
-        .unwrap_or_default();
-    *s = State {
-        scope: key,
-        points,
-        writable,
-        ..State::default()
+    let result = read_waypoints(&waypoint_path(game, &key));
+    *s = match result {
+        Ok(points) => State {
+            scope: key,
+            points,
+            writable: true,
+            ..State::default()
+        },
+        Err(_) => State {
+            scope: key,
+            error: "Cannot read waypoint file; original preserved".into(),
+            ..State::default()
+        },
     };
-    if !writable {
-        s.error = "Cannot read waypoint file; original preserved".into();
-    }
 }
 fn save(game: &Game<'_>, s: &mut State) {
     if !s.writable {
         return;
     }
-    let path = game.native_data_dir(minimap::runtime::ID).join(&s.scope);
+    let path = waypoint_path(game, &s.scope);
     let result = serde_json::to_vec(&s.points)
         .ok()
         .and_then(|bytes| horizon_client::save::write_durable(&path, &bytes).ok());
