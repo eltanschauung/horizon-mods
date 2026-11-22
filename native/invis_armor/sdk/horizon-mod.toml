@@ -1,6 +1,6 @@
 id = "invis_armor"
 name = "Invisible Armor"
-version = "0.2.0"
+version = "0.2.1"
 description = "Adjust the visibility of armor and elytra on your client."
 authors = ["eltanschauung"]
 license = "MIT"
