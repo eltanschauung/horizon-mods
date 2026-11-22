@@ -18,3 +18,10 @@ kind = "RETURN"
 target = "horizon_client_lib::save::native_block_entity_type::read"
 helper = "src/mixins/legacy_id.rs"
 bindings = [{ name = "id", ty = "Option<String>", value = "$value" }]
+
+[[native.mixin]]
+id = "gap-client-ambient"
+kind = "HEAD"
+target = "horizon_client::game::render_tick::Game::tick_particle_spawns"
+helper = "src/mixins/gap_ambient.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "self" }]

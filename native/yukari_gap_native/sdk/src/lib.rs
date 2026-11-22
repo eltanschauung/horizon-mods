@@ -18,15 +18,15 @@ use std::time::{Duration, Instant};
 
 use mod_api::{
     ActiveEffect, BlockEntityDrawContext, BlockEntityPart, BlockEntityRenderBoundingBoxEvent,
-    BlockEntitySubmitEvent, BlockEntityTickEvent, BlockEntityTicksEvent, BlockEntityUpdateTagEvent,
-    BlockPart, BlockUpdateFlags, BreakBlockEvent, ClientHost, ClientTickPostEvent, Compound,
-    EntityInteractEvent, EntityPlaceEvent, Flow, Hand, HookId, Hooks, Host, HostBlockStates,
-    HostSide, HostTransaction, IPayloadContext, IPayloadHandler, InteractionResult, ItemPlace,
-    ItemResource, ItemStack, LevelRef, ParticleOptions, PayloadBytes, PayloadHandleError,
-    PayloadId, PlayerRef, RandomSource, Registrar, RegistrationContext, RightClickBlockEvent,
-    ScreenCharTypedPreEvent, ScreenKeyPressedPreEvent, ScreenMouseButtonPressedPreEvent,
-    ScreenMouseButtonReleasedPreEvent, ScreenMouseDraggedPreEvent, ScreenMouseScrolledPreEvent,
-    ScreenRenderPostEvent, ServerHost, ServerTickEvent, ServerTickPhase, SoundSource, Tag, Text,
+    BlockEntitySubmitEvent, BlockEntityUpdateTagEvent, BlockPart, BlockUpdateFlags,
+    BreakBlockEvent, ClientHost, ClientTickPostEvent, Compound, EntityInteractEvent,
+    EntityPlaceEvent, Flow, Hand, HookId, Hooks, Host, HostBlockStates, HostSide, HostTransaction,
+    IPayloadContext, IPayloadHandler, InteractionResult, ItemPlace, ItemResource, ItemStack,
+    LevelRef, ParticleOptions, PayloadBytes, PayloadHandleError, PayloadId, PlayerRef,
+    RandomSource, Registrar, RegistrationContext, RightClickBlockEvent, ScreenCharTypedPreEvent,
+    ScreenKeyPressedPreEvent, ScreenMouseButtonPressedPreEvent, ScreenMouseButtonReleasedPreEvent,
+    ScreenMouseDraggedPreEvent, ScreenMouseScrolledPreEvent, ScreenRenderPostEvent, ServerHost,
+    ServerTickEvent, ServerTickPhase, SoundSource, Tag, Text,
 };
 
 use store::{Entry, Gap, Key, Naming, Player, Store, clean};
@@ -49,6 +49,8 @@ const GAP_SPRITE: &str = "yukari_gap:entity/gap";
 /// The bow tied at each tip of the gap, pipef0x's, from `textures/entity/bow.png`.
 const BOW_SPRITE: &str = "yukari_gap:entity/bow";
 const BOW_COLOR: &str = "BowColor";
+/// The vanilla Nether portal ambience shared by both gap sizes.
+pub const AMBIENT_SOUND: &str = "minecraft:block.portal.ambient";
 const DIZZINESS: &str = "yukari_gap:dizziness";
 
 fn dye(item: &str) -> Option<u32> {
@@ -1557,42 +1559,10 @@ impl BlockPart for GapBlock {
 impl BlockEntityPart for GapBlock {
     fn block_entity_subscribed(&self) -> &'static [Option<HookId>] {
         &[
-            Some(HookId::BlockEntityTicks),
-            Some(HookId::BlockEntityTick),
             Some(HookId::BlockEntityUpdateTag),
             Some(HookId::BlockEntitySubmit),
             Some(HookId::BlockEntityRenderBoundingBox),
         ]
-    }
-
-    fn block_entity_ticks(&self, _: &dyn Host, event: &mut BlockEntityTicksEvent<'_>) {
-        if is_gap(event.block) {
-            event.ticks = true;
-        }
-    }
-
-    fn block_entity_tick(&self, host: &mut dyn ServerHost, event: &mut BlockEntityTickEvent<'_>) {
-        let Some(level) = host.level(host.dimension()) else {
-            return;
-        };
-        if lower_half(host, level, event.pos) != event.pos {
-            return;
-        }
-        let Some(mut random) = level.random(host) else {
-            return;
-        };
-        let sound = random.next_int_bound(100).ok() == Some(0);
-        level.set_random(host, random);
-        if sound {
-            level.play_sound(
-                host,
-                "minecraft:block.portal.ambient",
-                center(event.pos),
-                SoundSource::Blocks,
-                0.5,
-                1.0,
-            );
-        }
     }
 
     fn block_entity_update_tag(
