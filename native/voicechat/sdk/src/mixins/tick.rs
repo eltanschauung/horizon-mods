@@ -32,6 +32,8 @@ fn voicechat_tick(game: &mut crate::game::Game<'_>) {
         players,
         redirect: horizon_protocol::server_redirect,
     };
+    #[cfg(feature = "audio")]
+    vc::audio::install_backend(crate::voicechat_sdk_audio::run);
     voicechat::set_connected_world(true);
     let done = vc::tick(Some(world), &|key| {
         voicechat::from_setting(key, game.setting(vc::ID, key))

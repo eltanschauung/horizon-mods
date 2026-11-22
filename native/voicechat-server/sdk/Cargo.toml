@@ -9,5 +9,6 @@ publish = false
 horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
 serde_json = "=1.0.151"
 log = "=0.4.34"
-ring = "=0.17.14"
+aes-gcm = { version = "=0.10.3", default-features = false, features = ["aes", "alloc"] }
+getrandom = "=0.4.3"
 serde = { version = "=1.0.229", features = ["derive"] }

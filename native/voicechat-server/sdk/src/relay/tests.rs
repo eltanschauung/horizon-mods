@@ -59,7 +59,6 @@ struct Voice {
     cipher: proto::Cipher,
     socket: UdpSocket,
     server: SocketAddr,
-    rng: SystemRandom,
     /// The datagrams of its handshake: authenticate, connection check.
     handshake: Vec<Vec<u8>>,
 }
@@ -81,7 +80,6 @@ impl Voice {
             cipher: proto::Cipher::new(&secret),
             socket,
             server: SocketAddr::from(([127, 0, 0, 1], port)),
-            rng: SystemRandom::new(),
             handshake: Vec::new(),
         };
         let auth = v.send(
@@ -101,7 +99,7 @@ impl Voice {
     }
     /// Sends a sealed packet; returns the datagram.
     fn send(&self, plain: &[u8]) -> Vec<u8> {
-        let sealed = self.cipher.seal(&self.rng, plain).unwrap();
+        let sealed = self.cipher.seal(plain).unwrap();
         let datagram = Out::default()
             .byte(proto::MAGIC)
             .uuid(self.uuid)
@@ -397,7 +395,7 @@ fn leaving_and_strangers() {
     // Someone without the key can't speak as alice, nor take her address.
     let stranger = UdpSocket::bind("127.0.0.1:0").unwrap();
     let fake = proto::Cipher::new(&[0; 16])
-        .seal(&SystemRandom::new(), &[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0])
+        .seal(&[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0])
         .unwrap();
     stranger
         .send_to(
@@ -414,7 +412,6 @@ fn leaving_and_strangers() {
     let replay = a
         .cipher
         .seal(
-            &a.rng,
             &Out::default()
                 .byte(5)
                 .uuid(A)
@@ -839,12 +836,11 @@ fn bare_state() -> State {
 fn a_new_secret_does_not_refill_the_rate_buckets() {
     // Group and state changes: a burst of 10, then 2 a second. Asking for a
     // new secret (once a second) must not hand the burst back.
-    let rng = SystemRandom::new();
     let mut st = bare_state();
-    st.give_secret(&rng, A, false);
+    st.give_secret(A, false);
     let spent = (0..12).filter(|_| st.spend_op(A)).count();
     assert_eq!(spent, OPS_BURST as usize, "a burst of 10");
-    st.give_secret(&rng, A, false);
+    st.give_secret(A, false);
     let after = (0..12).filter(|_| st.spend_op(A)).count();
     // Only what a second of refilling gives, not another burst.
     assert!(
@@ -853,12 +849,12 @@ fn a_new_secret_does_not_refill_the_rate_buckets() {
     );
     // The same for the voice packets' burst of 30.
     st.clients.get_mut(&A).unwrap().tokens = 0.0;
-    st.give_secret(&rng, A, false);
+    st.give_secret(A, false);
     assert!(st.clients[&A].tokens < 1.0, "{}", st.clients[&A].tokens);
     // The server's own new secret already keeps them.
     st.clients.get_mut(&A).unwrap().ops = 0.0;
     st.clients.get_mut(&A).unwrap().tokens = 0.0;
-    st.give_secret(&rng, A, true);
+    st.give_secret(A, true);
     assert!(!st.spend_op(A));
     assert!(st.clients[&A].tokens < 1.0);
 }

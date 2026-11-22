@@ -1,51 +1,49 @@
-//! `Secret.encrypt` / `decrypt`: AES-128-GCM with a random 12 byte IV in
-//! front of the ciphertext and its 16 byte tag.
-use ring::aead::{AES_128_GCM, Aad, LessSafeKey, NONCE_LEN, Nonce, UnboundKey};
-use ring::rand::{SecureRandom, SystemRandom};
+//! Simple Voice Chat uses a random 12-byte IV followed by AES-128-GCM
+//! ciphertext and its 16-byte authentication tag.
+use aes_gcm::{Aes128Gcm, KeyInit, Nonce, aead::Aead};
+
+const NONCE_LEN: usize = 12;
+const TAG_LEN: usize = 16;
 
 pub struct Crypt {
-    key: LessSafeKey,
-    rng: SystemRandom,
+    key: Aes128Gcm,
 }
 
 impl Crypt {
     pub fn new(secret: &[u8; 16]) -> Self {
-        let key = UnboundKey::new(&AES_128_GCM, secret).expect("16 byte AES key");
-        Self { key: LessSafeKey::new(key), rng: SystemRandom::new() }
+        Self {
+            key: Aes128Gcm::new_from_slice(secret).expect("16 byte AES key"),
+        }
     }
 
     pub fn encrypt(&self, plain: &[u8]) -> Vec<u8> {
         let mut iv = [0u8; NONCE_LEN];
-        self.rng.fill(&mut iv).expect("system randomness");
-        let mut out = Vec::with_capacity(NONCE_LEN + plain.len() + 16);
-        out.extend_from_slice(&iv);
-        let mut body = plain.to_vec();
-        self.key
-            .seal_in_place_append_tag(Nonce::assume_unique_for_key(iv), Aad::empty(), &mut body)
+        getrandom::fill(&mut iv).expect("system randomness");
+        let body = self
+            .key
+            .encrypt(&Nonce::from(iv), plain)
             .expect("sealing a packet");
-        out.extend_from_slice(&body);
-        out
+        let mut packet = Vec::with_capacity(NONCE_LEN + body.len());
+        packet.extend_from_slice(&iv);
+        packet.extend(body);
+        packet
     }
 
     /// None for a packet that wasn't sealed with this secret.
-    pub fn decrypt(&self, payload: &[u8]) -> Option<Vec<u8>> {
-        if payload.len() < NONCE_LEN + 16 {
+    pub fn decrypt(&self, packet: &[u8]) -> Option<Vec<u8>> {
+        if packet.len() < NONCE_LEN + TAG_LEN {
             return None;
         }
-        let iv: [u8; NONCE_LEN] = payload[..NONCE_LEN].try_into().ok()?;
-        let mut body = payload[NONCE_LEN..].to_vec();
-        let plain = self
-            .key
-            .open_in_place(Nonce::assume_unique_for_key(iv), Aad::empty(), &mut body)
-            .ok()?;
-        Some(plain.to_vec())
+        let (iv, body) = packet.split_at(NONCE_LEN);
+        let iv: [u8; NONCE_LEN] = iv.try_into().ok()?;
+        self.key.decrypt(&Nonce::from(iv), body).ok()
     }
 }
 
 pub fn random_uuid() -> u128 {
-    let mut b = [0u8; 16];
-    SystemRandom::new().fill(&mut b).expect("system randomness");
-    u128::from_be_bytes(b)
+    let mut bytes = [0u8; 16];
+    getrandom::fill(&mut bytes).expect("system randomness");
+    u128::from_be_bytes(bytes)
 }
 
 #[cfg(test)]
@@ -81,6 +79,9 @@ mod tests {
     }
 
     fn hex(s: &str) -> Vec<u8> {
-        (0..s.len()).step_by(2).map(|i| u8::from_str_radix(&s[i..i + 2], 16).unwrap()).collect()
+        (0..s.len())
+            .step_by(2)
+            .map(|i| u8::from_str_radix(&s[i..i + 2], 16).unwrap())
+            .collect()
     }
 }

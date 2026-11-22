@@ -10,7 +10,6 @@
 pub mod proto;
 
 use proto::{FromClient, GroupKind, PlayerState, Request, ToClient};
-use ring::rand::{SecureRandom, SystemRandom};
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::io;
 use std::net::{SocketAddr, UdpSocket};
@@ -224,7 +223,6 @@ struct State {
 struct Shared {
     state: Mutex<State>,
     socket: UdpSocket,
-    rng: SystemRandom,
     running: AtomicBool,
 }
 
@@ -260,7 +258,6 @@ impl Server {
                 outbox: HashMap::new(),
             }),
             socket,
-            rng: SystemRandom::new(),
             running: AtomicBool::new(true),
         });
         let worker = shared.clone();
@@ -300,7 +297,7 @@ impl Server {
             .map(|(u, _)| *u)
             .collect();
         for uuid in due {
-            st.give_secret(&self.shared.rng, uuid, false);
+            st.give_secret(uuid, false);
         }
         let changed: Vec<u128> = st.changed.drain().collect();
         for uuid in changed {
@@ -358,7 +355,7 @@ impl Server {
                     c.asked_again = true;
                     return;
                 }
-                st.give_secret(&self.shared.rng, player, false);
+                st.give_secret(player, false);
             }
             Request::State { disabled } => {
                 if let Some(c) = st.clients.get_mut(&player)
@@ -383,7 +380,7 @@ impl Server {
                     return;
                 }
                 let mut id = [0u8; 16];
-                if self.shared.rng.fill(&mut id).is_err() {
+                if getrandom::fill(&mut id).is_err() {
                     return;
                 }
                 let id = u128::from_be_bytes(id);
@@ -488,9 +485,9 @@ impl State {
     /// group and state, and gets only the secret). Otherwise the client asked:
     /// it starts over and gets everyone's state and the groups, instead of
     /// whatever still waited for it.
-    fn give_secret(&mut self, rng: &SystemRandom, player: u128, rekey: bool) {
+    fn give_secret(&mut self, player: u128, rekey: bool) {
         let mut secret = [0u8; 16];
-        if rng.fill(&mut secret).is_err() {
+        if getrandom::fill(&mut secret).is_err() {
             return;
         }
         let mut client = Client::new(secret, Instant::now());
@@ -691,7 +688,7 @@ fn relay(shared: &Shared) {
 }
 
 fn send(shared: &Shared, cipher: &proto::Cipher, to: SocketAddr, packet: &ToClient) {
-    if let Some(sealed) = cipher.seal(&shared.rng, &packet.write()) {
+    if let Some(sealed) = cipher.seal(&packet.write()) {
         let _ = shared.socket.send_to(&proto::server_datagram(&sealed), to);
     }
 }
@@ -712,7 +709,7 @@ fn keep_alive(shared: &Shared, every: Duration) {
         send(shared, &c.cipher, addr, &ToClient::KeepAlive);
     }
     for uuid in lost {
-        st.give_secret(&shared.rng, uuid, true);
+        st.give_secret(uuid, true);
     }
 }
 

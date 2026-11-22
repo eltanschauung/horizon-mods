@@ -7,6 +7,6 @@ publish = false
 
 [dependencies]
 horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
-cpal = "=0.16.0"
 libloading = "=0.8.9"
-ring = "=0.17.14"
+aes-gcm = { version = "=0.10.3", default-features = false, features = ["aes", "alloc"] }
+getrandom = "=0.4.3"

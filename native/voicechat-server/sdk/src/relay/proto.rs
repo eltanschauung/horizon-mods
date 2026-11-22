@@ -6,6 +6,8 @@
 //! Numbers are big-endian, a UUID is 16 bytes (most significant half first),
 //! strings and byte arrays are a VarInt length then the bytes.
 
+use aes_gcm::{Aes128Gcm, KeyInit, Nonce, aead::Aead};
+
 /// The only version this server speaks.
 pub const COMPATIBILITY_VERSION: i32 = 20;
 /// Every UDP datagram starts with it.
@@ -457,44 +459,34 @@ impl ToClient<'_> {
 /// AES-128-GCM keyed by a player's secret: a random 12-byte nonce, then the
 /// ciphertext and its 16-byte tag.
 pub struct Cipher {
-    key: ring::aead::LessSafeKey,
+    key: Aes128Gcm,
 }
 
 impl Cipher {
+    const NONCE_LEN: usize = 12;
+    const TAG_LEN: usize = 16;
+
     pub fn new(secret: &[u8; 16]) -> Self {
-        let key =
-            ring::aead::UnboundKey::new(&ring::aead::AES_128_GCM, secret).expect("a 16-byte key");
-        Self {
-            key: ring::aead::LessSafeKey::new(key),
-        }
+        Self { key: Aes128Gcm::new_from_slice(secret).expect("a 16-byte key") }
     }
-    pub fn seal(&self, rng: &dyn ring::rand::SecureRandom, plain: &[u8]) -> Option<Vec<u8>> {
-        let mut nonce = [0u8; 12];
-        rng.fill(&mut nonce).ok()?;
-        let mut body = plain.to_vec();
-        self.key
-            .seal_in_place_append_tag(
-                ring::aead::Nonce::assume_unique_for_key(nonce),
-                ring::aead::Aad::empty(),
-                &mut body,
-            )
-            .ok()?;
-        let mut out = nonce.to_vec();
-        out.extend(body);
-        Some(out)
+
+    pub fn seal(&self, plain: &[u8]) -> Option<Vec<u8>> {
+        let mut iv = [0u8; Self::NONCE_LEN];
+        getrandom::fill(&mut iv).ok()?;
+        let body = self.key.encrypt(&Nonce::from(iv), plain).ok()?;
+        let mut packet = Vec::with_capacity(Self::NONCE_LEN + body.len());
+        packet.extend_from_slice(&iv);
+        packet.extend(body);
+        Some(packet)
     }
-    pub fn open(&self, sealed: &[u8]) -> Option<Vec<u8>> {
-        if sealed.len() < 12 + 16 {
+
+    pub fn open(&self, packet: &[u8]) -> Option<Vec<u8>> {
+        if packet.len() < Self::NONCE_LEN + Self::TAG_LEN {
             return None;
         }
-        let (nonce, body) = sealed.split_at(12);
-        let nonce = ring::aead::Nonce::try_assume_unique_for_key(nonce).ok()?;
-        let mut body = body.to_vec();
-        let plain = self
-            .key
-            .open_in_place(nonce, ring::aead::Aad::empty(), &mut body)
-            .ok()?;
-        Some(plain.to_vec())
+        let (iv, body) = packet.split_at(Self::NONCE_LEN);
+        let iv: [u8; Self::NONCE_LEN] = iv.try_into().ok()?;
+        self.key.decrypt(&Nonce::from(iv), body).ok()
     }
 }
 
@@ -759,9 +751,8 @@ mod tests {
 
     #[test]
     fn sealed_bodies_round_trip_and_reject_tampering() {
-        let rng = ring::rand::SystemRandom::new();
         let c = Cipher::new(&[1; 16]);
-        let sealed = c.seal(&rng, b"hello").unwrap();
+        let sealed = c.seal(b"hello").unwrap();
         assert_eq!(sealed.len(), 12 + 5 + 16);
         assert_eq!(c.open(&sealed).unwrap(), b"hello");
         let mut bad = sealed.clone();
@@ -769,7 +760,7 @@ mod tests {
         assert_eq!(c.open(&bad), None);
         assert_eq!(Cipher::new(&[2; 16]).open(&sealed), None);
         assert_ne!(
-            c.seal(&rng, b"hello").unwrap(),
+            c.seal(b"hello").unwrap(),
             sealed,
             "fresh nonce each time"
         );
