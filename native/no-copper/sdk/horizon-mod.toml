@@ -9,12 +9,12 @@ capabilities = ["registries"]
 
 [native]
 game = "26.3"
-horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
 mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
 
 [[native.mixin]]
 id = "apply"
-target = "horizon_world::worldgen::overrides::WorldgenOverrides::apply"
-kind = "RETURN"
+target = "horizon_world::worldgen::native_terrain::registry_effective"
+kind = "HEAD"
 helper = "src/mixins/generation.rs"
-bindings = [{ name = "bundle", ty = "&str", value = "bundle" }, { name = "value", ty = "BTreeMap<String, String>", value = "$value" }]
+bindings = [{ name = "bundle", ty = "&str", value = "_bundle" }, { name = "base", ty = "&mut BTreeMap<String, String>", value = "_base" }]
