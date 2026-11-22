@@ -10,7 +10,7 @@ capabilities = ["registries"]
 
 [native]
 game = "26.3"
-horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
 mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
 
 [[native.module]]
@@ -192,7 +192,7 @@ bindings = [
 [[native.mixin]]
 id = "radar-compass-north"
 kind = "MODIFY_EXPRESSION_VALUE"
-target = "horizon_client::game::extras::Game<'_>::draw_extras"
+target = "horizon_client::game::extras::Game::draw_extras"
 selector = "Some(view.north())"
 require = 1
 ordinal = 0

@@ -10,13 +10,13 @@ capabilities = ["registries"]
 
 [native]
 game = "26.3"
-horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
 mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
 
 [[native.mixin]]
 id = "opacity"
 kind = "RETURN"
-target = "horizon_client::game::armor_stands::Game<'_>::equipment_render_opacity"
+target = "horizon_client::game::armor_stands::Game::equipment_render_opacity"
 helper = "src/mixins/opacity.rs"
 bindings = [
     { name = "original", ty = "f32", value = "$value" },

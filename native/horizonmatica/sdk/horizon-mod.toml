@@ -11,7 +11,7 @@ capabilities = ["registries"]
 # ([[native.mixin]] rows), so it is pinned to one Horizon build: the synchronized fork.
 [native]
 game = "26.3"
-horizon = "ee492ccebd7a176cabb5e40088b7cf89adbb7812"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
 mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
 
 # ---------------------------------------------------------------- the overlay
@@ -28,7 +28,7 @@ source = "src/native/game_support.rs"
 # Once a client tick: the overlay is built with the game side's help.
 [[native.mixin]]
 id = "tick_pre"
-target = "horizon_client::game::native_hooks::client_tick_pre::Game<'_>::native_client_tick_pre"
+target = "horizon_client::game::native_hooks::client_tick_pre::Game::native_client_tick_pre"
 kind = "HEAD"
 helper = "src/native/tick_pre.rs"
 bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
@@ -54,7 +54,7 @@ bindings = [{ name = "needs", ty = "&mut RenderNeeds", value = "&mut *needs" }]
 # placement what a click would place (see src/hands.rs); the mouse buttons go through here first.
 [[native.mixin]]
 id = "mouse"
-target = "horizon_client::game::play_input::Game<'_>::play_mouse"
+target = "horizon_client::game::play_input::Game::play_mouse"
 kind = "HEAD"
 cancellable = true
 helper = "src/native/mouse.rs"
