@@ -61,7 +61,7 @@ pub(crate) fn autosmelt(stack: &ItemStack) -> bool {
 pub(crate) fn shot_settings(stack: &ItemStack, family: &str) -> Value {
     static SHOTS: OnceLock<Value> = OnceLock::new();
     let defaults =
-        SHOTS.get_or_init(|| serde_json::from_str(include_str!("data/shots.json")).unwrap());
+        SHOTS.get_or_init(|| serde_json::from_str(include_str!("../assets/arcadiandream/embedded/shots.json")).unwrap());
     let mut settings = defaults[family].clone();
     if let (Some(base), Some(patch)) = (settings.as_object_mut(), custom(stack)) {
         base.extend(

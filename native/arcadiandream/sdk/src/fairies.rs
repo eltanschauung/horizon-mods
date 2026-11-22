@@ -31,7 +31,7 @@ struct Fairy {
 }
 
 static ATTACKS: LazyLock<Value> = LazyLock::new(|| {
-    serde_json::from_str(include_str!("data/fairy_attacks.json")).expect("embedded fairy attacks")
+    serde_json::from_str(include_str!("../assets/arcadiandream/embedded/fairy_attacks.json")).expect("embedded fairy attacks")
 });
 
 static FAIRY: AttachmentType<Fairy> = AttachmentType {

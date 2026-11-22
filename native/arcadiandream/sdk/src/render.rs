@@ -5,7 +5,7 @@ use mod_api::{BlockEntityDrawContext, ClientHost, CubeFace, EquipmentSlot, Light
 use std::sync::LazyLock;
 
 static MODELS: LazyLock<Value> = LazyLock::new(|| {
-    serde_json::from_str(include_str!("data/models.json")).expect("embedded fairy geometry")
+    serde_json::from_str(include_str!("../assets/arcadiandream/embedded/models.json")).expect("embedded fairy geometry")
 });
 
 fn vector(v: &Value, default: [f32; 3]) -> [f32; 3] {

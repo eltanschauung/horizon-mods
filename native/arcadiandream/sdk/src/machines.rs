@@ -406,7 +406,7 @@ fn craft_ritual(
 ) {
     static RITUALS: OnceLock<Value> = OnceLock::new();
     let recipes =
-        RITUALS.get_or_init(|| serde_json::from_str(include_str!("data/rituals.json")).unwrap());
+        RITUALS.get_or_init(|| serde_json::from_str(include_str!("../assets/arcadiandream/embedded/rituals.json")).unwrap());
     let Some(recipes) = recipes.as_object() else {
         return;
     };
