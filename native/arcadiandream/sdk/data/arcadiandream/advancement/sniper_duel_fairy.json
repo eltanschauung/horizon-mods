@@ -3,25 +3,23 @@
   "criteria": {
     "killed_fairy": {
       "conditions": {
-        "entity": [
-          {
-            "entity": "this",
-            "predicate": {
-              "type": "#arcadiandream:fairies",
-              "distance": {
-                "horizontal": {
-                  "min": 50.0
-                }
+        "entity": {
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "#arcadiandream:fairies",
+            "minecraft:distance": {
+              "horizontal": {
+                "min": 50.0
               }
-            },
-            "type": "minecraft:entity_properties"
-          }
-        ],
+            }
+          },
+          "type": "minecraft:entity_properties"
+        },
         "killing_blow": {
           "tags": [
             {
               "expected": true,
-              "id": "arcadiandream:is_danmaku"
+              "id": "#arcadiandream:is_danmaku"
             }
           ]
         }

@@ -52,12 +52,10 @@
           "name": "arcadiandream:bomb_item"
         }
       ],
-      "condition": [
-        {
-          "type": "minecraft:random_chance",
-          "chance": 0.1
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.1
+      }
     },
     {
       "bonus_rolls": 0.0,
@@ -68,12 +66,10 @@
           "name": "arcadiandream:extend_item"
         }
       ],
-      "condition": [
-        {
-          "type": "minecraft:random_chance",
-          "chance": 0.025
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.025
+      }
     },
     {
       "bonus_rolls": 0.0,
@@ -84,12 +80,10 @@
           "name": "arcadiandream:star_item"
         }
       ],
-      "condition": [
-        {
-          "type": "minecraft:random_chance",
-          "chance": 0.15
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.15
+      }
     },
     {
       "bonus_rolls": 0.0,
@@ -100,12 +94,10 @@
           "name": "arcadiandream:music_disc_fairy_playground"
         }
       ],
-      "condition": [
-        {
-          "type": "minecraft:random_chance",
-          "chance": 0.01
-        }
-      ]
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.01
+      }
     }
   ],
   "random_sequence": "arcadiandream:entities/ice_fairy"

@@ -3,17 +3,15 @@
   "criteria": {
     "abandoned_shrine": {
       "conditions": {
-        "player": [
-          {
-            "entity": "this",
-            "predicate": {
-              "location": {
-                "structures": "arcadiandream:abandoned_shrine"
-              }
-            },
-            "type": "minecraft:entity_properties"
-          }
-        ]
+        "player": {
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "arcadiandream:abandoned_shrine"
+            }
+          },
+          "type": "minecraft:entity_properties"
+        }
       },
       "trigger": "minecraft:location"
     }
