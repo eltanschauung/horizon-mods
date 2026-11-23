@@ -38,6 +38,13 @@ fn voicechat_tick(game: &mut crate::game::Game<'_>) {
     let done = vc::tick(Some(world), &|key| {
         voicechat::from_setting(key, game.setting(vc::ID, key))
     });
+    vc::update_display_names(|uuid| {
+        game.pack.character_catalog.get(0)?;
+        Some(game.character_for(uuid).map_or_else(
+            || format!("Player_{:08x}", (uuid >> 96) as u32),
+            |character| character.display_name().plain().to_string(),
+        ))
+    });
     for (channel, data) in done.payloads {
         game.send(horizon_protocol::packets::play::Serverbound::CustomPayload(
             horizon_protocol::packets::configuration::CustomPayload { channel, data },

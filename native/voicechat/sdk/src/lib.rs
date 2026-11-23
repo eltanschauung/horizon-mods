@@ -104,6 +104,20 @@ impl Hooks for VoiceChat {
         }
     }
 
+    fn render_gui_post(&self, host: &dyn ClientHost, event: &mut RenderGuiPostEvent<'_>) {
+        let corner = Corner::TopLeft;
+        if !connected_world() || !host.on(voice::ID) || !host.native_corner_shown(corner) {
+            return;
+        }
+        let ptt = binding(host, voice::KEY_PTT, voice::DEFAULT_PTT);
+        for line in voice::hud(&ptt) {
+            let width = event.draw.text_width(&line.text) + 4.0;
+            let (x, y) = event.corners.place(corner, width, 12.0);
+            event.draw.fill([x, y, width, 12.0], 0x9000_0000);
+            event.draw.text(&line.text, [x + 2.0, y + 2.0], line.rgb, true);
+        }
+    }
+
     fn setting_changed(&self, host: &mut dyn ClientHost, _: &mut SettingChangedEvent<'_>) {
         voice::reload(&|key| from_setting(key, host.setting(voice::ID, key)));
     }

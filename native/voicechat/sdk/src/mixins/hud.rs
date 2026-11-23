@@ -6,7 +6,7 @@ fn voicechat_hud(
     batch: &mut horizon_client::hud::HudBatch,
     corners: &mut horizon_client::extras_hud::Corners,
 ) {
-    use horizon_client::extras::Corner;
+    let _ = corners;
     use voicechat::engine as vc;
     if !game.on(vc::ID)
         || !game
@@ -29,17 +29,5 @@ fn voicechat_hud(
             game.native_fill(batch, [x, y, w, 12.0], 0x6000_0000);
             game.native_text(batch, &label.text, [x + 2.0, y + 2.0], label.rgb, true);
         }
-    }
-    if !game.native_corner_shown(Corner::TopLeft) {
-        return;
-    }
-    let ptt = game
-        .mod_key(vc::ID, vc::KEY_PTT)
-        .map_or_else(|| vc::DEFAULT_PTT.to_owned(), |(key, _)| key);
-    for line in vc::hud(&ptt) {
-        let w = game.native_text_width(batch, &line.text) + 4.0;
-        let (x, y) = corners.place(Corner::TopLeft, w, 12.0);
-        game.native_fill(batch, [x, y, w, 12.0], 0x9000_0000);
-        game.native_text(batch, &line.text, [x + 2.0, y + 2.0], line.rgb, true);
     }
 }

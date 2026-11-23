@@ -241,20 +241,15 @@ impl Session {
     }
 
     /// The names of a group's members, sorted.
-    fn members(&self, group: u128) -> Vec<String> {
+    fn members(&self, group: u128, display_names: &HashMap<u128, String>, exclude: Option<u128>) -> Vec<String> {
         let mut names: Vec<String> = self
             .states
-            .values()
-            .filter(|p| p.group == Some(group) && !p.disconnected)
-            .map(|p| p.name.clone())
+            .iter()
+            .filter(|(id, p)| Some(**id) != exclude && p.group == Some(group) && !p.disconnected)
+            .map(|(id, p)| display_names.get(id).cloned().unwrap_or_else(|| p.name.clone()))
             .collect();
         names.sort_by_key(|n| n.to_lowercase());
         names
-    }
-
-    fn own_name(&self) -> String {
-        let own = self.secret.as_ref().map(|s| s.player);
-        own.and_then(|id| self.states.get(&id)).map(|p| p.name.clone()).unwrap_or_default()
     }
 
     fn compat(&self) -> i32 {
@@ -281,6 +276,7 @@ struct Voice {
     settings: Settings,
     loaded: bool,
     session: Option<Session>,
+    display_names: HashMap<u128, String>,
     /// Custom payloads for the server, sent at the tick.
     outbox: Vec<(String, Vec<u8>)>,
     /// Settings to write back, and chat lines for the player.
@@ -300,6 +296,7 @@ fn voice() -> MutexGuard<'static, Voice> {
             settings: Settings::default(),
             loaded: false,
             session: None,
+            display_names: HashMap::new(),
             outbox: Vec::new(),
             store: Vec::new(),
             chat: Vec::new(),
@@ -660,7 +657,7 @@ impl Voice {
                         id: g.id,
                         name: g.name.clone(),
                         has_password: g.has_password,
-                        members: s.members(g.id),
+                        members: s.members(g.id, &self.display_names, None),
                         ours: s.group == Some(g.id),
                     })
                     .collect()
@@ -852,6 +849,17 @@ const AQUA: u32 = 0x55FFFF;
 const RED: u32 = 0xFF5555;
 const YELLOW: u32 = 0xFFFF55;
 
+/// Resolve the current character names for the already-known voice participants.
+pub fn update_display_names(resolve: impl Fn(u128) -> Option<String>) {
+    let mut voice = voice();
+    voice.display_names = voice
+        .session
+        .iter()
+        .flat_map(|session| session.states.keys())
+        .filter_map(|&id| resolve(id).map(|name| (id, name)))
+        .collect();
+}
+
 /// The status for the HUD, top line first: nothing on a server without
 /// voice chat.
 pub fn hud(ptt_key: &str) -> Vec<Line> {
@@ -898,8 +906,7 @@ pub fn hud(ptt_key: &str) -> Vec<Line> {
     }
     if let Some(g) = session.group.and_then(|g| session.groups.get(&g)) {
         lines.push(line(format!("Group: {}", g.name), GREEN));
-        let mut members = session.members(g.id);
-        members.retain(|m| *m != session.own_name());
+        let members = session.members(g.id, &v.display_names, session.secret.as_ref().map(|s| s.player));
         if !members.is_empty() {
             lines.push(line(format!("  with {}", members.join(", ")), GREY));
         }
@@ -913,7 +920,9 @@ pub fn hud(ptt_key: &str) -> Vec<Line> {
         .iter()
         .filter(|(_, (at, _))| now - *at < Duration::from_millis(300))
         .map(|(id, (_, whisper))| {
-            let name = session.states.get(id).map_or_else(|| "Someone".into(), |s| s.name.clone());
+            let name = v.display_names.get(id).cloned().unwrap_or_else(|| {
+                session.states.get(id).map_or_else(|| "Someone".into(), |s| s.name.clone())
+            });
             (name, *whisper)
         })
         .collect();
@@ -1057,7 +1066,7 @@ pub fn command(line: &str) -> Option<Vec<String>> {
             let lines: Vec<String> = groups
                 .into_iter()
                 .map(|g| {
-                    let members = s.members(g.id);
+                    let members = s.members(g.id, &v.display_names, None);
                     format!(
                         "{}{}{}: {}",
                         g.name,
