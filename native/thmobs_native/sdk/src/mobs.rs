@@ -174,7 +174,7 @@ const END: &[&str] = &["the_end", "end_highlands", "end_midlands", "small_end_is
     // Biomes O' Plenty
     "biomesoplenty:end_corruption", "biomesoplenty:end_flats", "biomesoplenty:end_reef", "biomesoplenty:end_wilds"];
 
-const FAIRY_AI: Ai = ai(0.3, 8.0, 8.0, 2);
+const FAIRY_AI: Ai = ai(0.3, 8.0, 4.0, 2);
 
 pub const MOBS: &[Mob] = &[
     // ---- Touhou Items Mod ----
