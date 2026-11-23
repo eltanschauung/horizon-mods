@@ -101,6 +101,34 @@ struct Server {
     named_wait: u32,
 }
 
+/// Apply the hard 128-block distance rule to wild mobs, including neutral
+/// fairies. Named characters, summons and persistent mobs retain their state.
+pub fn despawn_wild_mobs(host: &mut dyn ServerHost, level: LevelRef, departing: Option<u128>) {
+    let Some(players) = level.online_players(host).and_then(|players| {
+        players.into_iter()
+            .filter(|p| Some(p.uuid()) != departing && p.game_mode(host) != Some(mod_api::GameMode::Spectator))
+            .map(|p| p.entity().position(host))
+            .collect::<Option<Vec<_>>>()
+    }) else { return };
+    for entity in resident_entities(host, level).unwrap_or_default() {
+        let Some(kind) = entity.kind(host).map(|kind| kind.id(host)) else { continue };
+        if !mobs::by_kind(&kind).is_some_and(|mob| mob.spawn.is_some() && !named(mob))
+            || !entity.position(host).is_some_and(|at| {
+                players.iter().all(|p| (0..3).map(|i| (at[i] - p[i]).powi(2)).sum::<f64>() > 128.0 * 128.0)
+            })
+            || entity.leash_holder(host) != Some(mod_api::LeashHolder::Unleashed)
+            || entity.is_passenger(host) != Some(false)
+            || entity.is_vehicle(host) != Some(false)
+            || !host.mob(entity).is_some_and(|mob| mob.persistence_required(host) == Some(false))
+            || !host.living(entity).and_then(|living| living.health(host)).is_some_and(|health| health > 0.0)
+            || !entity.nbt(host).is_some_and(|data| !data.contains_key(&"CustomName".into()))
+        {
+            continue;
+        }
+        entity.discard(host);
+    }
+}
+
 /// A named character: a boss with phases, or one of the people. One of each at a time, one at a
 /// time, and seldom: about once or twice a night.
 fn named(m: &mobs::Mob) -> bool {
@@ -319,9 +347,17 @@ fn players(host: &dyn ServerHost, dimension: &str) -> Vec<PlayerView> {
         .collect()
 }
 
+fn resident_entities(host: &dyn Host, level: LevelRef) -> Option<Vec<mod_api::EntityRef>> {
+    // A discard can leave a stale ID pending in the SDK's level index until
+    // the tick ends. The bounding-box query filters these handles and only
+    // visits entities already resident in memory.
+    level.all_entities(host)
+        .or_else(|| level.entities_in(host, [f64::MIN; 3], [f64::MAX; 3]))
+}
+
 fn level_entities(host: &dyn Host, dimension: &str) -> Vec<(u32, String, [f64; 3])> {
     host.level(dimension)
-        .and_then(|level| level.all_entities(host))
+        .and_then(|level| resident_entities(host, level))
         .unwrap_or_default()
         .into_iter()
         .filter_map(|entity| {
@@ -1155,17 +1191,20 @@ impl Server {
             .into_iter()
             .filter(|p| p.dimension == dimension && p.game_mode != 3)
             .collect();
-        if players.is_empty() || level.difficulty(host) == Some("peaceful") {
+        if players.is_empty()
+            || level.difficulty(host) == Some("peaceful")
+            || matches!(level.game_rule(host, "minecraft:spawn_mobs"), Ok(Some(mod_api::GameRuleValue::Bool(false))))
+        {
             return;
         }
         self.named_wait = self.named_wait.saturating_sub(1);
         let entities = level_entities(host, dimension);
-        let ours: Vec<[f64; 3]> = entities
+        let mut ours: Vec<[f64; 3]> = entities
             .iter()
             .filter(|(_, k, _)| is_ours(k))
             .map(|(_, _, p)| *p)
             .collect();
-        let alive: HashSet<String> = entities
+        let mut alive: HashSet<String> = entities
             .iter()
             .filter(|(_, k, _)| is_ours(k))
             .map(|(_, k, _)| k.to_string())
@@ -1276,7 +1315,7 @@ impl Server {
             let count = if is_named {
                 1
             } else {
-                chosen.min + self.rng.int(chosen.max - chosen.min + 1)
+                (chosen.min + self.rng.int(chosen.max - chosen.min + 1)).min((cfg.cap - near) as u32)
             };
             if is_named {
                 self.named_wait = NAMED_EVERY;
@@ -1292,7 +1331,12 @@ impl Server {
                 let this = mobs::classic_of(mob)
                     .filter(|_| self.rng.int(CLASSIC_IN) == 0)
                     .unwrap_or(mob);
-                summon(host, dimension, this, at);
+                if summon(host, dimension, this, at).is_some() {
+                    ours.push(at);
+                    if is_named {
+                        alive.insert(format!("thmobs:{}", mob.id));
+                    }
+                }
             }
         }
     }
@@ -2770,6 +2814,9 @@ impl Hooks for Mod {
     fn level_tick_post(&self, host: HostSide<'_>, event: &mut LevelTickPostEvent) {
         let HostSide::Server(host) = host else { return };
         let dimension = event.level.dimension_id();
+        if event.level.game_time(host).is_some_and(|tick| tick.rem_euclid(100) == 0) {
+            despawn_wild_mobs(host, event.level, None);
+        }
         ai::tick_level(host, event.level);
         TICKS.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         // A refill that finds no living mob in any dimension within a few ticks is dropped: its

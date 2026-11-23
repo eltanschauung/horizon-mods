@@ -11,3 +11,14 @@ capabilities = ["registries"]
 game = "26.3"
 horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
 mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "thmobs-despawn-on-dimension-departure"
+kind = "HEAD"
+target = "horizon_client::game::advancements::Game::trigger_dimension"
+helper = "src/mixins/fairy-distance.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+    { name = "from", ty = "crate::game::Dim", value = "from" },
+    { name = "to", ty = "crate::game::Dim", value = "to" },
+]

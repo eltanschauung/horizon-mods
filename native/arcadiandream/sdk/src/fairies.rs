@@ -381,10 +381,14 @@ pub fn despawn_level(
         .collect::<Option<Vec<_>>>()?;
 
     let mut population = 0;
-    for entity in level.all_entities(host)? {
-        if !entity
-            .kind(host)
-            .is_some_and(|kind| uses_spawn_budget(&kind.id(host)))
+    let entities = level
+        .all_entities(host)
+        .or_else(|| level.entities_in(host, [f64::MIN; 3], [f64::MAX; 3]))?;
+    for entity in entities {
+        let Some(kind) = entity.kind(host).map(|kind| kind.id(host)) else {
+            continue;
+        };
+        if !is_fairy(&kind)
             || !host
                 .living(entity)
                 .and_then(|living| living.health(host))
@@ -402,7 +406,7 @@ pub fn despawn_level(
                     && !matches!(data.get(&"PersistenceRequired".into()), Some(Tag::Byte(n)) if *n != 0)
             })
             && entity.discard(host);
-        if !removed {
+        if !removed && uses_spawn_budget(&kind) {
             population += 1;
         }
     }
