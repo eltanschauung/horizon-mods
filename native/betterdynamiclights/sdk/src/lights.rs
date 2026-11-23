@@ -1,6 +1,6 @@
 // The light sources: once a tick, every entity near the camera that gives light (a glowing item
 // in a hand or on the ground, fire, a creature, projectile or minecart that glows), with where it
-// was the tick before; once a frame (`visuals`), the nearest of them where the frame draws them,
+// was the tick before; once a frame, the nearest of them where the frame draws them,
 // handed to the game as its lights. Also the toggle key and the line it shows over the hotbar.
 //
 // The facts come from the server when it has the mod (`net`); else from what the client sees:
@@ -176,44 +176,28 @@ pub(crate) fn tick(host: &mut dyn ClientHost) {
     });
 }
 
-/// Each frame: the `max_sources` nearest sources within `range`, where the frame draws them.
-pub(crate) fn visuals(host: &dyn ClientHost, event: &mut VisualsEvent<'_>) {
-    if !host.on(dl::ID) {
+/// Give the renderer the interpolated sources within the configured range.
+pub fn with_frame_sources(
+    host: &dyn ClientHost,
+    camera: [f64; 3],
+    alpha: f64,
+    render: impl FnOnce(&mut dyn Iterator<Item = ([f64; 3], u8)>, &dl::Settings),
+) {
+    let settings = store::settings(host);
+    if !settings.enabled {
         return;
     }
-    let s = store::settings(host);
-    let Some(camera) = host.camera() else { return };
-    if !s.enabled {
-        return;
-    }
-    let t = f64::from(camera.partial_tick);
-    let reach = f64::from(s.range) * f64::from(s.range);
-    let mut near: Vec<(f64, [f64; 3], u8)> = with(|st| {
-        st.sources
-            .values()
-            .map(|src| {
-                let at: [f64; 3] = std::array::from_fn(|i| src.before[i] + (src.now[i] - src.before[i]) * t);
-                let d: f64 = (0..3).map(|i| (at[i] - camera.position[i]).powi(2)).sum();
-                (d, at, src.level)
-            })
-            .filter(|(d, _, _)| *d <= reach)
-            .collect()
+    let reach_squared = f64::from(settings.range).powi(2);
+    with(|state| {
+        let mut sources = state.sources.values().filter_map(|source| {
+            let at = std::array::from_fn(|i| {
+                source.before[i] + (source.now[i] - source.before[i]) * alpha
+            });
+            let distance_squared: f64 = (0..3).map(|i| (at[i] - camera[i]).powi(2)).sum();
+            (distance_squared <= reach_squared).then_some((at, source.level))
+        });
+        render(&mut sources, &settings);
     });
-    near.sort_by(|a, b| a.0.total_cmp(&b.0));
-    let mut lights: Vec<([f64; 3], f32, f32)> = near
-        .into_iter()
-        .take(usize::from(s.max_sources))
-        .map(|(_, at, level)| {
-            let (radius, intensity) = s.light(level);
-            (at, radius, intensity)
-        })
-        .collect();
-    dl::blend(&mut lights);
-    for (at, radius, intensity) in lights {
-        if intensity > 0.0 {
-            event.lights.push(ColoredLight::new(at, dl::LIGHT_RGB, radius, intensity));
-        }
-    }
 }
 
 // ---- the toggle key -----------------------------------------------------------------------

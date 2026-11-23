@@ -4,8 +4,7 @@
 //! - `runtime`: the settings, texts and light levels, with no game types (`cargo test` tests
 //!   them on their own).
 //! - `store`: the settings as the game keeps them, one file per setting.
-//! - `lights`: the light sources near the camera, handed to the game's `visuals` lights each
-//!   frame.
+//! - `lights`: the light sources near the camera, supplied to the block-light renderer each frame.
 //! - `net`: what only the server knows of the entities (what they hold, fire, dropped items,
 //!   lit minecarts), sent to the client as the mod's own payloads.
 //! - `screen`: the settings screen over Options > Mods > Better Dynamic Lights.
@@ -23,6 +22,8 @@ mod store;
 // The launcher's entry calls `crate::hooks()`, which `#[horizon_mod]` writes beside the impl.
 #[cfg(not(test))]
 pub use entry::hooks;
+#[cfg(not(test))]
+pub use lights::with_frame_sources;
 
 #[cfg(not(test))]
 mod entry {
@@ -39,9 +40,6 @@ mod entry {
             net::register(r);
         }
 
-        fn visuals(&self, host: &dyn ClientHost, event: &mut VisualsEvent<'_>) {
-            lights::visuals(host, event);
-        }
         fn client_tick_post(&self, host: &mut dyn ClientHost, _: &mut ClientTickPostEvent) {
             net::client_tick(host);
             lights::tick(host);

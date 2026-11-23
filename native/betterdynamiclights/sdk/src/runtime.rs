@@ -22,8 +22,6 @@ pub const MAX_LEVEL: u8 = 15;
 pub const MAX_SOURCES: u8 = 8;
 /// How far from the player the game takes a mod's lights, in blocks.
 pub const MAX_RANGE: u8 = 32;
-/// The lights' colour: the warm white of block light.
-pub const LIGHT_RGB: u32 = 0xFF_D6_9E;
 
 /// How a key's name reads (`InputConstants.Key.getDisplayName`).
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -356,25 +354,6 @@ impl Fact {
         let fire = if self.burning && s.on(Kind::Burning) { BURNING } else { 0 };
         let glow = if s.on(self.glow_kind) { lit(self.glow) } else { 0 };
         held.max(fire).max(glow)
-    }
-}
-
-/// The game adds its lights up, where block light takes the brightest: so lights that overlap
-/// would wash a place out. Brightest first, each light gives only what the ones before it don't
-/// already give at its own place, so that where they meet it looks as the brightest alone.
-/// `lights`: `(at, radius, intensity)`, the intensities changed in place.
-pub fn blend(lights: &mut [([f64; 3], f32, f32)]) {
-    lights.sort_by(|a, b| b.2.total_cmp(&a.2));
-    for i in 1..lights.len() {
-        let (at, _, own) = lights[i];
-        let before: f32 = lights[..i]
-            .iter()
-            .map(|(other, radius, intensity)| {
-                let d = (0..3).map(|k| (at[k] - other[k]).powi(2)).sum::<f64>().sqrt() as f32;
-                intensity * (1.0 - d / radius).max(0.0)
-            })
-            .sum();
-        lights[i].2 = (own - before).max(0.0);
     }
 }
 
@@ -718,16 +697,6 @@ impl Settings {
     pub fn shown(&self, level: f32) -> f32 {
         level.min(f32::from(MAX_LEVEL)) * f32::from(self.brightness) / 100.0
     }
-
-    /// A source of light `level` as the game's lights take it: how far it reaches (one block a
-    /// level, as block light fades) and its strength in the linear light input.
-    /// The renderer applies the user's brightness setting to the combined light.
-    pub fn light(&self, level: u8) -> (f32, f32) {
-        let shown = self.shown(f32::from(level));
-        let f = shown / f32::from(MAX_LEVEL);
-        let curve = f / (4.0 - 3.0 * f);
-        (shown.clamp(0.25, 16.0), curve.clamp(0.0, 1.0))
-    }
 }
 
 /// The screen's title.
@@ -931,22 +900,6 @@ mod tests {
     }
 
     #[test]
-    fn overlapping_lights_look_as_the_brightest() {
-        let mut two = [([0.0, 0.0, 0.0], 14.0, 0.8), ([0.0, 0.0, 0.0], 15.0, 1.0)];
-        blend(&mut two);
-        assert_eq!(two[0].2, 1.0);
-        assert_eq!(two[1].2, 0.0);
-        // Far apart, each keeps its own.
-        let mut apart = [([0.0, 0.0, 0.0], 10.0, 0.8), ([30.0, 0.0, 0.0], 10.0, 0.8)];
-        blend(&mut apart);
-        assert_eq!((apart[0].2, apart[1].2), (0.8, 0.8));
-        // Half way into a brighter one's reach, a light adds what it lacks there.
-        let mut near = [([0.0, 0.0, 0.0], 10.0, 1.0), ([5.0, 0.0, 0.0], 10.0, 0.8)];
-        blend(&mut near);
-        assert!((near[1].2 - 0.3).abs() < 1e-6);
-    }
-
-    #[test]
     fn facts_go_over_the_wire() {
         let mut f = Fact::new(Who::Dropped).hands([(15, false)]);
         f.burning = true;
@@ -964,17 +917,12 @@ mod tests {
     }
 
     #[test]
-    fn lights_reach_a_block_a_level() {
-        let mut s = Settings::default();
-        let (r, i) = s.light(15);
-        assert_eq!(r, 15.0);
-        assert!((i - 1.0).abs() < 1e-6);
-        let (r, i14) = s.light(14);
-        assert_eq!(r, 14.0);
-        assert!((i14 - 7.0 / 9.0).abs() < 1e-6);
-        assert!(i14 > s.light(7).1);
-        s.brightness = 50;
-        assert_eq!(s.light(14).0, 7.0);
-        assert!(s.light(1).0 >= 0.25);
+    fn torch_uses_its_block_light_level_at_default_brightness() {
+        let mut settings = Settings::default();
+        let torch = f32::from(item_light("minecraft:torch"));
+        assert_eq!(settings.shown(torch), 14.0);
+        assert_eq!(settings.shown(16.0), 15.0);
+        settings.brightness = 50;
+        assert_eq!(settings.shown(torch), 7.0);
     }
 }
