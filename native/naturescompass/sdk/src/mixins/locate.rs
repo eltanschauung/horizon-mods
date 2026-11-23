@@ -1,17 +1,23 @@
-// Use the same full-range search as the vanilla command. The public synchronous
-// sampling API is bounded below the command's 6400-block radius at its resolution.
+// Search the selected dimension using the same typed biome lookup as /locate.
 fn locate_compass_biome(game: &mut crate::game::Game<'_>) {
     let Some(search) = naturescompass_native::take_search() else {
         return;
     };
-    let (ran, lines) = game.run_console_command(&search.command(), true);
-    let coords = ran
-        .then(|| {
-            lines.iter().find_map(|line| {
-                naturescompass_native::coords_in_component(&line.component().to_string())
-                    .or_else(|| naturescompass_native::parse_coords(&line.plain()))
-            })
-        })
-        .flatten();
+    let (dimension, biome, origin) = search.target();
+    let target = crate::game::Dim::from_id(dimension);
+    let back = game.enter_command_level(target);
+    let coords = if game.dim == target {
+        let exact = game.level(dimension).and_then(|level| {
+            naturescompass_native::nearby_saved_biome(game, level, biome, origin)
+        });
+        exact
+            .or_else(|| game.nearest_biome(biome, origin).map(|(_, at)| at))
+            .map(|[x, y, z]| (x, Some(y), z))
+    } else {
+        None
+    };
+    if let Some(back) = back {
+        game.enter_command_level(back);
+    }
     naturescompass_native::finish_search(search, coords);
 }

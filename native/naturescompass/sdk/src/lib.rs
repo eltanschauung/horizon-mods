@@ -337,13 +337,48 @@ pub struct Search {
 }
 
 impl Search {
-    pub fn command(&self) -> String {
-        let [x, y, z] = self.at;
-        format!(
-            "execute in {} positioned {x} {y} {z} run locate biome {}",
-            self.dimension, self.biome
-        )
+    pub fn target(&self) -> (&str, &str, [i32; 3]) {
+        (&self.dimension, &self.biome, self.at)
     }
+}
+
+/// Look in already-loaded chunks before consulting the generator. Saved
+/// sections can still contain a mod biome after the world's generation
+/// settings changed; reading them here never loads or generates a chunk.
+pub fn nearby_saved_biome(
+    host: &dyn ServerHost,
+    level: mod_api::LevelRef,
+    biome: &str,
+    origin: [i32; 3],
+) -> Option<[i32; 3]> {
+    if level.biome_at(host, origin).as_deref() == Some(biome) {
+        return Some(origin);
+    }
+    const RADIUS: i32 = 96;
+    let [x, y, z] = origin;
+    let mut nearest = None;
+    let mut best = RADIUS * RADIUS + 1;
+    for dx in (-RADIUS..=RADIUS).step_by(4) {
+        for dz in (-RADIUS..=RADIUS).step_by(4) {
+            let horizontal = dx * dx + dz * dz;
+            if horizontal >= best {
+                continue;
+            }
+            for dy in [0, -8, 8, -16, 16, -32, 32] {
+                let distance = horizontal + dy * dy;
+                if distance >= best {
+                    break;
+                }
+                let at = [x.saturating_add(dx), y.saturating_add(dy), z.saturating_add(dz)];
+                if level.biome_at(host, at).as_deref() == Some(biome) {
+                    nearest = Some(at);
+                    best = distance;
+                    break;
+                }
+            }
+        }
+    }
+    nearest
 }
 
 pub fn take_search() -> Option<Search> {
@@ -372,81 +407,6 @@ struct Found {
     z: i32,
 }
 
-pub fn parse_coords(line: &str) -> Option<(i32, Option<i32>, i32)> {
-    let open = line.find('[')?;
-    let close = open + line[open..].find(']')?;
-    let parts: Vec<&str> = line[open + 1..close].split(',').map(str::trim).collect();
-    if parts.len() != 3 {
-        return None;
-    }
-    let x = parts[0].parse().ok()?;
-    let z = parts[2].parse().ok()?;
-    Some((x, parts[1].parse().ok(), z))
-}
-
-/// The coordinates in a locate answer's component (as JSON): the arguments of its
-/// `chat.coordinates` part, whatever language the server has (or hasn't) loaded.
-pub fn coords_in_component(json: &str) -> Option<(i32, Option<i32>, i32)> {
-    let at = json.find("\"chat.coordinates\"")?;
-    // The object holding it: its `with` may come before or after its `translate`.
-    let b = json.as_bytes();
-    let (mut depth, mut start) = (0i32, None);
-    for i in (0..at).rev() {
-        match b[i] {
-            b'}' | b']' => depth += 1,
-            b'{' | b'[' if depth > 0 => depth -= 1,
-            b'{' => {
-                start = Some(i);
-                break;
-            }
-            _ => {}
-        }
-    }
-    let object = &json[start?..];
-    let with = object.find("\"with\"")?;
-    let rest = &object[with + 6..];
-    let open = rest.find('[')?;
-    let mut depth = 0;
-    let mut end = None;
-    for (i, c) in rest[open..].char_indices() {
-        match c {
-            '[' => depth += 1,
-            ']' => {
-                depth -= 1;
-                if depth == 0 {
-                    end = Some(open + i);
-                    break;
-                }
-            }
-            _ => {}
-        }
-    }
-    let args = &rest[open + 1..end?];
-    // The three arguments: numbers or `~`, bare or in strings, maybe in `{"text": ...}` objects.
-    let mut found: Vec<Option<i32>> = Vec::new();
-    let b = args.as_bytes();
-    let mut i = 0;
-    while i < b.len() && found.len() < 3 {
-        let c = b[i];
-        if c == b'~' {
-            found.push(None);
-            i += 1;
-        } else if c == b'-' || c.is_ascii_digit() {
-            let start = i;
-            i += 1;
-            while i < b.len() && b[i].is_ascii_digit() {
-                i += 1;
-            }
-            found.push(args[start..i].parse().ok());
-        } else {
-            i += 1;
-        }
-    }
-    match found.as_slice() {
-        [Some(x), y, Some(z)] => Some((*x, *y, *z)),
-        _ => None,
-    }
-}
 
 // ---- The compass's own data ----
 
@@ -1077,35 +1037,15 @@ mod tests {
     }
 
     #[test]
-    fn locate_answers_are_read() {
-        assert_eq!(
-            parse_coords("The nearest Plains is at [120, 64, -340] (362 blocks away)"),
-            Some((120, Some(64), -340))
-        );
-        assert_eq!(
-            parse_coords("The nearest Plains is at [-5, ~, 9] (10 blocks away)"),
-            Some((-5, None, 9))
-        );
-        assert_eq!(parse_coords("Could not find"), None);
-    }
-
-    #[test]
-    fn coordinates_come_from_the_answers_parts() {
-        // As Text::translate writes it, with the language's text missing (only the key).
-        let json = r#"{"translate":"commands.locate.biome.success","with":[{"text":"biomesoplenty:crag"},{"extra":[{"translate":"chat.coordinates","with":["-1234","88","5678"]},"]"],"text":"["},{"text":"5000"}]}"#;
-        assert_eq!(coords_in_component(json), Some((-1234, Some(88), 5678)));
-        let tilde =
-            r#"{"translate":"chat.coordinates","with":[{"text":"12"},{"text":"~"},{"text":"-7"}]}"#;
-        assert_eq!(coords_in_component(tilde), Some((12, None, -7)));
-        // Exactly what Horizon's /locate biome answers (its plain text is only the key on a server).
-        let real = r#"{"translate":"commands.locate.biome.success","with":[{"text":"biomesoplenty:crag"},{"click_event":{"action":"suggest_command","command":"/tp @s -1234 88 5678"},"color":"green","extra":[{"translate":"chat.coordinates","with":[-1234,88,5678]},{"text":"]"}],"hover_event":{"action":"show_text","value":{"translate":"chat.coordinates.tooltip"}},"text":"["},5000]}"#;
-        assert_eq!(coords_in_component(real), Some((-1234, Some(88), 5678)));
-        let with_first = r#"{"with":[{"text":"biomesoplenty:crag"},{"text":"[","extra":[{"with":["3","70","-4"],"translate":"chat.coordinates"},"]"]},"9"],"translate":"commands.locate.biome.success"}"#;
-        assert_eq!(coords_in_component(with_first), Some((3, Some(70), -4)));
-        assert_eq!(
-            coords_in_component(r#"{"translate":"commands.locate.biome.not_found","with":["x"]}"#),
-            None
-        );
+    fn typed_search_keeps_mod_namespace_and_dimension() {
+        let search = Search {
+            uuid: 1,
+            hand: Hand::Main,
+            biome: "biomesoplenty:maple_woods".into(),
+            dimension: "minecraft:overworld".into(),
+            at: [-1234, 88, 5678],
+        };
+        assert_eq!(search.target(), ("minecraft:overworld", "biomesoplenty:maple_woods", [-1234, 88, 5678]));
     }
 
     #[test]
