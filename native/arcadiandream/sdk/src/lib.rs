@@ -13,6 +13,7 @@ mod table_tuning;
 mod trades;
 mod weapons;
 pub use danmaku::{cancel_bullet, hit_target, number as shot_number};
+pub use fairies::despawn_level;
 pub use items::{read_tag as read_shot_data, write_tag as write_shot_data};
 pub use relics::{block_ethereal_attack, life_ready, necklace_ready, revive_acting};
 

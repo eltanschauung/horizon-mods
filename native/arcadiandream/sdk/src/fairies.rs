@@ -3,8 +3,8 @@
 use crate::danmaku::{directions, number};
 use mod_api::serde_json::{self, Value, json};
 use mod_api::{
-    AttachmentCodec, AttachmentError, AttachmentType, EntityRef, Holder, LevelRef, PlayerRef,
-    ServerHost, Tag,
+    AttachmentCodec, AttachmentError, AttachmentType, EntityRef, Holder, LeashHolder, LevelRef,
+    PlayerRef, ServerHost, Tag,
 };
 use std::{
     collections::{HashMap, HashSet},
@@ -16,6 +16,8 @@ const FAIRIES: [&str; 3] = [
     "arcadiandream:sunflower_fairy",
     "arcadiandream:ice_fairy",
 ];
+const FAIRY_CAP: u64 = 24;
+const DESPAWN_DISTANCE: f64 = 128.0;
 
 #[derive(Clone, Default)]
 struct Fairy {
@@ -31,7 +33,10 @@ struct Fairy {
 }
 
 static ATTACKS: LazyLock<Value> = LazyLock::new(|| {
-    serde_json::from_str(include_str!("../assets/arcadiandream/embedded/fairy_attacks.json")).expect("embedded fairy attacks")
+    serde_json::from_str(include_str!(
+        "../assets/arcadiandream/embedded/fairy_attacks.json"
+    ))
+    .expect("embedded fairy attacks")
 });
 
 static FAIRY: AttachmentType<Fairy> = AttachmentType {
@@ -356,11 +361,68 @@ fn charm_mode(host: &mut dyn ServerHost, player: PlayerRef) -> Option<u64> {
     })
 }
 
+fn uses_spawn_budget(kind: &str) -> bool {
+    kind == FAIRIES[0] || kind == FAIRIES[2]
+}
+
+pub fn despawn_level(
+    host: &mut dyn ServerHost,
+    level: LevelRef,
+    departing: Option<u128>,
+) -> Option<u64> {
+    // Match the vanilla hard distance check, using players in this dimension.
+    // Creative players still keep mobs nearby. A missing lookup defers cleanup.
+    let players = level
+        .online_players(host)?
+        .into_iter()
+        .filter(|player| Some(player.uuid()) != departing)
+        .filter(|player| player.game_mode(host) != Some(mod_api::GameMode::Spectator))
+        .map(|player| player.entity().position(host))
+        .collect::<Option<Vec<_>>>()?;
+
+    let mut population = 0;
+    for entity in level.all_entities(host)? {
+        if !entity
+            .kind(host)
+            .is_some_and(|kind| uses_spawn_budget(&kind.id(host)))
+            || !host
+                .living(entity)
+                .and_then(|living| living.health(host))
+                .is_some_and(|hp| hp > 0.0)
+        {
+            continue;
+        }
+        let removed = entity.position(host).is_some_and(|at| {
+            players.iter().all(|pos| distance(at, *pos) > DESPAWN_DISTANCE)
+        }) && entity.leash_holder(host) == Some(LeashHolder::Unleashed)
+            && entity.vehicle(host).is_none()
+            && entity.passengers(host).is_some_and(|passengers| passengers.is_empty())
+            && entity.nbt(host).is_some_and(|data| {
+                !data.contains_key(&"CustomName".into())
+                    && !matches!(data.get(&"PersistenceRequired".into()), Some(Tag::Byte(n)) if *n != 0)
+            })
+            && entity.discard(host);
+        if !removed {
+            population += 1;
+        }
+    }
+    Some(population)
+}
+
 pub fn spawn(host: &mut dyn ServerHost, level: LevelRef) {
-    let time = level.day_time(host).unwrap_or_default();
-    let ticks = level.game_time(host).unwrap_or_default();
-    if ticks.rem_euclid(100) != 0
-        || time.rem_euclid(24000) > 12000
+    let Some(ticks) = level
+        .game_time(host)
+        .filter(|ticks| ticks.rem_euclid(100) == 0)
+    else {
+        return;
+    };
+    // Despawning also runs at night and with natural spawning disabled.
+    let mut remaining =
+        despawn_level(host, level, None).map_or(0, |count| FAIRY_CAP.saturating_sub(count));
+    let Some(time) = level.day_time(host) else {
+        return;
+    };
+    if time.rem_euclid(24000) > 12000
         || level.difficulty(host) == Some("peaceful")
         || matches!(
             level.game_rule(host, "minecraft:spawn_mobs"),
@@ -456,20 +518,27 @@ pub fn spawn(host: &mut dyn ServerHost, level: LevelRef) {
         if !settings["fairyOptions"][enabled].as_bool().unwrap_or(true) {
             continue;
         }
-        let nearby = level
-            .entities_in(host, at.map(|c| c - 64.0), at.map(|c| c + 64.0))
-            .unwrap_or_default();
-        if nearby
-            .iter()
-            .filter(|e| e.kind(host).is_some_and(|kind| is_fairy(&kind.id(host))))
-            .take(25)
-            .count()
-            > 24
-        {
-            continue;
-        }
+        let capped = uses_spawn_budget(name);
+        let number = if capped {
+            number.min(remaining)
+        } else {
+            // Sunflower fairies keep their existing per-site spawn check.
+            let nearby = level
+                .entities_in(host, at.map(|c| c - 64.0), at.map(|c| c + 64.0))
+                .unwrap_or_default();
+            if nearby
+                .iter()
+                .filter(|e| e.kind(host).is_some_and(|kind| is_fairy(&kind.id(host))))
+                .take(25)
+                .count()
+                > 24
+            {
+                continue;
+            }
+            number
+        };
         for member in 0..number {
-            host.summon(
+            let spawned = host.summon(
                 dimension,
                 name,
                 [at[0] + member as f64 * 0.7, at[1], at[2]],
@@ -479,6 +548,9 @@ pub fn spawn(host: &mut dyn ServerHost, level: LevelRef) {
                 ]
                 .into(),
             );
+            if capped && spawned.is_some() {
+                remaining -= 1;
+            }
         }
     }
 }

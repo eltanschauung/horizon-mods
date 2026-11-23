@@ -1,6 +1,6 @@
 id = "arcadiandream"
 name = "Arcadian Dream"
-version = "0.1.0+sdk.1"
+version = "0.1.0+sdk.2"
 description = "Unofficial Rust-native Horizon port of Arcadian Dream by Maxmani and contributors."
 authors = ["Maxmani and contributors (original)", "eltanschauung (Horizon port)"]
 api = "0.2"
@@ -115,3 +115,14 @@ target = "horizon_client::game::totem::Game::apply_totem"
 helper = "src/mixins/death-protection-apply.rs"
 cancellable = true
 bindings = [{ name = "game", ty = "&mut horizon_client::game::Game<'_>", value = "&mut *self" }]
+
+[[native.mixin]]
+id = "fairy-despawn-on-dimension-departure"
+kind = "HEAD"
+target = "horizon_client::game::advancements::Game::trigger_dimension"
+helper = "src/mixins/fairy-portal-despawn.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+    { name = "from", ty = "crate::game::Dim", value = "from" },
+    { name = "to", ty = "crate::game::Dim", value = "to" },
+]
