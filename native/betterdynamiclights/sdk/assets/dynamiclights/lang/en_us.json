@@ -1,0 +1,9 @@
+{
+  "dynamiclights.language": "en",
+  "dynamiclights.setting.configure": "Settings",
+  "dynamiclights.setting.configure.tooltip": "Better Dynamic Lights' own settings screen: every kind of light source, water, brightness, number of lights, range and the toggle key.",
+  "dynamiclights.setting.open": "Open...",
+  "dynamiclights.setting.open_again": "Open...",
+  "dynamiclights.setting.enabled": "Dynamic Lights",
+  "dynamiclights.setting.enabled.tooltip": "Glowing items, burning entities and glowing creatures light up the blocks and mobs around them as they move."
+}
