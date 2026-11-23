@@ -1165,31 +1165,28 @@ fn merge_big(mut items: Vec<Option<ItemStack>>) -> Vec<Option<ItemStack>> {
     items
 }
 
-/// Takes the one doll item `stack` the player placed from their hand: a plain one as any item, one
-/// carrying an inventory from the very slot, since it stacks with nothing else. Whether it was taken.
-///
-/// Takes one of the doll item the player is placing out of their hand. While they act, the game
-/// holds their state swapped in, so the hub's copy of their inventory is stale (a swap against it
-/// always failed, and dolls holding items wouldn't place): the hand is read and set on the player
-/// themself, then checked. The stack taken, one of it, is returned.
-fn take_placed(host: &mut dyn ServerHost, player: &PlayerView, stack: &ItemStack, hand: mod_api::Hand) -> Option<ItemStack> {
+/// Consume the original game stack from the acting hand. Re-encoding it
+/// through the doll's inventory view can drop components and break equality.
+fn take_placed(
+    host: &mut dyn ServerHost,
+    player: u128,
+    hand: mod_api::Hand,
+    expected: &mod_api::ItemStack,
+) -> bool {
     use mod_api::{HostTransaction, ItemPlace, ItemResource};
-    let expected = stack.to_game(host)?;
-    let resource = ItemResource::of(&expected);
+    let resource = ItemResource::of(expected);
+    let place = ItemPlace::PlayerHand { player, hand };
     host.transaction(|host, tx| {
-        for hand in [hand, mod_api::Hand::Off] {
-            let place = ItemPlace::PlayerHand { player: player.uuid, hand };
-            let Some(current) = place.stack(host) else { continue };
-            if current.same_item(&expected) && current.same_components(&expected)
-                && place.extract(host, tx, &resource, 1) == 1
-            {
-                let mut one = stack.clone();
-                one.count = 1;
-                return Ok(one);
-            }
+        let current = place.stack(host).ok_or(())?;
+        if current.same_item(expected)
+            && current.same_components(expected)
+            && place.extract(host, tx, &resource, 1) == 1
+        {
+            Ok(())
+        } else {
+            Err(())
         }
-        Err(())
-    }).ok()
+    }).is_ok()
 }
 
 /// `minecraft:iron_ingot` as "Iron Ingot", for a doll item's tooltip.
@@ -3520,18 +3517,11 @@ impl Mod {
             return Flow::Cancel;
         };
         let survival = player.game_mode != 1;
-        // In survival, the inventory is the one in the stack really taken from the player.
-        let taken = if survival {
-            match take_placed(host, &player, &stack, event.hand) {
-                Some(taken) => taken,
-                None => {
-                    debug(host, &format!("  {item}: could not take it from the player's hand"));
-                    return Flow::Cancel;
-                }
-            }
-        } else {
-            stack
-        };
+        if survival && !take_placed(host, player.uuid, event.hand, event.stack) {
+            debug(host, &format!("  {item}: could not take it from the player's hand"));
+            return Flow::Cancel;
+        }
+        let taken = stack;
         let (favour, form_level) = favour_in(&taken);
         let items = items_in(&taken, slots_at(doll, favour, form_level));
         let summoned = host.summon(&player.dimension, KIND, at, doll_nbt(doll));
