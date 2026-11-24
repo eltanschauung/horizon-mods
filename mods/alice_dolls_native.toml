@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.43.0"
+published = "2026-11-24"
+game = "26.3"
+file = "alice_dolls_native-0.43.0.hmod"
+sha256 = "d9f4086d72c132c60c9d5187f2ffc7bb14ad7ffbbf77ca8b2f7f93abc3e22753"
+changelog = "Dolls are their own mob, alice_dolls:doll, not chickens. Far from you, a doll was taken for a plain chicken: Patchouli shot those, and anything that hunts chickens went for them. Now no doll shoots another, known or not, and nothing that hunts or herds chickens touches one. They keep the slow fall and take no fall damage; a right-click never tames or sits their body, and a dead doll leaves nothing of it. Dolls placed before 0.43 become doll mobs where they stand, with their owner, items, love and mode, the first time they tick. The SDK package of 0.42.4 with 0.42.5 to 0.42.7 ported to it. Needs the assets 0.16.0."
+
+[[versions]]
 version = "0.42.7"
 published = "2026-11-20"
 game = "26.3"
