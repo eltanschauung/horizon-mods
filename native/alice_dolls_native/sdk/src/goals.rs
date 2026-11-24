@@ -959,6 +959,8 @@ pub const SNIPE_RANGE: f64 = 64.0;
 pub const SNIPE_SECRET_RANGE: f64 = 128.0;
 /// Ticks between her orbs: one every four seconds, the last one landed first.
 pub const SNIPE_EVERY: i32 = 80;
+/// Outside that mode she takes twice as long between orbs.
+pub const SNIPE_EVERY_PATROL: i32 = SNIPE_EVERY * 2;
 /// An orb's damage before her level adds to it.
 pub const SNIPE_DAMAGE: f32 = 20.0;
 /// Blocks an orb flies a tick, and the ticks it flies before it fades.

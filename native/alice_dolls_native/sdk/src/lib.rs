@@ -1460,6 +1460,10 @@ static GRID_OPEN: LazyLock<Mutex<HashMap<u128, (usize, usize)>>> = LazyLock::new
 static SCROLL: LazyLock<Mutex<HashMap<u128, usize>>> = LazyLock::new(Default::default);
 static SWITCHED: std::sync::LazyLock<Mutex<HashMap<u128, i32>>> = std::sync::LazyLock::new(Mutex::default);
 static CLIENT_SWITCH: Mutex<Option<i32>> = Mutex::new(None);
+/// The ender chest tab clicked on Moscow's screen: to the server on the next client tick.
+static CLIENT_ENDER: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+/// Players who asked for their ender chest from Moscow's screen.
+static ENDERS: Mutex<Vec<u128>> = Mutex::new(Vec::new());
 static SCROLLED: Mutex<Vec<(u128, i32)>> = Mutex::new(Vec::new());
 /// Scrolled screens to open again, with how many ticks they have waited for the old one to close.
 static REOPEN: Mutex<Vec<(u128, u32, u8)>> = Mutex::new(Vec::new());
@@ -1648,6 +1652,16 @@ static MENU_VIEWS: LazyLock<Mutex<HashMap<u128, net::Menu>>> = LazyLock::new(Def
 static MENU_SENT: LazyLock<Mutex<HashMap<u128, Vec<u8>>>> = LazyLock::new(Default::default);
 /// The doll screen open on this client, as the server last said (client side).
 static CLIENT_MENU: Mutex<Option<net::Menu>> = Mutex::new(None);
+/// The last mouse press on a doll screen, and how soon after it the next is a double-click.
+static LAST_PRESS: Mutex<Option<Instant>> = Mutex::new(None);
+const DOUBLE_CLICK: Duration = Duration::from_millis(260);
+
+/// Whether `screen` is a doll's inventory screen (not its bauble screen or the panels).
+fn on_doll_screen(host: &dyn ClientHost, screen: &mod_api::ScreenView<'_>) -> bool {
+    let Some(view) = CLIENT_MENU.lock().ok().and_then(|v| v.clone()) else { return false };
+    screen.menu.is_some_and(|menu| menu.starts_with("alice_dolls_native:inventory_"))
+        && screen.title.is_some_and(|t| host.text_string(t).ok().as_deref() == Some(view.title.as_str()))
+}
 /// Wheel turns over a doll screen on this client, not yet sent to the server.
 static CLIENT_SCROLL: Mutex<i32> = Mutex::new(0);
 
@@ -3262,7 +3276,7 @@ impl Mod {
         goals::set_keep_rock(id, data.keep_rock);
         let layout = goals::MenuLayout { slots: view, offset, total: data.items.len() };
         let _ = DOLL.set(host, holder, data);
-        doll_menu::refresh(host, uuid, id, window, layout);
+        let _ = doll_menu::refresh(host, uuid, id, window, layout, true);
         if let Some(at) = host.entity(id).and_then(|entity| entity.position(host)) {
             doll_sound(host, id, "minecraft:ui.button.click", at, 0.6, 1.0);
         }
@@ -3274,16 +3288,30 @@ impl Mod {
             return;
         }
         let Some(data) = DOLL.get(host, Holder::Entity(id)).ok() else { return };
-        let total = data.items.len().div_ceil(9);
-        let Some((_, view)) = GRID_OPEN.lock().ok().and_then(|grid| grid.get(&player).copied()) else { return };
-        if let Ok(mut scroll) = SCROLL.lock() {
-            let row = scroll.get(&player).copied().unwrap_or(0) as i32 + rows;
-            scroll.insert(player, row.clamp(0, total.saturating_sub(view / 9) as i32) as usize);
+        let size = data.items.len();
+        let total = size.div_ceil(9);
+        let Some((old_offset, view)) = GRID_OPEN.lock().ok().and_then(|grid| grid.get(&player).copied()) else { return };
+        let top = (old_offset / 9) as i32 + rows;
+        let top = top.clamp(0, total.saturating_sub(view / 9) as i32) as usize;
+        SCROLL.lock().ok().map(|mut scroll| scroll.insert(player, top));
+        let offset = top * 9;
+        if offset == old_offset {
+            return;
         }
-        host.close_menu(player);
-        if let Ok(mut reopen) = REOPEN.lock() {
-            reopen.push((player, id, 0));
+        let switch = doll_of(host, id).is_some_and(|d| size > 0 && has_rock_switch(d.name));
+        let layout = goals::MenuLayout { slots: view, offset, total: size };
+        if !doll_menu::refresh(host, player, id, window, layout, switch) {
+            debug(host, &format!("inventory {id}: could not scroll to row {}", top + 1));
+            return;
         }
+        GRID_OPEN.lock().ok().map(|mut grid| grid.insert(player, (offset, view)));
+        if let Ok(mut views) = MENU_VIEWS.lock()
+            && let Some(v) = views.get_mut(&player)
+        {
+            v.offset = offset;
+        }
+        let shown = format!("Rows {}-{} of {total}", top + 1, top + view / 9);
+        host.action_bar(player, Text::literal(shown));
     }
 
     fn open_inventory(&self, host: &mut dyn ServerHost, player: u128, id: u32) {
@@ -3292,7 +3320,7 @@ impl Mod {
         // so it doesn't stop this one (its items went back to the player when it closed).
         if OPEN.lock().is_ok_and(|o| o.contains_key(&player)) && host.menu_contents(player).is_none() {
             debug(host, &format!("inventory {id}: a doll screen of this player's was left over; cleared"));
-            doll_menu::release(host, player);
+            doll_menu::release(host, player, None);
             OPEN.lock().ok().map(|mut o| o.remove(&player));
             GRID_OPEN.lock().ok().map(|mut g| g.remove(&player));
             MENU_VIEWS.lock().ok().map(|mut v| v.remove(&player));
@@ -3336,7 +3364,7 @@ impl Mod {
         };
         let (offset, view) = (top * 9, view_rows * 9);
         let title = if scrolls {
-            format!("{name} · rows {}-{} of {rows_total} · scroll", top + 1, top + view_rows)
+            format!("{name} · {rows_total} rows · scroll")
         } else {
             name.to_owned()
         };
@@ -3356,6 +3384,18 @@ impl Mod {
         goals::set_chest_open(Some(id));
         if let Some(doll) = doll_of(host, id) {
             remember(id, doll, &data);
+        }
+    }
+
+    /// Moscow's ender chest tab: her owner's ender chest, in place of her screen.
+    fn open_ender(&self, host: &mut dyn ServerHost, player: u128, doll: u32) {
+        let Some(_) = doll_menu::open_ender(host, player, doll) else {
+            debug(host, &format!("inventory {doll}: the ender chest would not open"));
+            return;
+        };
+        if let Ok(mut views) = MENU_VIEWS.lock() {
+            let view = net::Menu { title: doll_menu::ENDER_TITLE.into(), total: 0, offset: 0, view: 27, empty: vec![false; 27], switch_window: None };
+            views.insert(player, view);
         }
     }
 
@@ -3740,6 +3780,13 @@ impl mod_api::IPayloadHandler for DollPacket {
             {
                 scrolled.push((player.uuid(), rows));
             }
+        } else if self.0 == net::ENDER {
+            if let Ok(player) = context.player()
+                && let Ok(mut enders) = ENDERS.lock()
+                && enders.len() < 64
+            {
+                enders.push(player.uuid());
+            }
         } else if self.0 == net::ROCK_SWITCH {
             if let Ok(player) = context.player()
                 && let Ok(window) = <[u8; 4]>::try_from(bytes.0.as_slice())
@@ -3884,7 +3931,7 @@ impl Hooks for Mod {
         }
         let mut handlers = reg.payload_handlers();
         let mut payloads = handlers.registrar("1");
-        for channel in [net::SCROLL, net::ROCK_SWITCH] {
+        for channel in [net::SCROLL, net::ROCK_SWITCH, net::ENDER] {
             payloads.play_to_server(mod_api::PayloadId(channel.into()), std::sync::Arc::new(DollPacket(channel)));
         }
         for channel in [net::FX, net::MENU, net::PHOTO] {
@@ -4029,11 +4076,41 @@ impl Hooks for Mod {
         }
     }
 
+    fn screen_mouse_dragged_pre(&self, host: &dyn ClientHost, event: &mut mod_api::ScreenMouseDraggedPreEvent<'_>) -> Flow {
+        if on_doll_screen(host, event.screen) { Flow::Cancel } else { Flow::Continue }
+    }
+
+    fn screen_key_pressed_pre(&self, host: &dyn ClientHost, event: &mut mod_api::ScreenKeyPressedPreEvent<'_>) -> Flow {
+        let k = event.key.strip_prefix("key.keyboard.").unwrap_or("");
+        let moves_items = matches!(k, "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "f" | "q");
+        if moves_items && on_doll_screen(host, event.screen) { Flow::Cancel } else { Flow::Continue }
+    }
+
     fn screen_mouse_button_pressed_pre(
         &self,
         host: &dyn ClientHost,
         event: &mut mod_api::ScreenMouseButtonPressedPreEvent<'_>,
     ) -> Flow {
+        if on_doll_screen(host, event.screen) {
+            let now = Instant::now();
+            let last = LAST_PRESS.lock().ok().and_then(|mut l| l.replace(now));
+            // A second press this soon is a double-click: it gathers matching stacks.
+            if event.button > 1 || last.is_some_and(|t| now.duration_since(t) < DOUBLE_CLICK) {
+                return Flow::Cancel;
+            }
+            if let Some(view) = CLIENT_MENU.lock().ok().and_then(|v| v.clone())
+                && view.title.starts_with(goals::MOSCOW)
+                && view.view > 0
+            {
+                let slot = view.view + doll_menu::ENDER_CELL;
+                let x = event.screen.rect[0] + 8.0 + 18.0 * (slot % 9) as f32;
+                let y = event.screen.rect[1] + 18.0 + 18.0 * (slot / 9) as f32;
+                if (x..x + 16.0).contains(&event.screen.mouse[0]) && (y..y + 16.0).contains(&event.screen.mouse[1]) {
+                    CLIENT_ENDER.store(true, std::sync::atomic::Ordering::Relaxed);
+                    return Flow::Cancel;
+                }
+            }
+        }
         let Some(view) = CLIENT_MENU.lock().ok().and_then(|view| view.clone()) else { return Flow::Continue };
         let Some(window) = view.switch_window else { return Flow::Continue };
         let screen = event.screen;
@@ -4076,6 +4153,9 @@ impl Hooks for Mod {
         let pov_over = AYA_POV.lock().is_ok_and(|p| p.is_none());
         if pov_over && let Some(mode) = AYA_HUD.lock().ok().and_then(|mut h| h.take()) {
             host.set_hud_mode(mode);
+        }
+        if CLIENT_ENDER.swap(false, std::sync::atomic::Ordering::Relaxed) {
+            let _ = host.send_payload_to_server(&mod_api::PayloadId(net::ENDER.into()), mod_api::PayloadBytes(Vec::new()));
         }
         if let Some(window) = CLIENT_SWITCH.lock().ok().and_then(|mut pending| pending.take()) {
             let _ = host.send_payload_to_server(&mod_api::PayloadId(net::ROCK_SWITCH.into()), mod_api::PayloadBytes(window.to_le_bytes().to_vec()));
@@ -4235,11 +4315,20 @@ impl Hooks for Mod {
         let inventory = forget_window(&OPEN);
         if inventory.is_some() {
             GRID_OPEN.lock().ok().map(|mut grid| grid.remove(&event.uuid));
-            MENU_VIEWS.lock().ok().map(|mut views| views.remove(&event.uuid));
+            // Not the ender chest screen that replaced it.
+            if let Ok(mut views) = MENU_VIEWS.lock()
+                && views.get(&event.uuid).is_some_and(|v| v.title != doll_menu::ENDER_TITLE)
+            {
+                views.remove(&event.uuid);
+            }
             goals::set_chest_open(None);
         }
+        if doll_menu::release(host, event.uuid, Some(event.window))
+            && let Ok(mut views) = MENU_VIEWS.lock()
+        {
+            views.remove(&event.uuid);
+        }
         if let Some(id) = inventory.or(bauble) {
-            doll_menu::release(host, event.uuid);
             if let Ok(data) = DOLL.get(host, Holder::Entity(id)) {
                 goals::put_inventory(id, data.items.clone());
                 goals::set_baubles(id, worn_names(&data.baubles));
@@ -4420,6 +4509,7 @@ impl Hooks for Mod {
 
     /// Tells the goals each doll's state, and passes on what the dolls said.
     fn entity_tick_post(&self, host: &mut dyn ServerHost, event: &mut EntityTickPostEvent<'_>) {
+        doll_menu::tick_ender(host, event.entity);
         if let Some(level) = host.entity(event.entity).and_then(|entity| entity.level(host))
             && let Ok(mut pending) = TRAMPLES.lock()
         {
@@ -4492,6 +4582,14 @@ impl Hooks for Mod {
         }
         // A wheel turn on a long doll inventory: the screen closes (keeping what it showed) and opens
         // again a row further on.
+        let enders: Vec<u128> = ENDERS.lock().map(|mut e| std::mem::take(&mut *e)).unwrap_or_default();
+        for player in enders {
+            let Some((doll, _)) = OPEN.lock().ok().and_then(|o| o.get(&player).copied()) else { continue };
+            let mine = known(doll).is_some_and(|k| k.doll.name == goals::MOSCOW && k.owner == player);
+            if mine {
+                self.at_doll(host, doll, ORDER_WAIT, Box::new(move |m: &Mod, host: &mut dyn ServerHost| m.open_ender(host, player, doll)));
+            }
+        }
         let switched = SWITCHED.lock().map(|mut pending| std::mem::take(&mut *pending)).unwrap_or_default();
         for (player, window) in switched {
             self.switch_keep_rock(host, player, window);

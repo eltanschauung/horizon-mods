@@ -1,6 +1,6 @@
 [package]
 name = "mod-alice_dolls_native"
-version = "0.43.1+sdk.1"
+version = "0.43.2+sdk.1"
 edition = "2024"
 publish = false
 

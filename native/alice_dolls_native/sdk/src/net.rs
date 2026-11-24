@@ -12,6 +12,8 @@ pub const PHOTO: &str = "alice_dolls_native:photo";
 /// From a client: the mouse wheel turned over a long doll inventory, rows down (negative up).
 pub const ROCK_SWITCH: &str = "alice_dolls_native:rock_switch";
 pub const SCROLL: &str = "alice_dolls_native:scroll";
+/// From a client: the ender chest tab on Moscow's screen clicked.
+pub const ENDER: &str = "alice_dolls_native:ender";
 
 /// The most shots and beams one message carries: a message holds 30 000 bytes.
 pub const MAX_SHOTS: usize = 400;

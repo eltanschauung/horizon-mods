@@ -268,6 +268,30 @@ pub fn is_doll_mob(m: &Mob) -> bool {
     kind_of(m).is_some()
 }
 
+/// How high Aya floats over the ground, and how far down she looks for it.
+const AYA_HOVER: f64 = 1.0;
+const AYA_GROUND_LOOK: i32 = 4;
+
+/// Aya in flight: no gravity, and a gentle climb or sink to `AYA_HOVER` over the ground under her.
+/// Over a drop deeper than she looks she glides down slowly. On her owner's head she rides.
+fn hover(m: &mut Mob, w: &MobWorld) {
+    if in_mode(m, RIDE) {
+        m.no_gravity = false;
+        return;
+    }
+    m.no_gravity = true;
+    let (x, z) = (m.position.x.floor() as i32, m.position.z.floor() as i32);
+    let y0 = m.position.y.floor() as i32;
+    let ground = (0..=AYA_GROUND_LOOK)
+        .map(|d| y0 - d)
+        .find(|&y| w.facts.get(w.world.block(x, y - 1, z)).full_collision)
+        .map(f64::from);
+    m.velocity.y = match ground {
+        Some(g) => ((g + AYA_HOVER - m.position.y) * 0.3).clamp(-0.15, 0.2),
+        None => -0.08,
+    };
+}
+
 fn tick_doll(m: &mut Mob, w: &MobWorld) {
     let Some(kind) = kind_of(m) else { return };
     // Silent stops the hurt, death and step sounds; the doll-voice hook stops the rest.
@@ -277,6 +301,10 @@ fn tick_doll(m: &mut Mob, w: &MobWorld) {
         m.velocity.y *= 0.6;
     }
     m.fall_distance = 0.0;
+    // Aya flies: she floats about a block off the ground, wherever she goes.
+    if kind == Kind::Aya {
+        hover(m, w);
+    }
     // Checked every tick: the game may hand the mob its type's sounds back.
     if !m.kind.sounds[0].is_empty() {
         let kind = Arc::make_mut(&mut m.kind);
@@ -2261,7 +2289,8 @@ impl Snipe {
             .filter(|s| s.id != m.id && s.alive && !off_limits(s) && snipe_reach(pos(s), from, range))
             .filter(|s| {
                 if secret {
-                    !spares(m.id, Who::Mob(s.id))
+                    // Chickens are beneath her notice.
+                    s.species != Species::Chicken && !spares(m.id, Who::Mob(s.id))
                 } else {
                     fights_back(m, s) || (enemy(s) && !spares(m.id, Who::Mob(s.id)))
                 }
@@ -2399,7 +2428,7 @@ impl Goal for Snipe {
         }
         if Self::in_sight(m, cx.w, mark, aim) {
             self.lost = 0;
-            self.counter = SNIPE_EVERY;
+            self.counter = if in_mode(m, SNIPE) { SNIPE_EVERY } else { SNIPE_EVERY_PATROL };
             self.fire(m, cx, mark);
         } else {
             self.lost += 10;

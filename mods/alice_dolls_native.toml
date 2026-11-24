@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.43.2"
+published = "2026-11-24"
+game = "26.3"
+file = "alice_dolls_native-0.43.2.hmod"
+sha256 = "73302ed08b7489547a95473c2780a7bffb32905871f622bd6c85433edb10f2a7"
+changelog = "Doll inventories work again. Scrolling a long inventory moves the rows in place instead of closing and reopening the screen, so nothing on the cursor is dropped. Clicks the game can't route to a doll's storage (dragging across slots, double-click gathering, the middle button, the hotbar, offhand and drop keys) are blocked on doll screens: they used to land in the screen's copy of the slots and the items were lost. Moscow has an ender chest tab in her bauble grid that opens her owner's ender chest. Aya flies, floating about a block above the ground. Patchouli takes twice as long between orbs while patrolling, following or riding. Needs the assets 0.16.0."
+
+[[versions]]
 version = "0.43.1"
 published = "2026-11-24"
 game = "26.3"
