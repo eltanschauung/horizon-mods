@@ -119,8 +119,21 @@ impl mod_api::IPayloadHandler for VariantPacket {
     }
 }
 
+fn source_kind(kind: &str) -> &str {
+    match kind {
+        "thmobs:woodland_fairy" => FAIRIES[0],
+        "thmobs:frost_fairy" => FAIRIES[2],
+        _ => kind,
+    }
+}
+
+pub fn model_name(kind: &str) -> Option<&str> {
+    let kind = source_kind(kind);
+    FAIRIES.contains(&kind).then(|| kind.trim_start_matches("arcadiandream:"))
+}
+
 pub fn is_fairy(kind: &str) -> bool {
-    FAIRIES.contains(&kind)
+    model_name(kind).is_some()
 }
 
 pub fn variant(id: u32) -> usize {
@@ -197,6 +210,7 @@ pub fn sync_variants(host: &mut dyn ServerHost, level: LevelRef) {
 }
 
 pub fn tick(host: &mut dyn ServerHost, entity: EntityRef, kind: &str) -> Option<()> {
+    let kind = source_kind(kind);
     let mob = host.mob(entity)?;
     let living = host.living(entity)?;
     if living.health(host)? <= 0.0 {
@@ -532,7 +546,7 @@ pub fn spawn(host: &mut dyn ServerHost, level: LevelRef) {
                 .unwrap_or_default();
             if nearby
                 .iter()
-                .filter(|e| e.kind(host).is_some_and(|kind| is_fairy(&kind.id(host))))
+                .filter(|e| e.kind(host).is_some_and(|kind| FAIRIES.contains(&kind.id(host).as_str())))
                 .take(25)
                 .count()
                 > 24

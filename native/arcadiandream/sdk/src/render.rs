@@ -204,12 +204,9 @@ pub fn draw_fairy(
     m: &MobRender<'_>,
     draw: &mut dyn BlockEntityDrawContext,
 ) -> bool {
-    let Some(name) = m.kind.strip_prefix("arcadiandream:") else {
+    let Some(name) = crate::fairies::model_name(m.kind) else {
         return false;
     };
-    if !["fairy", "sunflower_fairy", "ice_fairy"].contains(&name) {
-        return false;
-    }
     let model = &MODELS[format!("geo/entity/{name}.geo.json")]["minecraft:geometry"][0];
     let Some(bones) = model["bones"].as_array() else {
         return false;

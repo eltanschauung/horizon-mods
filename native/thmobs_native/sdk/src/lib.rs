@@ -2631,6 +2631,10 @@ impl Hooks for Mod {
             let item = r.item_key(&egg);
             r.item_part(item, Egg);
         }
+        for id in COPIED_FAIRIES {
+            let item = r.item_key(&format!("thmobs:{id}_spawn_egg"));
+            r.item_part(item, Egg);
+        }
     }
 
     fn register_render_pipelines(
@@ -3000,6 +3004,9 @@ fn send_shots(host: &mut dyn ServerHost, player: PlayerRef, message: &[u8]) {
     let _ = host.player_send_packet(player, mod_api::ClientboundPlayPacket::new(packet, body));
 }
 
+// These use Arcadian Dream's fairy AI, animation and danmaku.
+const COPIED_FAIRIES: [&str; 2] = ["woodland_fairy", "frost_fairy"];
+
 struct Egg;
 
 impl ItemPart for Egg {
@@ -3013,7 +3020,6 @@ impl ItemPart for Egg {
         };
         let item = event.stack.item().id(host);
         let id = item.strip_prefix("thmobs:")?.strip_suffix("_spawn_egg")?;
-        let mob = mobs::MOBS.iter().find(|spec| spec.id == id)?;
         let player = host.player(event.player)?;
         let level = player.level(host)?;
         let at = [
@@ -3021,7 +3027,18 @@ impl ItemPart for Egg {
             f64::from(event.pos[1] + event.face[1]),
             f64::from(event.pos[2] + event.face[2]) + 0.5,
         ];
-        if summon(host, level.dimension_id(), mob, at).is_none() {
+        let spawned = if COPIED_FAIRIES.contains(&id) {
+            host.summon(
+                level.dimension_id(),
+                &format!("thmobs:{id}"),
+                at,
+                [("NoAI".into(), Tag::Byte(1)), ("NoGravity".into(), Tag::Byte(1))].into(),
+            ).is_some()
+        } else {
+            let mob = mobs::MOBS.iter().find(|spec| spec.id == id)?;
+            summon(host, level.dimension_id(), mob, at).is_some()
+        };
+        if !spawned {
             return Some(InteractionResult::Consume);
         }
         if player.has_infinite_materials(host) != Some(true) {

@@ -1,0 +1,21 @@
+{
+  "template": "minecraft:allay",
+  "body_size": [
+    0.55,
+    1.55,
+    1.24
+  ],
+  "hostile": true,
+  "attributes": {
+    "minecraft:max_health": 16,
+    "minecraft:movement_speed": 0.25,
+    "minecraft:flying_speed": 0.5,
+    "minecraft:gravity": 0.0
+  },
+  "sounds": {
+    "ambient": "minecraft:entity.bat.ambient",
+    "hurt": "minecraft:entity.bat.hurt",
+    "death": "minecraft:entity.bat.death",
+    "step": "none"
+  }
+}
