@@ -1,6 +1,6 @@
 id = "misogynist_unexpansion_native"
 name = "Minecraft Misogynist Unexpansion"
-version = "0.18.1+sdk.1"
+version = "0.19.0+sdk.1"
 description = "Restores classic mob variants and sounds and adds survival rules for crafting, farming and exploration."
 authors = ["mxpbxb"]
 api = "0.2"

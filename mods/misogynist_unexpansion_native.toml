@@ -33,6 +33,14 @@ categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
 
 [[versions]]
+version = "0.19.0"
+published = "2026-11-25"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.19.0.hmod"
+sha256 = "0b1fa16523e345e975085af7fc1ea6c105dd7367d73eae2dc9b55f20bd3d64cc"
+changelog = "Old or new water, on each client: old_water.cfg has water = old or new (new is the game's own water, none of the old textures, colour or fog), and textures, colour and fog can each be turned off. The old textures are a resource pack in the assets that this mod turns on as the game starts, so switching them takes a restart. Needs the assets 0.2.2."
+
+[[versions]]
 version = "0.18.1"
 published = "2026-11-24"
 game = "26.3"

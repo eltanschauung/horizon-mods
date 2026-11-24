@@ -12,10 +12,18 @@
 //! - `fog`: water fog as in beta: dark blue, darker the less sky reaches you, and thick, gone
 //!   16 blocks out (`compute_fog_color`, `render_fog`).
 //!
-//! `old_water.cfg` in the mod's config folder switches the two, both on by default. Written with
-//! the defaults when missing, and read again when it changes, within ten seconds.
+//! - `textures`: the textures above, as a resource pack the content mod carries
+//!   (`assets/misogynist_unexpansion/resourcepacks/old_water`), turned on as the game starts while they're wanted.
+//!
+//! `old_water.cfg` in the mod's config folder switches them on this client: `water = old` or
+//! `new` (the game's own water, none of the three), and each part on its own. All on by default.
+//! Written with the defaults when missing, and read again when it changes, within ten seconds;
+//! the textures take a restart.
 
 pub const FILE: &str = "old_water.cfg";
+
+/// The content mod's pack with the old textures in place of vanilla's water sprites.
+pub const PACK: &str = "misogynist_unexpansion:assets/misogynist_unexpansion/resourcepacks/old_water";
 
 /// Beta's water blue, the one water colour everywhere.
 pub const OLD_WATER: u32 = 0x40_64F0;
@@ -26,26 +34,47 @@ pub const FOG_END: f32 = 16.0;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Settings {
+    /// `water = old`: false is the game's own water, whatever the parts say.
+    pub old: bool,
+    pub textures: bool,
     pub colour: bool,
     pub fog: bool,
 }
 
 impl Default for Settings {
     fn default() -> Settings {
-        Settings { colour: true, fog: true }
+        Settings::ALL_OLD
     }
 }
 
 impl Settings {
+    pub const ALL_OLD: Settings = Settings { old: true, textures: true, colour: true, fog: true };
+
+    /// Whether each part is drawn: on, with the old water.
+    pub fn textures_on(&self) -> bool {
+        self.old && self.textures
+    }
+    pub fn colour_on(&self) -> bool {
+        self.old && self.colour
+    }
+    pub fn fog_on(&self) -> bool {
+        self.old && self.fog
+    }
+
     pub fn text(&self) -> String {
         let on = |b: bool| if b { "on" } else { "off" };
         format!(
-            "# Minecraft Misogynist Unexpansion: the old water, as in beta. Each on or off; saved\n\
-             # changes take hold within ten seconds. (The old textures come with the content mod.)\n\
+            "# Minecraft Misogynist Unexpansion: the water on this client. Saved changes take hold\n\
+             # within ten seconds; the textures take a restart.\n\
+             # water: old, as in beta, or new, the game's own water (then the three below are off).\n\
+             # With old water, each part on or off:\n\
+             # textures: beta-style still and flowing water.\n\
              # colour: one water colour everywhere, no biome tint.\n\
              # fog: dark, thick water fog, darker the less sky reaches you.\n\
              # Delete this file to get the defaults back.\n\n\
-             colour = {}\nfog = {}\n",
+             water = {}\ntextures = {}\ncolour = {}\nfog = {}\n",
+            if self.old { "old" } else { "new" },
+            on(self.textures),
             on(self.colour),
             on(self.fog),
         )
@@ -57,7 +86,16 @@ impl Settings {
         for line in text.lines() {
             let line = line.split('#').next().unwrap_or("").trim();
             let Some((key, value)) = line.split_once('=') else { continue };
+            if key.trim() == "water" {
+                match value.trim().to_ascii_lowercase().as_str() {
+                    "old" | "beta" | "on" => s.old = true,
+                    "new" | "modern" | "off" => s.old = false,
+                    _ => {}
+                }
+                continue;
+            }
             let slot = match key.trim() {
+                "textures" | "texture" => &mut s.textures,
                 "colour" | "color" | "tint" => &mut s.colour,
                 "fog" => &mut s.fog,
                 _ => continue,
@@ -74,7 +112,7 @@ impl Settings {
     /// `biome`'s water colour, given its own (`own`), or None to keep the biome's own. Beta's blue
     /// everywhere, but warm and lukewarm oceans lean a little towards their own lighter blue.
     pub fn water_tint(&self, biome: &str, own: u32) -> Option<u32> {
-        if !self.colour {
+        if !self.colour_on() {
             return None;
         }
         let name = biome.rsplit(':').next().unwrap_or(biome);
@@ -120,7 +158,7 @@ pub struct Loaded {
 
 impl Loaded {
     pub const fn new() -> Loaded {
-        Loaded { settings: Settings { colour: true, fog: true }, loaded: false, ticks: 0 }
+        Loaded { settings: Settings::ALL_OLD, loaded: false, ticks: 0 }
     }
 
     /// Every 200 calls: writes the defaults if the file is missing, and reads it again. True when
@@ -155,16 +193,18 @@ mod tests {
     #[test]
     fn the_defaults_are_all_on_and_read_back() {
         let s = Settings::default();
-        assert!(s.colour && s.fog);
+        assert!(s.textures_on() && s.colour_on() && s.fog_on());
         assert_eq!(Settings::parse(&s.text()), s);
-        let off = Settings { colour: false, fog: true };
+        let off = Settings { colour: false, ..Settings::ALL_OLD };
         assert_eq!(Settings::parse(&off.text()), off);
+        let new = Settings { old: false, ..Settings::ALL_OLD };
+        assert_eq!(Settings::parse(&new.text()), new);
     }
 
     #[test]
     fn unknown_lines_keep_the_defaults() {
         let s = Settings::parse("fog = maybe\nwaves = off\ncolor = off # spelt the other way\n");
-        assert_eq!(s, Settings { colour: false, fog: true });
+        assert_eq!(s, Settings { colour: false, ..Settings::ALL_OLD });
     }
 
     #[test]
@@ -173,7 +213,18 @@ mod tests {
         assert_eq!(on.water_tint("minecraft:plains", 0x3F76E4), Some(OLD_WATER));
         assert_eq!(on.water_tint("minecraft:swamp", 0x617B64), Some(OLD_WATER));
         assert_ne!(OLD_WATER, 0xFF_FFFF);
-        assert_eq!(Settings { colour: false, fog: true }.water_tint("minecraft:plains", 0x3F76E4), None);
+        assert_eq!(Settings { colour: false, ..Settings::ALL_OLD }.water_tint("minecraft:plains", 0x3F76E4), None);
+    }
+
+    #[test]
+    fn new_water_turns_every_part_off() {
+        // A file from before `water` keeps the old water; `water = new` wins over the parts.
+        assert_eq!(Settings::parse("colour = on\nfog = on\n"), Settings::ALL_OLD);
+        let new = Settings::parse("textures = on\ncolour = on\nwater = new\nfog = on\n");
+        assert!(!new.textures_on() && !new.colour_on() && !new.fog_on());
+        assert_eq!(new.water_tint("minecraft:plains", 0x3F76E4), None);
+        let old_flat = Settings::parse("water = old\ntextures = off\n");
+        assert!(!old_flat.textures_on() && old_flat.colour_on() && old_flat.fog_on());
     }
 
     #[test]

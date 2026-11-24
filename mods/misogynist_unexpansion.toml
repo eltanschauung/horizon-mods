@@ -16,6 +16,14 @@ categories = ["game-mechanics", "library"]
 tags = ["vanilla", "recipes"]
 
 [[versions]]
+version = "0.2.2"
+published = "2026-11-25"
+game = "26.3"
+file = "misogynist_unexpansion-0.2.2.hmod"
+sha256 = "433fd51b94c166c2e15ba60bd4892bad10a9cf2516f1af06b36bf5c1613b4d24"
+changelog = "The old water textures move into a built-in resource pack (assets/misogynist_unexpansion/resourcepacks/old_water), which misogynist_unexpansion_native 0.19.0 turns on while a client wants the old water. Needs misogynist_unexpansion_native 0.19.0."
+
+[[versions]]
 version = "0.2.1"
 published = "2026-11-24"
 game = "26.3"

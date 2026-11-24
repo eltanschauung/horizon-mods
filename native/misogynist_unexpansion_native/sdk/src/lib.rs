@@ -385,6 +385,28 @@ impl Hooks for Mod {
         RECOLOUR.store(true, Ordering::Relaxed);
     }
 
+    /// The old water textures: the content mod's pack `assets/misogynist_unexpansion/resourcepacks/old_water`, always on and out
+    /// of the pack screen while `old_water.cfg` wants them. Read as the game starts, so a change to
+    /// them takes a restart.
+    fn add_pack_finders(&self, host: HostSide<'_>, event: &mut mod_api::AddPackFindersEvent<'_>) {
+        let HostSide::Client(host) = host else { return };
+        if event.packs.pack_type() != mod_api::PackType::ClientResources {
+            return;
+        }
+        let on = WATER.lock().map(|mut w| {
+            w.refresh(host.config_files());
+            w.settings.textures_on()
+        });
+        if !on.unwrap_or(true) {
+            return;
+        }
+        let Ok(location) = mod_api::Identifier::parse(water::PACK) else { return };
+        let mut pack = mod_api::PackRegistration::new(location, mod_api::PackType::ClientResources, Text::literal("Old water"));
+        pack.always_active = true;
+        pack.hidden = true;
+        let _ = event.packs.add_pack_finders(pack);
+    }
+
     /// `old_water.cfg` read again; the water colours asked for once a world is open, and again
     /// when the file changed.
     fn client_tick_post(&self, host: &mut dyn ClientHost, _: &mut mod_api::ClientTickPostEvent) {
@@ -399,7 +421,7 @@ impl Hooks for Mod {
 
     /// Old water fog's colour: dark blue, darker the less sky reaches the eye.
     fn compute_fog_color(&self, host: &dyn ClientHost, event: &mut mod_api::ComputeFogColorEvent<'_>) {
-        if event.fog_type != FogType::Water || !water_settings().fog {
+        if event.fog_type != FogType::Water || !water_settings().fog_on() {
             return;
         }
         let dimension = CLIENT_DIMENSION.lock().map(|d| d.clone()).unwrap_or_default();
@@ -413,7 +435,7 @@ impl Hooks for Mod {
 
     /// Old water fog's distance: thick, gone 16 blocks out. Closer fog (blindness) stays.
     fn render_fog(&self, _: &dyn ClientHost, event: &mut mod_api::RenderFogEvent<'_>) {
-        if event.fog_type != FogType::Water || !water_settings().fog || event.fog.environmental_end <= water::FOG_END {
+        if event.fog_type != FogType::Water || !water_settings().fog_on() || event.fog.environmental_end <= water::FOG_END {
             return;
         }
         let fog = &mut *event.fog;
