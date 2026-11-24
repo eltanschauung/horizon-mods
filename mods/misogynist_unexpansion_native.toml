@@ -33,6 +33,14 @@ categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
 
 [[versions]]
+version = "0.19.1"
+published = "2026-11-25"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.19.1.hmod"
+sha256 = "0deb39bf112836a69f7eac121f2070d901570a71ce1021e9d82e06e50c74f0eb"
+changelog = "Server performance: the old babies' looks no longer clone every mob's saved data a few times a second. Grown mobs are skipped by their baby flag, a baby's look is read again every few seconds, nothing is scanned in a dimension with no players, and the check that keeps cows, pigs, chickens and wolves in their original look reads each one far less often. Needs the assets 0.2.2."
+
+[[versions]]
 version = "0.19.0"
 published = "2026-11-25"
 game = "26.3"

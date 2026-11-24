@@ -288,10 +288,6 @@ fn text(tag: &Compound, key: &str) -> Option<String> {
     }
 }
 
-fn is_baby(tag: &Compound) -> bool {
-    number(tag, "Age").is_some_and(|a| a < 0) || number(tag, "IsBaby").is_some_and(|b| b != 0)
-}
-
 fn dye(n: Option<i64>, default: usize) -> u32 {
     DYES[n.map_or(default, |n| (n as usize) & 15)]
 }
@@ -378,21 +374,60 @@ fn look_of(o: &Old, tag: &Compound) -> Look {
     look
 }
 
-/// On the server, a few times a second: what each baby of these kinds looks like.
+/// Scans between reads of a baby's saved data (its look kept from the last read in between): a
+/// sheep's wool or a wolf's collar shows within about four seconds.
+const REREAD: u32 = 8;
+
+/// On the server, by dimension: each baby's look as last read, and the scan it counts from.
+static READ: LazyLock<Mutex<HashMap<String, HashMap<u32, (Look, u32)>>>> = LazyLock::new(Default::default);
+
+/// Scans so far, for `REREAD`.
+static PASS: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
+
+/// Whether a look read in scan `at` is to be read again in scan `pass`.
+fn due(pass: u32, at: u32) -> bool {
+    pass.wrapping_sub(at) >= REREAD
+}
+
+/// The scan a look read now counts from: spread by id, so babies seen together aren't read again
+/// all in the same scan.
+fn counted_from(pass: u32, id: u32) -> u32 {
+    pass.wrapping_sub(id % REREAD)
+}
+
+/// On the server, a few times a second, while players are in the dimension: what each baby of
+/// these kinds looks like. Whether a mob is a baby is its living flag (no saved data read for the
+/// grown ones); a baby's saved data is read when it is first seen and every `REREAD` scans after.
 pub fn scan(host: &mut dyn mod_api::ServerHost, level: mod_api::LevelRef) {
+    if level.online_players(host).is_none_or(|p| p.is_empty()) {
+        return;
+    }
+    let pass = PASS.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    let Ok(mut read) = READ.lock() else { return };
+    let cache = read.entry(level.dimension_id().to_owned()).or_default();
     let mut seen = HashSet::new();
     let mut found = Vec::new();
     for entity in level.all_entities(host).unwrap_or_default() {
         let id = entity.id();
         let Some(kind) = entity.kind(host).map(|key| key.id(host)) else { continue };
         let Some(o) = old(&kind) else { continue };
-        let Some(tag) = entity.nbt(host) else { continue };
-        if !is_baby(&tag) {
+        if !host.living(entity).and_then(|l| l.baby(host)).unwrap_or(false) {
             continue;
         }
+        let look = match cache.get(&id) {
+            Some((look, at)) if !due(pass, *at) => look.clone(),
+            _ => {
+                let Some(tag) = entity.nbt(host) else { continue };
+                let look = look_of(o, &tag);
+                cache.insert(id, (look.clone(), counted_from(pass, id)));
+                look
+            }
+        };
         seen.insert(id);
-        found.push((id, look_of(o, &tag)));
+        found.push((id, look));
     }
+    cache.retain(|id, _| seen.contains(id));
+    drop(read);
     // To the players' clients: on a server they draw from these, not from the server's own.
     send(host, level, &found);
     if let Ok(mut looks) = LOOKS.lock() {
@@ -590,5 +625,25 @@ mod tests {
         assert_eq!(messages.iter().filter(|m| m[0] == 1).count(), 1);
         let back: usize = messages.iter().map(|m| decode(m).unwrap().1.len()).sum();
         assert_eq!(back, 2000);
+    }
+}
+
+#[cfg(test)]
+mod scan_tests {
+    use super::*;
+
+    #[test]
+    fn a_babys_look_is_read_again_every_few_scans_spread_by_id() {
+        for id in 0..40u32 {
+            let at = counted_from(100, id);
+            // Kept for a while after the read, read again within `REREAD` scans.
+            assert!(!due(100, at));
+            assert!((100..100 + REREAD).any(|p| due(p + 1, at)));
+        }
+        // Babies seen together come due in different scans.
+        let first: HashSet<u32> = (0..REREAD).map(|id| (100..).find(|&p| due(p, counted_from(100, id))).unwrap()).collect();
+        assert_eq!(first.len(), REREAD as usize);
+        // Counting wraps.
+        assert!(due(3, u32::MAX - 10));
     }
 }

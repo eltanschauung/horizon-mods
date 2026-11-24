@@ -86,6 +86,17 @@ const RENAMED: [(&str, &str); 2] = [("minecraft:turtle_scute", "Fish Scales"), (
 static TO_REVERT: Mutex<Vec<(u32, String)>> = Mutex::new(Vec::new());
 /// Ticks between reads of the babies' looks.
 static SCAN: AtomicU32 = AtomicU32::new(0);
+/// By dimension: the mobs with newer looks already checked by the periodic pass.
+static CHECKED: LazyLock<Mutex<std::collections::HashMap<String, std::collections::HashSet<u32>>>> =
+    LazyLock::new(Default::default);
+/// Passes between the periodic pass's reads of one mob already checked.
+const RECHECK_EVERY: u32 = 10;
+
+/// Whether the periodic pass reads mob `id` in pass `round`: always the first time, then one
+/// pass in `RECHECK_EVERY`.
+fn recheck(checked: bool, id: u32, round: u32) -> bool {
+    !checked || id.wrapping_add(round) % RECHECK_EVERY == 0
+}
 static ROLL: AtomicU64 = AtomicU64::new(0x9E37_79B9_7F4A_7C15);
 
 /// A number from 0 to 99.
@@ -339,13 +350,25 @@ impl Hooks for Mod {
             babies::scan(host, level);
         }
         if n % 40 == 5 {
+            // Mobs are put back to their original look as they join; this pass reads each one's
+            // saved data again only one pass in `RECHECK_EVERY`, spread by id.
+            let round = n / 40;
+            let mut checked = CHECKED.lock().unwrap_or_else(|e| e.into_inner());
+            let known = checked.entry(level.dimension_id().to_owned()).or_default();
+            let mut alive = std::collections::HashSet::new();
             for entity in level.all_entities(host).unwrap_or_default() {
                 if let Some(kind) = entity.kind(host).map(|key| key.id(host))
                     && has_variant(&kind)
                 {
-                    revert_look(host, entity.id(), &kind);
+                    let id = entity.id();
+                    alive.insert(id);
+                    if recheck(known.contains(&id), id, round) {
+                        revert_look(host, id, &kind);
+                        known.insert(id);
+                    }
                 }
             }
+            known.retain(|id| alive.contains(id));
         }
         if let Ok(mut c) = CONFIG.lock() {
             c.refresh(host.config_files(), &host.instance_dir());
@@ -504,5 +527,15 @@ mod tests {
         let w = |n: &str| entries.iter().find(|e| e["name"] == n).unwrap()["weight"].as_i64().unwrap();
         assert_eq!((w("minecraft:tropical_fish"), w("minecraft:cod")), (7, 55));
         assert_eq!(entries.iter().map(|e| e["weight"].as_i64().unwrap()).sum::<i64>(), 100);
+    }
+}
+
+#[cfg(test)]
+mod recheck_tests {
+    #[test]
+    fn mobs_are_checked_first_then_one_pass_in_ten() {
+        assert!(super::recheck(false, 7, 1));
+        let passes = (0..super::RECHECK_EVERY).filter(|&r| super::recheck(true, 7, r)).count();
+        assert_eq!(passes, 1);
     }
 }
