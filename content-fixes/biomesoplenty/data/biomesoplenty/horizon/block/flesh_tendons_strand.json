@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:hanging_roots",
+  "properties": {
+    "hardness": 0.2,
+    "explosion_resistance": 0.2,
+    "light": 0,
+    "requires_tool": false,
+    "friction": 0.6,
+    "map_color": 50,
+    "occludes": false
+  },
+  "item": false,
+  "state_properties": {},
+  "collision_shapes": {
+    "default": []
+  }
+}

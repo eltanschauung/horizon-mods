@@ -1,0 +1,27 @@
+{
+  "template": "minecraft:white_wool",
+  "properties": {
+    "hardness": 0.0,
+    "explosion_resistance": 0.0,
+    "light": 0,
+    "requires_tool": false,
+    "friction": 0.6,
+    "map_color": 60,
+    "occludes": false
+  },
+  "collision_shapes": {
+    "default": []
+  },
+  "shapes": {
+    "default": [
+      [
+        0.0625,
+        0.0,
+        0.0625,
+        0.9375,
+        0.75,
+        0.9375
+      ]
+    ]
+  }
+}

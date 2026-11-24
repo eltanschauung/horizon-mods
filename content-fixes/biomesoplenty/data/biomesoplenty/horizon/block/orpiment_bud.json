@@ -1,0 +1,27 @@
+{
+  "template": "minecraft:sandstone",
+  "properties": {
+    "hardness": 0.2,
+    "explosion_resistance": 0.2,
+    "light": 0,
+    "requires_tool": false,
+    "friction": 0.6,
+    "map_color": 40,
+    "occludes": false
+  },
+  "collision_shapes": {
+    "default": []
+  },
+  "shapes": {
+    "default": [
+      [
+        0.125,
+        0.0,
+        0.125,
+        0.875,
+        0.1875,
+        0.875
+      ]
+    ]
+  }
+}
