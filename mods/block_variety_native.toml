@@ -7,12 +7,12 @@ description = """
 
 Chipped (by Terrarium), Chisel (by the Chisel team) and Block Carpentry (by PianoManu) in one mod, with the Item Trash Can of Trash Cans (by SuperMartijn642), ported with their creators' permission:
 
-- **4,858 block variants:** every Chipped block but its workbenches, and 2,371 of Chisel's variants, each a block of its own that behaves as its vanilla block does.
+- **7,578 block variants:** every Chipped block but its workbenches (Chipped 1.18.1's, and 1.18.2's for the vanilla blocks 1.18.1 has none for, recoloured to Programmer Art Continuation), and 2,371 of Chisel's variants, each a block of its own that behaves as its vanilla block does.
 - **The chisel:** right-click with it, holding blocks in your other hand, for its own screen: every block of their group as icons, with a search. Click one to turn the whole stack into it, right-click to turn one. Right-click a placed block with it to turn it into the group's next block (sneaking, the one before), keeping its facing and state.
 - **Frames:** 37 frames (block, falling block, slab, stairs, slope, edged slope, wall, fence, gate, door, trapdoor, pane, carpet, ladder, button, pressure plate, layered block, bed, chest, daylight detector, and their illusion twins) that take on the look of any block put in them. The hammer takes the block back out.
 - **Item Trash Can:** nine slots, and whatever goes in, from your hand or a hopper, is gone the next tick.
 
-There are no Chipped workbenches: the chisel does it all.
+There are no Chipped workbenches: the chisel does it all, and the stonecutter cuts each block from any block of its group, so JEI shows how each is made. Structure Add-on's limestone, marble, andesite and basalt are in the matching groups.
 
 Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. The original mods' art and designs are their creators'. No Minecraft code or assets are included."""
 authors = ["Terrarium (Chipped)", "Chisel team (Chisel)", "PianoManu (Block Carpentry)", "SuperMartijn642 (Trash Cans)", "mxpbxb (Horizon port)"]
@@ -23,6 +23,14 @@ source = "https://github.com/mxpbxb/block-variety"
 icon = "icons/block_variety_native.png"
 categories = ["decoration"]
 tags = ["blocks", "building", "chisel", "decoration"]
+
+[[versions]]
+version = "0.7.0"
+published = "2026-11-25"
+game = "26.3"
+file = "block_variety_native-0.7.0.hmod"
+sha256 = "2fe0741ad2964a88200d5e5ddac26c5ea7be5c89494a422c7904e0cb5a55d722"
+changelog = "The chisel knows the new groups: Chipped 1.18.2's blocks for iron, the raw ore blocks, logs, doors, leaves, glazed terracotta and the rest, and Structure Add-on's limestone, marble, andesite and basalt in the matching groups. The SDK package, from this index's SDK port with the new groups. Needs the assets 0.5.0."
 
 [[versions]]
 version = "0.5.0"
