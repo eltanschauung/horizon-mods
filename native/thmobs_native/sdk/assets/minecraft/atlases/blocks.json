@@ -1,0 +1,48 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/familiar"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/light"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/laser"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/gap"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/spark"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/small"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/pearl"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/circle"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/heart"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/talisman"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "thmobs:entity/shot/big"
+    }
+  ]
+}

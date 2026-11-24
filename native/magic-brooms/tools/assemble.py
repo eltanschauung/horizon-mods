@@ -214,10 +214,16 @@ def assemble(source, root):
             if not mesh.exists():
                 geo = json.loads(source.read(f'assets/brooms/geo/{geometry}.geo.json'))['minecraft:geometry'][0]
                 mesh.write_text(entity_model(geo, mounted=False))
+            display = {'gui': {'rotation': [30, 225, 0], 'scale': [0.65] * 3}}
+            if path == 'broom_workbench':
+                for hand, yaw in (('righthand', 45), ('lefthand', 225)):
+                    display[f'thirdperson_{hand}'] = {
+                        'rotation': [75, 45, 0], 'translation': [0, 2.5, 0], 'scale': [0.375] * 3}
+                    display[f'firstperson_{hand}'] = {'rotation': [0, yaw, 0], 'scale': [0.4] * 3}
             write(root, f'{assets}/models/block/{path}.json', {
                 'loader': 'neoforge:obj', 'flip_v': True, 'model': f'{NS}:models/{geometry}.obj',
                 'textures': {'surface': f'{NS}:{sprite}', 'particle': f'{NS}:{sprite}'},
-                'display': {'gui': {'rotation': [30, 225, 0], 'scale': [0.65] * 3}},
+                'display': display,
             })
             return {'model': f'{NS}:block/{path}'}
 

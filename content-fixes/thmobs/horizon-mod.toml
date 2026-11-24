@@ -1,0 +1,11 @@
+id = "thmobs"
+name = "Touhou Mobs (assets)"
+version = "0.9.0"
+description = "The mobs, textures and spawn eggs of Touhou Mobs: the fairies, youkai, bosses and people of Touhou Items Mod, SPELLCARD PLUS and Journey To Gensokyo. Needs thmobs_native."
+authors = ["kuro-anco, Katrix and the SPELLCARD PLUS author (originals)", "mxpbxb (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[dependencies]
+thmobs_native = "=0.9.6"

@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "arcadiandream:dragon_gem_ore",
+    "arcadiandream:hihiirokane_ore",
+    "arcadiandream:hihiirokane_ore_buried"
+  ],
+  "step": "underground_ores"
+}

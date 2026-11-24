@@ -1,0 +1,8 @@
+{
+  "template": "minecraft:netherite_block",
+  "properties": {
+    "hardness": 50,
+    "light": 0
+  },
+  "item": true
+}

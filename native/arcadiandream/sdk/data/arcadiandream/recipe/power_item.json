@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "arcadiandream:big_power_item"
+  ],
+  "result": {
+    "count": 9,
+    "id": "arcadiandream:power_item"
+  }
+}

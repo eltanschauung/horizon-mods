@@ -1,0 +1,20 @@
+id = "no_copper"
+name = "No Copper"
+version = "0.2.0"
+description = "Remove copper ore targets and copper veins from newly generated terrain."
+authors = ["eltanschauung"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "apply"
+target = "horizon_world::worldgen::native_terrain::registry_effective"
+kind = "HEAD"
+helper = "src/mixins/generation.rs"
+bindings = [{ name = "bundle", ty = "&str", value = "_bundle" }, { name = "base", ty = "&mut BTreeMap<String, String>", value = "_base" }]

@@ -15,31 +15,46 @@ Bright, colorful shader pack for Horizon. Horizon had no shaders on the registry
 - **Nether and End look different.** Nether is hot and hazy, with heat shimmer. End is cold and purple.
 - **29 options.** Everything can be tuned or turned off in game.
 
+## Which version do I take?
+
+- **1.7.1** is for Horizon Nightly 2026-11-18 or newer (the final shader API 0.2).
+- **1.6.1** is for older builds that still serve shader API 0.1. The Nightly no longer loads it.
+The launcher offers the one your game can run.
+
 ## Slow? Try this
 
 - Shadow quality: Low
+- Shadow map size: 1024 or 512
+- Shadow distance: 64
 - Water reflections: off
 - Bloom: off
 - Shadows: off. Biggest gain.
 
 ## Known problems
 
-- Horizon shader API is 0.1, experimental. It can change.
+- Horizon's shader API is experimental and can change.
 - Entities, block entities and particles are not shaded yet. There is no stage for them.
 - Nether and End sky is vanilla. The sky stage only draws in the Overworld.
-- Shadow bias may need tuning on some GPUs. If you see stripes on surfaces, change `Shadow bias`."""
+- Shadow bias may need tuning on some GPUs. If you see stripes on surfaces, change `Shadow bias`.
+"""
 authors = ["Muurrcc"]
 owners = ["Muurrcc"]
 license = "MIT"
 source = "https://github.com/Muurrcc/montarc"
 icon = "icons/montarc.png"
 categories = ["semi-realistic", "colored-lighting", "shadows"]
-tags = ["colorful", "shadows", "water", "wind", "bloom", "fxaa"]
+tags = ["colorful", "shadows", "water", "wind", "bloom", "fxaa", "rain", "puddles", "caustics", "sunbeams"]
+screenshots = ["screenshots/montarc/1.jpg", "screenshots/montarc/2.jpg", "screenshots/montarc/3.jpg", "screenshots/montarc/4.jpg", "screenshots/montarc/5.jpg", "screenshots/montarc/6.jpg", "screenshots/montarc/7.jpg", "screenshots/montarc/8.jpg"]
 
 [[versions]]
-version = "1.1.1"
-published = "2026-11-04"
+version = "1.7.1"
+published = "2026-11-18"
 game = "26.3"
-file = "montarc-1.1.1.hshader"
-sha256 = "3d6b4a457d84db15b63c9b77df887bb1887190901b9e2303e5a2a7d8a2bac01b"
-changelog = "First release: soft shadows from the sun and the moon, sky and fog that match, colored block light, water with waves, reflections and foam, wind on plants and leaves, an own look for the Nether and the End, 29 options. Needs the nightly build of Horizon (2026-11-04 or newer). Release v1.1.1 of the repository."
+file = "montarc-1.7.1.hshader"
+sha256 = "16c3260987a2ef5794924b6de4ba3c51b9df4f968d130b52f2a7b64cb30f8518"
+changelog = """
+- Final shader API 0.2 (Horizon Nightly 2026-11-18 or newer). It reads the terrain's shaded_tint, fogs with [frame] fog = "pack" and uses fog_environment and fog_render. The look is the same as 1.6.1, with the clearer underwater fog.
+- Needs no extra switch in the game. Shader API 0.1 is retired, so 1.6.1 no longer loads in the Nightly.
+- Everything from 1.6.1: portals with coloured light, shadow size and distance options, own rain and snow, puddles, optional sunbeams, seabed light patterns.
+- Screenshots added. Release v1.7.1 of the repository.
+"""

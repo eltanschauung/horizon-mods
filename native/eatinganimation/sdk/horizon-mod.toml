@@ -1,0 +1,26 @@
+id = "eatinganimation"
+name = "Eating Animation"
+version = "0.2.0"
+description = "Select bitten food and drinking frames while the item is in use."
+authors = ["Horizon", "eltanschauung"]
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "item-use-frame"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client_lib::item_render::item_use_animation_frame"
+helper = "src/mixins/frame.rs"
+bindings = [
+  { name = "item", ty = "&str", value = "item" },
+  { name = "model", ty = "&str", value = "model" },
+  { name = "elapsed_ticks", ty = "i32", value = "elapsed_ticks" },
+  { name = "has_food", ty = "bool", value = "has_food" },
+]

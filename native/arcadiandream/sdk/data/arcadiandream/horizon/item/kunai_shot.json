@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.kunai_shot"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 125
+  },
+  "max_stack_size": 1
+}

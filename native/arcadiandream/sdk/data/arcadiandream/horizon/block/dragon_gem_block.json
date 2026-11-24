@@ -1,0 +1,8 @@
+{
+  "template": "minecraft:diamond_block",
+  "properties": {
+    "hardness": 5,
+    "light": 9
+  },
+  "item": true
+}

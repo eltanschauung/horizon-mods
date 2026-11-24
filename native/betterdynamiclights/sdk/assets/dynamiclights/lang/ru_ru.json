@@ -1,0 +1,9 @@
+{
+  "dynamiclights.language": "ru",
+  "dynamiclights.setting.configure": "Настройки",
+  "dynamiclights.setting.configure.tooltip": "Собственный экран настроек Better Dynamic Lights: каждый вид источников света, вода, яркость, число источников, дальность и клавиша включения.",
+  "dynamiclights.setting.open": "Открыть...",
+  "dynamiclights.setting.open_again": "Открыть...",
+  "dynamiclights.setting.enabled": "Динамический свет",
+  "dynamiclights.setting.enabled.tooltip": "Светящиеся предметы, горящие сущности и светящиеся существа освещают блоки и мобов вокруг себя на ходу."
+}

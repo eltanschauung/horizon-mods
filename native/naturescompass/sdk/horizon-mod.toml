@@ -1,0 +1,27 @@
+id = "naturescompass_native"
+name = "Nature's Compass"
+version = "1.9.7-horizon.3"
+description = "Find the nearest biome with a compass, including modded biomes."
+authors = ["ChaosTheDude", "mxpbxb"]
+license = "CC-BY-NC-SA-4.0"
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "locate_biome"
+kind = "AFTER_CALL"
+selector = "self.fire_server_tick"
+require = 1
+ordinal = 0
+result = "()"
+target = "horizon_client::game::native_hooks::base::Game::native_server_tick"
+helper = "src/mixins/locate.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]

@@ -1,0 +1,42 @@
+id = "fps_overlay"
+kind = "native-mod"
+name = "FPS Counter"
+summary = "Frames per second in a corner of the screen, with the minimum and the 1% low."
+description = """
+Horizon's own FPS counter, formerly an extra in Options > Horizon Extras.
+
+- Frames in the last second, in a small box in the corner you pick.
+- Optionally the slowest frame and the 1% low of the last 5 seconds.
+- Settings: Options > Mods > FPS Counter > Settings (corner; minimum and 1% low).
+
+It reads the game's own frame counter and draws on the HUD: nothing else.
+
+Now a native mod (2.0.0): built into the game by the launcher, on the Horizon you play, like any native mod
+(install it on the launcher's Mods page, then press Build there). Your settings carry over from 1.0.0. Turn it off in
+Options > Mods: it rests at once, and the next build leaves it out. Its source is
+[horizon-mods/native/fps-overlay](https://github.com/horizon-rust/horizon-mods/tree/main/native/fps-overlay).
+"""
+authors = ["Horizon"]
+owners = ["ludovic111"]
+owner_ids = [136255825]
+license = "MIT"
+source = "https://github.com/horizon-rust/horizon-mods/tree/main/native/fps-overlay"
+icon = "icons/fps_overlay.png"
+categories = ["utility"]
+tags = ["fps", "hud", "performance", "frame-time"]
+
+[[versions]]
+version = "2.0.0"
+published = "2026-10-29"
+game = "26.3"
+file = "fps_overlay-2.0.0.hnmod"
+sha256 = "bedb670e2490ce8239906c86eabd3a0c131ef5037b2937607231bdbdba38c171"
+changelog = "Native: built into the game by the launcher on Horizon's native hook points; settings carry over; turn it off in Options > Mods."
+
+[[versions]]
+version = "1.0.0"
+published = "2026-10-26"
+game = "26.3"
+file = "fps_overlay-1.0.0.hmod"
+sha256 = "46109c3da01c058c0c15a9e43206b749627e69cd5cd023167621bb5dbdb88bcb"
+changelog = "First release: the FPS counter extra as a mod, same look and options."

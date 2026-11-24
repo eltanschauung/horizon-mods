@@ -1,15 +1,5 @@
 [
   {
-    "kind": "native",
-    "url": "https://github.com/lavoide/horizon-ports/releases/download/emojiful-v0.1.1/emojiful-0.1.1.hnmod",
-    "sha256": "b6c5019bf9285e55b76a71e33ba3ed65289240df4c53f0c7d08012b5cffdf9ce"
-  },
-  {
-    "kind": "font-pack",
-    "url": "https://github.com/lavoide/horizon-ports/releases/download/emojiful-v0.1.1/emojiful_twemoji-0.1.1.zip",
-    "sha256": "3352ee13d1f07122bca40252c62cf52de04d4c30c74b13518c32321c90dd5faf"
-  },
-  {
     "kind": "content",
     "url": "https://github.com/AdLf0208/bibliocraft_legacy/releases/download/bibliocraft-0.2.0/bibliocraft.hmod",
     "sha256": "48544f9e8306b7ffa4c2934e0f6c46756aaf40eb29540d9dc2f99e9fae33105e"

@@ -1,0 +1,47 @@
+{
+  "template": "minecraft:iron_hoe",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.makaite_hoe"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 905,
+    "minecraft:repairable": {
+      "items": "arcadiandream:makaite_ingot"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:tool": {
+      "rules": [
+        {
+          "blocks": "#minecraft:incorrect_for_iron_tool",
+          "correct_for_drops": false
+        },
+        {
+          "blocks": "#minecraft:mineable/hoe",
+          "speed": 6,
+          "correct_for_drops": true
+        }
+      ],
+      "default_mining_speed": 1.0,
+      "damage_per_block": 1
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:makaite_hoe_attack_damage",
+        "type": "minecraft:attack_damage",
+        "amount": 0,
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "id": "arcadiandream:makaite_hoe_attack_speed",
+        "type": "minecraft:attack_speed",
+        "amount": -1,
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ]
+  }
+}

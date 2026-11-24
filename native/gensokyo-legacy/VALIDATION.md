@@ -1,5 +1,19 @@
 # Validation
 
+## SDK migration
+
+The combined SDK package passed schema validation. Its three replacement hooks
+passed the SDK planner, and the generated patch type-checked on the synchronized
+fork.
+
+The direct terrain probe on engine revision `d41d7ce` installed the three
+SDK replacements and used a scratch resource snapshot with BOP and Tectonic
+content. All 17 forced biomes generated and decorated with zero failed or
+unsupported feature roots. All 17 appeared in 196,608 natural climate samples.
+A frozen distribution still needs the combined runtime check.
+
+## Previous engine baseline
+
 - Input jar and reference source are pinned in `inventory.json` and `upstream.json`.
 - All 17 biomes: direct terrain generation and decoration, first in isolation and
   then with BOP and Tectonic; zero unsupported or failed feature roots.

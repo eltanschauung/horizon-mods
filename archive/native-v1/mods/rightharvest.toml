@@ -1,0 +1,37 @@
+id = "rightharvest"
+kind = "native-mod"
+name = "RightClickHarvest"
+summary = "Right-click a ripe crop to pick it and sow it again."
+description = "With an empty hand, right-click a ripe wheat, carrot, potato, beetroot or nether wart: the crop is harvested with the game's own drops, sound and statistics, and sown again from a seed in your inventory."
+authors = ["Domanffe"]
+owners = ["Domanffe"]
+owner_ids = [94391234]
+license = "MIT"
+source = "https://github.com/Domanffe/rightharvest"
+icon = "icons/rightharvest.png"
+categories = ["utility", "food"]
+tags = ["farming", "crops", "harvest", "replant"]
+
+[[versions]]
+version = "0.2.1"
+published = "2026-11-12"
+game = "26.3"
+file = "rightharvest-0.2.1.hnmod"
+sha256 = "a0a08b57100ceee2bab1d7b687867408d3526eb0c6da5c928ac4e50f9601d4b4"
+changelog = "Ripe beetroots are harvested again. The mod gave them a top age of 7, but vanilla's beetroots block has only age 0–3, so a ripe beetroot (age 3) was never picked — a bug from 0.1.0 that 0.2.0 still carried (review on horizon-mods#614). Wheat, carrots, potatoes and nether wart are unchanged."
+
+[[versions]]
+version = "0.1.1"
+published = "2026-11-02"
+game = "26.3"
+file = "rightharvest-0.1.1.hnmod"
+sha256 = "2f70f3a5abaca35f1ff8df7b198f0fd616eacaa5229f5113f75935e16f50255b"
+changelog = "Rebuilt on the 2026-11-01 Nightly (Horizon `4aa6854`); the `mods` hook is named instead of pinned to a source target, so it survives an update that moves that point."
+
+[[versions]]
+version = "0.1.0"
+published = "2026-10-30"
+game = "26.3"
+file = "rightharvest-0.1.0.hnmod"
+sha256 = "a43870a89827c1d0fa861a663aa1781819b236f994191abf971c98125a3a4653"
+changelog = "First release: a native mod for Horizon 26.3. With an empty hand, right-click a ripe crop to harvest it with the game's own drops and sow it again from a seed you carry."

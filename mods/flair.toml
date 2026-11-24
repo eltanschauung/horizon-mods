@@ -1,7 +1,7 @@
 id = "flair"
 kind = "native-mod"
 name = "Flair"
-summary = "Custom accessory mod"
+summary = "Capes, hats, wings, pets and auras for your player, picked from an in-game catalog."
 description = "A cosmetics catalog for Horizon. Open it from the title screen or the pause menu and wear HD capes that move like cloth, animated bandanas with Japanese script, hats, wings, shoulder pets and auras with colour themes. Turn your player in a live preview, hide your armor, and add your own capes and Blockbench cosmetics with animations. Only you see them."
 authors = ["_idom_"]
 owners = ["umbx-dot"]
@@ -14,27 +14,14 @@ tags = ["cosmetics", "capes", "hats", "wings", "pets", "blockbench"]
 key = "RWT9Ujo/oCprPGHHiSLHFNOJV1ZzoJdAU6EdZyiQcBwT2iMXfiYms4hD"
 
 [[versions]]
-version = "1.0.1"
-published = "2026-11-06"
+version = "2.0.0"
+published = "2026-11-18"
 game = "26.3"
-file = "flair-1.0.1.hnmod"
-sha256 = "6f9abce8af586f448c5d450e394fda609ae02d0878851561ea884c0a17c9d76a"
+file = "flair-2.0.0.hmod"
+sha256 = "b2af06b5a90e5a3952f94b19f41300a342a6f0f489e56e240f336a7db164a8f9"
 signature = """
-untrusted comment: signature from minisign secret key\r
-RUT9Ujo/oCprPE95aTdyPbv21Jlzh61FMqzYiFgzQoTWZMN0huMrXPHNZn7wnGToMzY9QM6HrayTdJGzSsmLCJIoA1H5gtI7PAY=\r
-trusted comment: timestamp:1793995567\tfile:flair-1.0.1.hnmod\thashed\r
-OSdZh0w/9j58lFtRV4xF+vDBLO2Qn98KebWLLXYXYSGriZiHiTUZ6HcVXO7HIgZRwhHQPXjXyfL1KVrAaHuXCQ=="""
-changelog = "Works on Nightly 66f3981."
-
-[[versions]]
-version = "1.0.0"
-published = "2026-11-03"
-game = "26.3"
-file = "flair-1.0.0.hnmod"
-sha256 = "64e4d645d5bda3c363603d483af2095d6d3673d91803954f338d54265bf4fab5"
-signature = """
-untrusted comment: signature from minisign secret key\r
-RUT9Ujo/oCprPBIbqV9rmrjRgpF9gnCIL+4FlZXSTq0Qi4kkklSKfjNDx9YFIw1DuufGVSL3+lOieSX4Fx0nRl7j/CCUNjiWIQs=\r
-trusted comment: timestamp:1793723044\tfile:flair-1.0.0.hnmod\thashed\r
-QPCGNEAWFCaZLdZLgkUVY9v+hRP4/gJe4H2hCMh7YT7k/V4tynkQ0AM3hZqEdrBoPn4q5SFHDVIcloGkqCTzDw=="""
-changelog = "Initial Release."
+untrusted comment: signature from minisign secret key
+RUT9Ujo/oCprPPKgC1e5velDtykKlrBdYQYUfA1awVWKeytAPt90hb9JJfozWcMf8lihveIWaFVG2vNe8mgsAo40WxZZw1Rxowo=
+trusted comment: timestamp:1795017007	file:flair-2.0.0.hmod	hashed
+NYBM0WE39dwPZWrXHYXWOY3aqlAcCpLp0j8DLgLlssL32Nyy7yWnIXIGvK1uYtM3W6xOQdZgZQyQScnPLnInBQ=="""
+changelog = "Works with the new mod system and Horizon Nightly 2026-11-18 (0b14f8a). Your equipped cosmetics and your own cosmetics folder carry over."

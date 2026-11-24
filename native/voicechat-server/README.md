@@ -1,5 +1,8 @@
 # Voice chat server (Horizon native mod)
 
+> [!WARNING]
+> **Legacy.** This is the old `.hnmod` source. Launchers from 0.2.70 on can't load it. A port to the new mod SDK is tracked in [#1214](https://github.com/horizon-rust/horizon-mods/issues/1214).
+
 The server half of proximity voice chat on a Horizon dedicated server. Players who have a voice chat client mod
 (azetech's Complex Voice Chat, any client that speaks Simple Voice Chat 2.6.x's protocol over Horizon's mod
 messages) talk to the players near them, or to their group from anywhere. Players without one join and play as on
@@ -36,7 +39,7 @@ any server: the server sends them nothing.
 | `distance` | `48.0` | blocks a voice carries |
 | `whisper_distance` | `24.0` | |
 | `groups` | `true` | players may make and join groups |
-| `keep_alive_ms` | `1000` | a client silent 10 times this long shows as disconnected |
+| `keep_alive_ms` | `1000` | a client silent 10 times this long shows as disconnected; a value outside 100 to 60000 is read as the nearest of the two (`50` and `0` as 100), and clients are told the value used |
 | `mtu` | `1024` | |
 
 ## Files

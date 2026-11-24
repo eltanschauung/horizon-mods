@@ -1,0 +1,10 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.triple_pattern_template"
+    },
+    "!minecraft:cooking_fuel": {}
+  },
+  "max_stack_size": 16
+}

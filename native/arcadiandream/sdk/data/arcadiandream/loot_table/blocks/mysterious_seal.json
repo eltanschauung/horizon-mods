@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "predicate": {
+            "predicates": {
+              "minecraft:enchantments": [
+                {
+                  "levels": {
+                    "min": 1
+                  },
+                  "enchantments": "minecraft:silk_touch"
+                }
+              ]
+            }
+          },
+          "type": "minecraft:match_tool"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "arcadiandream:mysterious_seal"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

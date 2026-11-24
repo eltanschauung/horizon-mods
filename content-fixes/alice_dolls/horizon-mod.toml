@@ -1,0 +1,12 @@
+id = "alice_dolls"
+name = "Alice Dolls Restringed (assets)"
+version = "0.15.1"
+description = "The items, recipes, names and textures of Alice Dolls Restringed, a port of Alice's Dolls (1.7.10-kog3) by iwa_yukinoshita, used with permission. Needs alice_dolls_native. Some art (the doll bell, the doll anchor, the baubles) is Touhou Little Maid's, by TartaricAcid and others, CC BY-NC-SA 4.0."
+authors = ["iwa_yukinoshita (Alice's Dolls)", "TartaricAcid and others (Touhou Little Maid art)", "mxpbxb (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[dependencies]
+alice_dolls_native = "=0.42.4"
+thkaguyamod = "*"

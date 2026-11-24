@@ -1,0 +1,52 @@
+id = "eating_drinking_animation"
+name = "Eating and Drinking Animation"
+version = "0.2.0"
+description = "Animate a player's item arm and emit eating particles from the held item."
+authors = ["eltanschauung"]
+license = "MIT"
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "animation_support"
+file = "crates/horizon-client/src/game.rs"
+name = "fork_eating_drinking"
+source = "src/runtime.rs"
+
+[[native.mixin]]
+id = "tick"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::client_tick_post::Game::native_client_tick_post"
+helper = "src/hooks/tick.rs"
+bindings = [{name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self"}]
+
+[[native.mixin]]
+id = "particles"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::remote::Game::remote_player_eating"
+helper = "src/hooks/particles.rs"
+bindings = [
+  {name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self"},
+  {name = "item", ty = "&str", value = "item"},
+  {name = "ticks", ty = "u32", value = "ticks"},
+  {name = "at", ty = "[f64;3]", value = "at"},
+]
+
+[[native.mixin]]
+id = "local_particles"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::item_particles::Game::eat_particles"
+helper = "src/hooks/local_particles.rs"
+bindings = [
+  {name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self"},
+  {name = "stack", ty = "&ItemStack", value = "stack"},
+  {name = "count", ty = "u32", value = "count"},
+]

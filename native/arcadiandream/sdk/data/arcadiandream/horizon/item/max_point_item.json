@@ -1,0 +1,9 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.max_point_item"
+    },
+    "!minecraft:cooking_fuel": {}
+  }
+}

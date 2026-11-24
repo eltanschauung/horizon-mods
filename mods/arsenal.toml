@@ -1,0 +1,26 @@
+id = "arsenal"
+kind = "mod"
+name = "Arsenal (assets)"
+summary = "Ítems, modelos 3D, texturas, recetas y textos de Arsenal. Necesita el mod nativo Arsenal."
+description = """
+**Esta es una de las dos partes de [Arsenal](https://playhorizon.dev/mods/arsenal_core), y sola no hace nada.** Instala las dos: esta, los assets, y la parte nativa.
+
+Contiene los ítems, modelos 3D, texturas, textos, recetas y la pestaña creativa de Arsenal. No tiene código: el código, y la descripción de lo que hace el mod, están en Arsenal.
+
+Todo el arte es original, hecho para este proyecto (los modelos de las armas los genera `tools/gun_models.py`). No incluye assets de Minecraft ni de otros mods. MIT."""
+authors = ["stwby"]
+owners = ["stwbzy"]
+owner_ids = [77763929]
+license = "MIT"
+source = "https://github.com/stwbzy/horizon-arsenal"
+icon = "icons/arsenal.png"
+categories = ["equipment", "library"]
+tags = ["weapons", "guns", "assets"]
+
+[[versions]]
+version = "0.2.1"
+published = "2026-11-15"
+game = "26.3"
+file = "arsenal-0.2.1.hmod"
+sha256 = "ea778a1ef0c33dd74398a83c4ee49e02a08705a4e49a41f4a7bc10f400f98555"
+changelog = "Primera publicación en el registro. Assets de Arsenal; necesita Arsenal (arsenal_core)."

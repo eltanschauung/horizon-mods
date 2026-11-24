@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.bubble_shot"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 250
+  },
+  "max_stack_size": 1
+}

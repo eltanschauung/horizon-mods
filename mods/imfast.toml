@@ -24,19 +24,19 @@ Original copyright and licence notices are kept in this repository. Pinned to
 Horizon 1d63e0a and horizon-mixins 5a64af93. Help with the remaining thresholds
 is welcome.
 """
-authors = ["Gabriel Hiss", "AdLf0208"]
+authors = ["Bielhiss", "Gabriel Hiss", "AdLf0208"]
 owners = ["AdLf0208"]
 owner_ids = [107615167]
 license = "MIT"
-source = "https://github.com/AdLf0208/imfast"
+source = "https://github.com/AdLf0208/im_fast"
 icon = "icons/imfast.png"
 categories = ["game-mechanics", "utility"]
 tags = ["port", "movement", "server", "elytra"]
 
 [[versions]]
-version = "0.1.0"
+version = "0.2.1"
 published = "2026-11-09"
 game = "26.3"
-file = "imfast.hnmod"
-sha256 = "bf94eba0b926eae25b782b84f3c0f97de1dcb4c60200b2be15b640e80374a347"
+file = "imfast.hmod"
+sha256 = "3132ed18ca60e573bbb0d8702c17c78042fcc6287ffca5935e23d5da4c10e732"
 changelog = "First release: player and elytra movement checks disabled per world"

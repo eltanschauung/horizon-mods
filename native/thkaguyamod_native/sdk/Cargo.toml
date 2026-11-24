@@ -1,0 +1,11 @@
+[package]
+name = "mod-thkaguyamod_native"
+version = "0.6.1+sdk.1"
+edition = "2024"
+publish = false
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
+
+[dev-dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api", features = ["testing"] }

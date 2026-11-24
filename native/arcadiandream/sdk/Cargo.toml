@@ -1,0 +1,8 @@
+[package]
+name = "mod-arcadiandream"
+version = "0.1.0+sdk.2"
+edition = "2024"
+publish = false
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }

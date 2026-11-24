@@ -1,0 +1,18 @@
+{
+  "type": "arcadiandream:ritual_crafting",
+  "ingredients": [
+    "minecraft:nether_star",
+    "minecraft:gold_block",
+    "minecraft:emerald_block",
+    "minecraft:redstone_block",
+    "minecraft:blaze_rod",
+    "minecraft:redstone_block",
+    "minecraft:emerald_block",
+    "minecraft:gold_block",
+    "minecraft:gold_block",
+    "minecraft:gold_block"
+  ],
+  "result": {
+    "id": "arcadiandream:miracle_mallet"
+  }
+}

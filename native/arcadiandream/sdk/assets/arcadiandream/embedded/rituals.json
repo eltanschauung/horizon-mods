@@ -1,0 +1,232 @@
+{
+  "death_scythe_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "dimension": "the_nether",
+    "ingredients": [
+      "minecraft:stick",
+      "minecraft:stick",
+      "minecraft:stick",
+      "#c:iron_ingots",
+      "#c:iron_ingots",
+      "#c:iron_ingots",
+      "#c:iron_ingots",
+      "#c:iron_ingots",
+      "#minecraft:soul_fire_base_blocks",
+      "#minecraft:soul_fire_base_blocks",
+      "#minecraft:soul_fire_base_blocks",
+      "#minecraft:soul_fire_base_blocks",
+      "#minecraft:soul_fire_base_blocks",
+      "#minecraft:soul_fire_base_blocks",
+      "#minecraft:soul_fire_base_blocks",
+      "#minecraft:soul_fire_base_blocks"
+    ],
+    "result": {
+      "id": "arcadiandream:death_scythe"
+    }
+  },
+  "fairy_charm_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:sunflower",
+      "#minecraft:flowers",
+      "#minecraft:flowers",
+      "#minecraft:flowers",
+      "arcadiandream:bomb_item",
+      "#minecraft:saplings",
+      "#minecraft:saplings",
+      "#minecraft:saplings",
+      "arcadiandream:dragon_gem",
+      "arcadiandream:dragon_gem",
+      "arcadiandream:dragon_gem",
+      "arcadiandream:dragon_gem"
+    ],
+    "result": {
+      "id": "arcadiandream:fairy_charm"
+    }
+  },
+  "ghastly_lantern_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:lantern",
+      "arcadiandream:max_point_item",
+      "minecraft:paper",
+      "arcadiandream:max_point_item",
+      "arcadiandream:life_fragment",
+      "arcadiandream:max_point_item",
+      "minecraft:paper",
+      "arcadiandream:max_point_item"
+    ],
+    "result": {
+      "id": "arcadiandream:ghastly_lantern"
+    }
+  },
+  "hihiirokane_ingot_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "arcadiandream:hihiirokane_chunk",
+      "arcadiandream:hihiirokane_chunk",
+      "arcadiandream:hihiirokane_chunk",
+      "arcadiandream:hihiirokane_chunk",
+      "arcadiandream:hihiirokane_chunk",
+      "arcadiandream:hihiirokane_chunk",
+      "arcadiandream:hihiirokane_chunk",
+      "arcadiandream:hihiirokane_chunk",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot"
+    ],
+    "result": {
+      "id": "arcadiandream:hihiirokane_ingot"
+    }
+  },
+  "hisou_sword_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:blaze_rod",
+      "arcadiandream:dragon_gem",
+      "arcadiandream:dragon_gem"
+    ],
+    "result": {
+      "id": "arcadiandream:hisou_sword"
+    }
+  },
+  "hourai_elixir_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "dimension": "the_end",
+    "ingredients": [
+      "minecraft:nether_star",
+      "minecraft:enchanted_golden_apple",
+      "arcadiandream:time_orb",
+      "minecraft:enchanted_golden_apple",
+      "minecraft:nether_star",
+      "minecraft:enchanted_golden_apple",
+      "arcadiandream:time_orb",
+      "minecraft:enchanted_golden_apple",
+      "arcadiandream:life_fragment",
+      "arcadiandream:life_fragment",
+      "arcadiandream:life_fragment",
+      "arcadiandream:life_fragment",
+      "arcadiandream:life_fragment",
+      "arcadiandream:life_fragment",
+      "arcadiandream:life_fragment",
+      "arcadiandream:life_fragment"
+    ],
+    "result": {
+      "id": "arcadiandream:hourai_elixir"
+    }
+  },
+  "ibuki_gourd_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:chain",
+      "#minecraft:terracotta",
+      "minecraft:bucket",
+      "minecraft:paper",
+      "minecraft:paper"
+    ],
+    "result": {
+      "id": "arcadiandream:ibuki_gourd"
+    }
+  },
+  "icicle_sword_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "#minecraft:swords",
+      "arcadiandream:enchanted_ice",
+      "arcadiandream:enchanted_ice"
+    ],
+    "result": {
+      "id": "arcadiandream:icicle_sword"
+    }
+  },
+  "magatama_necklace_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:string",
+      "minecraft:string",
+      "minecraft:string",
+      "arcadiandream:dragon_gem",
+      "arcadiandream:bomb_item",
+      "arcadiandream:dragon_gem",
+      "minecraft:string",
+      "minecraft:string"
+    ],
+    "result": {
+      "id": "arcadiandream:magatama_necklace"
+    }
+  },
+  "miracle_mallet_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:nether_star",
+      "minecraft:gold_block",
+      "minecraft:emerald_block",
+      "minecraft:redstone_block",
+      "minecraft:blaze_rod",
+      "minecraft:redstone_block",
+      "minecraft:emerald_block",
+      "minecraft:gold_block",
+      "minecraft:gold_block",
+      "minecraft:gold_block"
+    ],
+    "result": {
+      "id": "arcadiandream:miracle_mallet"
+    }
+  },
+  "mochi_mallet_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:rabbit_hide",
+      "minecraft:stick",
+      "minecraft:stick",
+      "#minecraft:planks",
+      "#minecraft:planks",
+      "#minecraft:planks"
+    ],
+    "moon_phase": 0,
+    "result": {
+      "id": "arcadiandream:mochi_mallet"
+    }
+  },
+  "nue_trident_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:trident",
+      "#c:netherite_ingots",
+      "#c:diamonds",
+      "minecraft:spider_eye",
+      "minecraft:fire_charge",
+      "minecraft:spider_eye",
+      "#c:diamonds",
+      "#c:netherite_ingots",
+      "minecraft:prismarine_crystals",
+      "minecraft:prismarine_crystals",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot",
+      "arcadiandream:makaite_ingot"
+    ],
+    "result": {
+      "id": "arcadiandream:nue_trident"
+    }
+  },
+  "wall_passing_chisel_from_ritual_crafting": {
+    "type": "arcadiandream:ritual_crafting",
+    "ingredients": [
+      "minecraft:ender_pearl",
+      "#c:gold_ingots",
+      "minecraft:stick",
+      "#c:gold_ingots"
+    ],
+    "result": {
+      "id": "arcadiandream:wall_passing_chisel"
+    }
+  }
+}

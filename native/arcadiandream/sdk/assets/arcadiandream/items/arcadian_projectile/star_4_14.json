@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "arcadiandream:arcadian_projectile/star_4_14",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 16777215
+      },
+      {
+        "type": "minecraft:dye",
+        "default": 16711680
+      }
+    ]
+  }
+}

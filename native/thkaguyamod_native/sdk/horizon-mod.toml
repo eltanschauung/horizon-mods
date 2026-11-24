@@ -1,0 +1,13 @@
+id = "thkaguyamod_native"
+name = "Touhou Items"
+version = "0.6.1+sdk.1"
+description = "Touhou spell cards, danmaku, character weapons and Giga Torches."
+authors = ["kuro-anco", "mxpbxb"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "arcadiandream:triple_pattern_template",
+    "X": "#arcadiandream:items"
+  },
+  "pattern": [
+    "XXX",
+    "X#X",
+    "XXX"
+  ],
+  "result": {
+    "id": "arcadiandream:triple_pattern"
+  },
+  "show_notification": true
+}

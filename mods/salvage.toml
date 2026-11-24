@@ -1,0 +1,41 @@
+id = "salvage"
+kind = "mod"
+name = "Salvage"
+summary = "The all-recycling mod: smelt leather, wood, stone, diamond gear, shells and the elytra back into useful materials, and break down armour and tools at the crafti"
+description = """
+Nothing in that chest is trash anymore. Salvage — the all-recycling mod — turns old gear back into useful materials.
+
+Leather helmets from zombie drops, stone pickaxes you outgrew, diamond swords you are done with, an elytra you never fly, saddles from horses you never ride — put them in a furnace with any fuel and get leather, charcoal, cobblestone, diamonds, turtle scutes or phantom membrane back, plus a little experience for your trouble."""
+authors = ["CGRLabs"]
+owners = ["CGRLabs"]
+owner_ids = [213680048]
+license = "MIT"
+source = "https://github.com/CGRLabs/salvage"
+icon = "icons/salvage.png"
+categories = ["utility", "game-mechanics"]
+tags = ["smelting", "furnace", "crafting", "recycling", "quality-of-life", "survival", "vanilla-friendly", "leather", "scute"]
+key = "RWTDxzLUJVk6XFJWJw1WcVOeEbSCS1OUG9MkdU9b1q08Ynf54O92X64F"
+
+[[versions]]
+version = "1.2.0"
+published = "2026-11-12"
+game = "26.3"
+file = "salvage-1.2.0.hmod"
+sha256 = "6aa95ed89c3e23f20c47a87543eafa123b96bc3e1c3f231e6fc72359c26726f6"
+signature = """
+untrusted comment: signature from rsign secret key
+RUTDxzLUJVk6XAW7nh3jOcsiCBAZoXCcz/9/F70De53E4q/mCkjpjqlRCRYacQ5ljwuwhlzJg99pqLPDooOAmPTaxC6D3PwTaQs=
+trusted comment: salvage 1.2.0
+3sPPd3SEjBjNmP4oZ7BGAsY8cCcyH3R6t/35mmwzgCNZmWF/X6mbIwxKTNLHawJ/7sNX1y7525y3Ej3cHdKzDw=="""
+
+[[versions]]
+version = "1.0.0"
+published = "2026-11-10"
+game = "26.3"
+file = "salvage-1.0.0.hmod"
+sha256 = "9404e1a91b474118635ff2c743f41af2b03e809fe419ef7ab3d8f9d48dab5641"
+signature = """
+untrusted comment: signature from rsign secret key
+RUTDxzLUJVk6XKdTUZuQmUQtr02bFIk5LE6zwWODz/kLNpGs2OGVM5tpfhtdyAtMYak0k5MTW2Y2jq6hk+3vAKmlE4qf6C1lWQk=
+trusted comment: salvage 1.0.0
+Ado5T98mZ8dCjmZPrjadGDhZg2dZy/PewnhQ05B9nAA8eQlUbFTq26HRe082T4wrtO7Y7iZurXlMYtnuIgSNBg=="""

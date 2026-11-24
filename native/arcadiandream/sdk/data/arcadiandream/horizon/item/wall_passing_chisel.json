@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:stick",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.wall_passing_chisel"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 100
+  },
+  "max_stack_size": 1
+}

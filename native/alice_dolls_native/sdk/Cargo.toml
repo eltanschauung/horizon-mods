@@ -1,0 +1,8 @@
+[package]
+name = "mod-alice_dolls_native"
+version = "0.42.4+sdk.1"
+edition = "2024"
+publish = false
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }

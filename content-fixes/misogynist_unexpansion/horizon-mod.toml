@@ -1,0 +1,11 @@
+id = "misogynist_unexpansion"
+name = "Minecraft Misogynist Unexpansion (assets)"
+version = "0.1.0"
+description = "The recipes and items of Minecraft Misogynist Unexpansion: honey, glow ink, froglights, fish eggs and a Potion of Dolphin's Grace, crafted. Needs misogynist_unexpansion_native."
+authors = ["mxpbxb"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[dependencies]
+misogynist_unexpansion_native = "=0.16.0"

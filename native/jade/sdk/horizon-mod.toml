@@ -1,0 +1,196 @@
+id = "jade"
+name = "Jade"
+version = "26.3.9"
+description = "Inspection overlays and details for the thing under the crosshair."
+authors = ["Joeypc6", "eltanschauung"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "jade"
+file = "crates/horizon-client/src/game.rs"
+name = "jade"
+source = "src/mixins/jade.rs"
+
+[[native.module]]
+id = "jade-theme"
+file = "crates/horizon-client/src/game.rs"
+name = "jade_theme"
+source = "src/mixins/jade_theme.rs"
+
+[[native.module]]
+id = "jade-config"
+file = "crates/horizon-client/src/game.rs"
+name = "jade_config"
+source = "src/mixins/jade_config.rs"
+
+[[native.mixin]]
+id = "hud"
+kind = "AFTER_CALL"
+helper = "src/mixins/hud.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *batch" },
+]
+target = "horizon_client::game::extras::Game::draw_extras"
+selector = "self.native_render_gui_post"
+require = 1
+ordinal = 0
+result = "()"
+
+[[native.mixin]]
+id = "net-from-client"
+kind = "HEAD"
+helper = "src/mixins/net_from_client.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "phase", ty = "mod_api::ServerTickPhase", value = "phase" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_server_tick"
+
+[[native.mixin]]
+id = "net-from-server"
+kind = "HEAD"
+helper = "src/mixins/net_from_server.rs"
+bindings = [
+]
+target = "horizon_client::game::native_hooks::client_tick_post::Game::native_client_tick_post"
+
+[[native.mixin]]
+id = "hide-boss-bars"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::dragon::Game::draw_boss_bars"
+helper = "src/mixins/hide_boss_bars.rs"
+bindings = [
+    { name = "game", ty = "&Game<'_>", value = "&*self" },
+]
+
+[[native.mixin]]
+id = "item-mod-name"
+kind = "RETURN"
+target = "horizon_client::game::stations::Game::stack_tooltip"
+helper = "src/mixins/item_mod_name.rs"
+bindings = [
+    { name = "game", ty = "&Game<'_>", value = "&*self" },
+    { name = "stack", ty = "&ItemStack", value = "stack" },
+    { name = "lines", ty = "Vec<(horizon_client::text::Text, u32)>", value = "$value" },
+]
+
+[[native.mixin]]
+id = "jade-command"
+kind = "HEAD"
+helper = "src/mixins/jade_command.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "command", ty = "&str", value = "command" },
+]
+target = "horizon_client::game::commands::Game::run_command"
+cancellable = true
+
+[[native.mixin]]
+id = "config-frame"
+kind = "HEAD"
+helper = "src/mixins/frame.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+target = "horizon_client::game::native_hooks::render_frame_pre::Game::native_render_frame_pre"
+
+[[native.mixin]]
+id = "config-render-post"
+kind = "HEAD"
+helper = "src/mixins/screen_render_post.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *draw" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "&*screen" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_render_post"
+
+[[native.mixin]]
+id = "config-mouse-pressed"
+kind = "HEAD"
+helper = "src/mixins/screen_pressed.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "&*screen" },
+    { name = "button", ty = "i32", value = "button" },
+    { name = "modifiers", ty = "u32", value = "modifiers" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_mouse_button_pressed_pre"
+
+[[native.mixin]]
+id = "config-mouse-released"
+kind = "HEAD"
+helper = "src/mixins/screen_released.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "&*screen" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_mouse_button_released_pre"
+
+[[native.mixin]]
+id = "config-mouse-scrolled"
+kind = "HEAD"
+helper = "src/mixins/screen_scrolled.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "&*screen" },
+    { name = "scroll", ty = "[f64; 2]", value = "scroll" },
+    { name = "modifiers", ty = "u32", value = "modifiers" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_mouse_scrolled_pre"
+
+[[native.mixin]]
+id = "config-key-pressed"
+kind = "HEAD"
+helper = "src/mixins/screen_key.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "&*screen" },
+    { name = "key", ty = "&str", value = "key" },
+    { name = "repeat", ty = "bool", value = "repeat" },
+    { name = "modifiers", ty = "u32", value = "modifiers" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_key_pressed_pre"
+
+[[native.mixin]]
+id = "config-char-typed"
+kind = "HEAD"
+helper = "src/mixins/screen_typed.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "&*screen" },
+    { name = "c", ty = "char", value = "c" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_screen_char_typed_pre"
+
+[[native.mixin]]
+id = "themes-reloaded"
+kind = "HEAD"
+helper = "src/mixins/resources_reloaded.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_client_resources_reloaded"
+
+[[native.mixin]]
+id = "rule-world-open"
+kind = "HEAD"
+helper = "src/mixins/rule_world_open.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+target = "horizon_client::game::native_hooks::base::Game::native_server_started"

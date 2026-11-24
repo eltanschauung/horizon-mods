@@ -1,0 +1,55 @@
+id = "alice_dolls_native"
+name = "Alice Dolls"
+version = "0.42.4+sdk.1"
+description = "Collectible Alice dolls with individual AI, inventories and abilities."
+authors = ["iwa_yukinoshita (original Alice's Dolls)", "mxpbxb (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "doll-goal-engine"
+file = "crates/horizon-client/src/client_lib.rs"
+name = "alice_doll_goals"
+visibility = "pub(crate)"
+source = "src/mixins/goals.rs"
+
+[[native.mixin]]
+id = "doll-goals"
+kind = "HEAD"
+target = "horizon_client_lib::entity_behavior::before_mob_tick"
+helper = "src/mixins/goal_swap.rs"
+bindings = [{ name = "m", ty = "&mut crate::mobs::Mob", value = "_mob" }, { name = "w", ty = "&crate::mobs::MobWorld<'_>", value = "_world" }]
+
+[[native.mixin]]
+id = "doll-voice"
+kind = "RETURN"
+target = "horizon_client_lib::entity_behavior::silence_mob"
+helper = "src/mixins/doll_voice.rs"
+bindings = [{ name = "value", ty = "bool", value = "$value" }, { name = "m", ty = "&crate::mobs::Mob", value = "_mob" }]
+
+[[native.mixin]]
+id = "doll-egg"
+kind = "RETURN"
+target = "horizon_client_lib::entity_behavior::suppress_chicken_eggs"
+helper = "src/mixins/doll_voice.rs"
+bindings = [{ name = "value", ty = "bool", value = "$value" }, { name = "m", ty = "&crate::mobs::Mob", value = "_mob" }]
+
+[[native.mixin]]
+id = "doll-drop-protection"
+kind = "RETURN"
+target = "horizon_client_lib::entity_behavior::protect_dropped_item"
+helper = "src/mixins/doll_item_policy.rs"
+bindings = [{ name = "value", ty = "bool", value = "$value" }, { name = "item", ty = "&str", value = "_item" }]
+
+[[native.mixin]]
+id = "doll-menu-screen"
+kind = "RETURN"
+target = "horizon_client::game::menu_screens::blockless_menu_screen"
+helper = "src/mixins/doll_menu_screen.rs"
+bindings = [{ name = "value", ty = "Option<mod_api::Screen>", value = "$value" }, { name = "menu", ty = "&str", value = "_menu" }]

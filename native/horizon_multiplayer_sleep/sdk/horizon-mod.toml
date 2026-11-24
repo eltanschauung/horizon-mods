@@ -1,0 +1,21 @@
+id = "horizon_multiplayer_sleep"
+name = "Horizon Multiplayer Sleep"
+version = "0.2.0"
+description = "Skip the night when at least 33% of eligible players sleep."
+authors = ["eltanschauung"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "apply"
+target = "horizon_client::game::lan_actions::sleep::Game::sleepers_needed"
+kind = "HEAD"
+cancellable = true
+helper = "src/mixins/threshold.rs"
+bindings = [{ name = "active", ty = "i64", value = "active" }]

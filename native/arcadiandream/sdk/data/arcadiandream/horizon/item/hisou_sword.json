@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:diamond_sword",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.hisou_sword"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 1796,
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:hisou_sword_attack_damage",
+        "type": "minecraft:attack_damage",
+        "amount": 6,
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "id": "arcadiandream:hisou_sword_attack_speed",
+        "type": "minecraft:attack_speed",
+        "amount": -2,
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ],
+    "minecraft:repairable": {
+      "items": "arcadiandream:dragon_gem"
+    }
+  },
+  "max_stack_size": 1
+}

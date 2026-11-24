@@ -1,0 +1,38 @@
+id = "dynamiclights"
+name = "Better Dynamic Lights"
+version = "1.1.0+sdk.2"
+description = "Torches, lanterns and other glowing things light up the world as they move: held and dropped items, burning entities, glowing creatures, projectiles, TNT and minecarts, each with its own switch, and its own settings screen."
+authors = ["DeportedToHell"]
+license = "MIT"
+credits = "An original mod, written from scratch for Horizon by DeportedToHell."
+homepage = "https://github.com/DeportedToHell/MCRE-Mods/tree/main/betterdynamiclights"
+issues = "https://github.com/DeportedToHell/MCRE-Mods/issues/new?template=bug-better-dynamic-lights.yml"
+# A native mod: Rust in src/, compiled by the launcher against the game build [native] pins. A client mod
+# with an optional server part (what the client can't see of other entities, sent as the mod's payloads).
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+# What our Mod Menu shows of the mod; its Configure opens the mod's settings screen.
+[properties]
+modmenu_config = true
+modmenu_description_ru = "Факелы, фонари и другие светящиеся вещи освещают мир на ходу: предметы в руках и на земле, горящие сущности, светящиеся существа, снаряды, динамит и вагонетки, у каждого вида свой переключатель, и свой экран настроек."
+modmenu_badges = "client"
+modmenu_sources = "https://github.com/DeportedToHell/MCRE-Mods/tree/main/betterdynamiclights"
+
+[native]
+game = "26.3"
+horizon = "8a2aacbe9fcb988655e6b790ea9d71e6a3a15722"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "scalar-light-sources"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::dynamic_lights::Game::gather_dynamic_lights"
+helper = "src/mixins/scalar-light-sources.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "camera", ty = "glam::DVec3", value = "camera" },
+  { name = "alpha", ty = "f64", value = "alpha" },
+]

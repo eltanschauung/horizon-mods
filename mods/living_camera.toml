@@ -12,10 +12,11 @@ A camera that moves with you. It leans into strafes, tips as you jump and fall, 
 - **Step bob**: a soft bounce in step with your walking, on top of vanilla's.
 - **Idle breathing** and **Speed FOV** (off by default).
 - **Hand sway**: the held item lags behind fast turns and leans with the camera.
+- **Presets** (Subtle, Default, Cinematic, PvP), **damage shake**, and calmer effects **while aiming** or **riding mounts**.
 
-Every effect has its own strength (OFF to 200%), plus overall intensity, smoothness and bounce presets, how much stays while swimming or flying, when fast travel fades it out (elytra, boats, minecarts, so it stays out of flight mods' way) and the lean direction. All in Options > Mods > Living Camera, with a key to toggle it in game.
+Every effect has its own strength, plus overall intensity, smoothness and bounce presets. All in Mods > Living Camera > Config, with a key to toggle it in game.
 
-Client side only: it works in single player and on any server. It reads only your own position, view and the block at your eyes, with no network or file access beyond its own settings.
+Client side only: it works in single player and on any server. It uses only the mod API's hooks, with no game patches, no network and no file access beyond its own settings.
 
 Source: https://github.com/selfmonoraque5/living-camera
 
@@ -30,9 +31,9 @@ categories = ["utility"]
 tags = ["camera", "immersion", "client-side", "animation", "fov", "view-bobbing"]
 
 [[versions]]
-version = "1.0.0"
-published = "2026-11-09"
+version = "2.0.0"
+published = "2026-11-20"
 game = "26.3"
-file = "living_camera-1.0.0.hnmod"
-sha256 = "77c59380d6359497a879b29db1b9ae92b4cdd19d7f6e16ca3429cb872904ebb0"
-changelog = "First release"
+file = "living_camera-2.0.0.hmod"
+sha256 = "a95efe99b2a13d7912518f6fa37cc178a3637b07e00301c6fa46ac9f06b0f101"
+changelog = "Rebuilt on Horizon's new mod API (the .hmod SDK) for Nightly 2026-11-19 f00125f. Same effects and presets; settings now open from Mods > Living Camera > Config and start from the defaults once."

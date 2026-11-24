@@ -1,0 +1,8 @@
+{
+  "sound_event": "arcadiandream:music_disc.fairy_playground",
+  "description": {
+    "translate": "item.arcadiandream.music_disc_fairy_playground.desc"
+  },
+  "length_in_seconds": 180,
+  "comparator_output": 10
+}

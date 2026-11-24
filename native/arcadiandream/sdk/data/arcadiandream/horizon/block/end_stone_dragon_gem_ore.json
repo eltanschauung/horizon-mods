@@ -1,0 +1,8 @@
+{
+  "template": "minecraft:end_stone",
+  "properties": {
+    "hardness": 12,
+    "light": 6
+  },
+  "item": true
+}

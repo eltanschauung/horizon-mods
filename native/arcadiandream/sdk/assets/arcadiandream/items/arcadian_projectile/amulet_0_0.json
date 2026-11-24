@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "arcadiandream:arcadian_projectile/amulet_0_0",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 16777215
+      },
+      {
+        "type": "minecraft:dye",
+        "default": 16711680
+      }
+    ]
+  }
+}

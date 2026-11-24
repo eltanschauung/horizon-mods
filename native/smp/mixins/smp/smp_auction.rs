@@ -60,7 +60,10 @@ const CATEGORY_SLOTS: [usize; 21] = [
 #[serde(default)]
 pub struct Config {
     pub enabled: bool,
-    /// Listings one player may have at once.
+    /// Listings one player may have at once, to start with; one more for
+    /// every `listing_every_hours` hours played here, up to `max_listings`.
+    pub start_listings: usize,
+    pub listing_every_hours: i64,
     pub max_listings: usize,
     /// How long a fixed-price listing stays.
     pub listing_hours: i64,
@@ -77,7 +80,9 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             enabled: true,
-            max_listings: 8,
+            start_listings: 5,
+            listing_every_hours: 2,
+            max_listings: 50,
             listing_hours: 48,
             auction_hours: 12,
             auction_hours_max: 24,
@@ -321,6 +326,11 @@ pub struct AuctionHouse {
     dirty: bool,
     /// The open menus: window and page.
     pub views: HashMap<u128, (Option<i32>, Page)>,
+    /// The cells each open menu was last drawn with (`draw`): a click means
+    /// what the player saw in that slot, not what is there now. Listings
+    /// come and go, and a listing ends, while a menu stays open without
+    /// being drawn again.
+    shown: HashMap<u128, Vec<Cell>>,
     /// The players on (the glue sets it once a second): a line to one who
     /// isn't waits as a note.
     pub online: HashSet<u128>,
@@ -409,6 +419,7 @@ impl AuctionHouse {
             data,
             dirty: false,
             views: HashMap::new(),
+            shown: HashMap::new(),
             online: HashSet::new(),
             problems: Vec::new(),
         }
@@ -514,6 +525,17 @@ impl AuctionHouse {
         }
     }
 
+    /// How many listings a player may have at once after `played` seconds
+    /// here.
+    pub fn listing_limit(&self, played: i64) -> usize {
+        let every = self.config.listing_every_hours.max(1);
+        let more = (played.max(0) / 3600 / every) as usize;
+        self.config
+            .start_listings
+            .saturating_add(more)
+            .min(self.config.max_listings)
+    }
+
     /// Runs `/ah ...`; None for another command. `bag`: the acting player's
     /// items; `trades`: survival or adventure.
     #[allow(clippy::too_many_arguments)]
@@ -523,6 +545,7 @@ impl AuctionHouse {
         me: &Player,
         trades: bool,
         bag: &mut dyn Hand,
+        played: i64,
         now: i64,
         line: &str,
     ) -> Option<Reply> {
@@ -551,23 +574,30 @@ impl AuctionHouse {
                 Filter::Search(q.join(" ").to_ascii_lowercase()),
                 0,
             ))),
-            ["sell", price] => out(self.list(economy, me, bag, price, None, None, now)),
+            ["sell", price] => out(self.list(economy, me, bag, played, price, None, None, now)),
             ["sell", price, count] => match count.parse::<u32>() {
-                Ok(c) => out(self.list(economy, me, bag, price, Some(c), None, now)),
+                Ok(c) => out(self.list(economy, me, bag, played, price, Some(c), None, now)),
                 Err(_) => err("Usage: /ah sell <price> [count]"),
             },
             ["auction", start] => out(self.list(
                 economy,
                 me,
                 bag,
+                played,
                 start,
                 None,
-                Some(self.config.auction_hours),
+                // The default length is held to the longest, like a given one.
+                Some(
+                    self.config
+                        .auction_hours
+                        .min(self.config.auction_hours_max)
+                        .max(1),
+                ),
                 now,
             )),
             ["auction", start, hours] => match hours.parse::<i64>() {
                 Ok(h) if (1..=self.config.auction_hours_max).contains(&h) => {
-                    out(self.list(economy, me, bag, start, None, Some(h), now))
+                    out(self.list(economy, me, bag, played, start, None, Some(h), now))
                 }
                 _ => err(&format!(
                     "An auction lasts 1 to {} hours.",
@@ -607,6 +637,7 @@ impl AuctionHouse {
         economy: &mut Economy,
         me: &Player,
         bag: &mut dyn Hand,
+        played: i64,
         price: &str,
         count: Option<u32>,
         hours: Option<i64>,
@@ -623,11 +654,11 @@ impl AuctionHouse {
             .iter()
             .filter(|l| l.seller == mine)
             .count()
-            >= self.config.max_listings
+            >= self.listing_limit(played)
         {
             return err(format!(
-                "You may have {} listings at once.",
-                self.config.max_listings
+                "You may have {} listings at once: play longer for more.",
+                self.listing_limit(played)
             ));
         }
         let held = match bag.held_whole() {
@@ -1151,9 +1182,28 @@ impl AuctionHouse {
         cells
     }
 
-    /// What a click on `slot` of `uuid`'s menu means; a new page is kept.
-    pub fn click(&mut self, uuid: u128, cats: &[Category], slot: usize, now: i64) -> Click {
+    /// The page `uuid` sees, as cells, kept as what their menu now shows:
+    /// the glue draws every page with it.
+    pub fn draw(&mut self, uuid: u128, cats: &[Category], now: i64) -> Vec<Cell> {
         let cells = self.layout(uuid, cats, now);
+        self.shown.insert(uuid, cells.clone());
+        cells
+    }
+
+    /// `uuid`'s menu closed.
+    pub fn close(&mut self, uuid: u128) {
+        self.views.remove(&uuid);
+        self.shown.remove(&uuid);
+    }
+
+    /// What a click on `slot` of `uuid`'s menu means; a new page is kept.
+    /// The slot is read as it was last drawn: a listing that moved since
+    /// (one sold, ended or was listed before it) is still the one clicked.
+    pub fn click(&mut self, uuid: u128, cats: &[Category], slot: usize, now: i64) -> Click {
+        let cells = match self.shown.get(&uuid) {
+            Some(c) => c.clone(),
+            None => self.layout(uuid, cats, now),
+        };
         let Some(view) = self.views.get_mut(&uuid) else {
             return Click::Nothing;
         };
@@ -1491,7 +1541,7 @@ mod tests {
         now: i64,
         line: &str,
     ) -> Vec<Out> {
-        match ah.command(e, me, true, bag, now, line) {
+        match ah.command(e, me, true, bag, 0, now, line) {
             Some(Reply::Out(o)) => o,
             other => panic!("{line}: {other:?}"),
         }
@@ -1574,7 +1624,7 @@ mod tests {
         );
         // Creative players can't list or buy.
         assert!(matches!(
-            ah.command(&mut e, &alex, false, &mut bag, T0, "ah sell 10"),
+            ah.command(&mut e, &alex, false, &mut bag, 0, T0, "ah sell 10"),
             Some(Reply::Out(o)) if matches!(&o[0], Out::Error(_))
         ));
         run(&mut ah, &mut e, &alex, &mut bag, T0, "ah sell 5000 5");
@@ -1606,12 +1656,59 @@ mod tests {
         assert_eq!(e.balance(STEVE), 11_000);
         // The listing limit.
         let mut many = holding("dirt", 64);
-        for _ in 1..8 {
+        for _ in 1..5 {
             run(&mut ah, &mut e, &alex, &mut many, T0, "ah sell 1 1");
         }
         assert_eq!(
             run(&mut ah, &mut e, &alex, &mut many, T0, "ah sell 1 1"),
-            [Out::Error("You may have 8 listings at once.".into())]
+            [Out::Error(
+                "You may have 5 listings at once: play longer for more.".into()
+            )]
+        );
+    }
+
+    #[test]
+    fn listing_limit_grows_one_per_two_hours_up_to_fifty() {
+        let (_e, ah, _dir) = setup("limit");
+        assert_eq!(ah.listing_limit(0), 5);
+        assert_eq!(ah.listing_limit(2 * 3600 - 1), 5);
+        assert_eq!(ah.listing_limit(2 * 3600), 6);
+        assert_eq!(ah.listing_limit(90 * 3600), 50);
+        assert_eq!(ah.listing_limit(1000 * 3600), 50);
+    }
+
+    #[test]
+    fn an_auction_without_a_length_never_outlasts_the_longest_one() {
+        let (mut e, mut ah, _dir) = setup("default-hours");
+        // `auction_hours` (12 by default) is longer than the longest allowed.
+        ah.config.auction_hours_max = 6;
+        let mut alex = holding("emerald", 3);
+        let out = run(
+            &mut ah,
+            &mut e,
+            &p(ALEX, "Alex"),
+            &mut alex,
+            T0,
+            "ah auction 100",
+        );
+        assert!(
+            matches!(&out[0], Out::Reply(s) if s.contains("ends in 6h")),
+            "{out:?}"
+        );
+        assert_eq!(ah.listing(1).unwrap().ends, T0 + 6 * 3_600_000);
+        // A given length is held to the same limit.
+        let mut alex = holding("emerald", 3);
+        let out = run(
+            &mut ah,
+            &mut e,
+            &p(ALEX, "Alex"),
+            &mut alex,
+            T0,
+            "ah auction 100 7",
+        );
+        assert!(
+            matches!(&out[0], Out::Error(s) if s.contains("1 to 6 hours")),
+            "{out:?}"
         );
     }
 
@@ -1829,6 +1926,58 @@ mod tests {
             ah.label(l, T0, &money)
                 .starts_with("#4 32 Oak Log · 16 coins (0.50 each) · Alex · 2d 0h left")
         );
+    }
+
+    #[test]
+    fn a_click_buys_the_listing_drawn_in_its_slot_after_the_list_moved() {
+        let (mut e, mut ah, _dir) = setup("moved");
+        let alex = p(ALEX, "Alex");
+        let cats = super::super::smp_shop::Config::default().categories;
+        let sell = |ah: &mut AuctionHouse, e: &mut Economy, item: &str, n: u32, price: &str| {
+            run(
+                ah,
+                e,
+                &alex,
+                &mut holding(item, n),
+                T0,
+                &format!("ah sell {price}"),
+            );
+        };
+        sell(&mut ah, &mut e, "diamond", 1, "100");
+        sell(&mut ah, &mut e, "wheat", 64, "640");
+        // Steve's menu shows the wheat (#2, 10 each), then the diamond (#1).
+        ah.views
+            .insert(STEVE, (Some(1), Page::List(Filter::All, 0)));
+        let drawn = ah.draw(STEVE, &cats, T0);
+        assert_eq!(drawn[..2], [Cell::Listing(2), Cell::Listing(1)]);
+        // Before he clicks, Alex lists cheaper oak logs (#3): they sort
+        // first, and the wheat and the diamond move one slot along.
+        sell(&mut ah, &mut e, "oak_log", 64, "1");
+        assert_eq!(ah.layout(STEVE, &cats, T0)[0], Cell::Listing(3));
+        // Steve clicks the wheat he sees in slot 0: the wheat is what he buys.
+        assert_eq!(ah.click(STEVE, &cats, 0, T0), Click::Redraw);
+        assert!(matches!(ah.views[&STEVE].1, Page::Confirm(2, _)));
+        ah.draw(STEVE, &cats, T0);
+        assert_eq!(ah.click(STEVE, &cats, CONFIRM, T0), Click::Buy(2));
+        // Back on the list; a listing sold meanwhile no longer shifts the
+        // diamond under his cursor onto something else.
+        ah.views
+            .insert(STEVE, (Some(1), Page::List(Filter::All, 0)));
+        assert_eq!(
+            ah.draw(STEVE, &cats, T0)[..3],
+            [Cell::Listing(3), Cell::Listing(2), Cell::Listing(1)]
+        );
+        ah.withdraw(&alex, 2);
+        assert_eq!(ah.click(STEVE, &cats, 2, T0), Click::Redraw);
+        assert!(matches!(ah.views[&STEVE].1, Page::Confirm(1, _)));
+        // A listing that went before the click: no purchase, nothing else.
+        ah.views
+            .insert(STEVE, (Some(1), Page::List(Filter::All, 0)));
+        ah.draw(STEVE, &cats, T0);
+        ah.withdraw(&alex, 3);
+        assert_eq!(ah.click(STEVE, &cats, 0, T0), Click::Redraw);
+        ah.draw(STEVE, &cats, T0);
+        assert_eq!(ah.click(STEVE, &cats, CONFIRM, T0), Click::Nothing);
     }
 
     #[test]

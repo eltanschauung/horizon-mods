@@ -1,0 +1,26 @@
+{
+  "template": "minecraft:iron_chestplate",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.makaite_chestplate"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 384,
+    "minecraft:equippable": {
+      "slot": "chest",
+      "asset_id": "arcadiandream:makaite"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:makaite_chestplate_armor",
+        "type": "minecraft:armor",
+        "amount": 5,
+        "operation": "add_value",
+        "slot": "chest"
+      }
+    ]
+  }
+}

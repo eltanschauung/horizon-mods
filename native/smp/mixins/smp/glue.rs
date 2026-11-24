@@ -44,7 +44,7 @@ use std::{path::PathBuf, sync::Mutex};
 /// The mod's id, name and version.
 pub const ID: &str = "smp";
 pub const NAME: &str = "SMP";
-pub const VERSION: &str = "0.36.0";
+pub const VERSION: &str = "0.36.1";
 
 /// `config.json` in `world/horizon-smp/`, written with its defaults the
 /// first time, and again with the keys a newer version adds (values kept).
@@ -163,6 +163,8 @@ const RTP_TICKET: &str = "smp:rtp";
 /// The players who left (`player_left`), with where they stood when the
 /// server still listed them, and when.
 static LEFT: Mutex<Vec<(u128, String, Option<Place>, i64)>> = Mutex::new(Vec::new());
+/// Spawn news for `Places`, from the hooks: a join, a respawn, or a spawn point set (the cause).
+static SPAWNS: Mutex<Vec<(u128, &'static str)>> = Mutex::new(Vec::new());
 /// What each `/rtp`'s reads cost the Overworld's tick, by player: reads,
 /// total and longest (µs), for the line logged when they land.
 static RTP_COST: Mutex<Vec<(u128, u32, u64, u64)>> = Mutex::new(Vec::new());
@@ -467,6 +469,7 @@ pub fn commands(commands: &mut Vec<NativeCommand>) {
         "claim show",
         "unclaim",
         "claims",
+        "claims map",
         "trust <player:word>",
         "untrust <player:word>",
         "sidebar",
@@ -707,6 +710,18 @@ pub(in crate::game) fn level_ticked(game: &mut Game<'_>, dimension: &str) {
         return;
     };
     let game = &*game;
+    // The columns an `/rtp` drew are asked about first, from the generator: no chunk is loaded for them, and
+    // only the dry land's chunks are held.
+    places.rtp_screen(&mut |columns| {
+        let seen = game.native_terrain_surface(smp_places::OVERWORLD, columns).ok()?;
+        Some(
+            seen.into_iter()
+                .map(|c| {
+                    c.map(|c| smp_places::Terrain { block: c.block, water: c.water, biome: c.biome })
+                })
+                .collect(),
+        )
+    });
     let mut cost = RTP_COST.lock().unwrap_or_else(|e| e.into_inner());
     places.rtp_look(&mut |uuid, (cx, cz)| {
         let started = std::time::Instant::now();
@@ -1127,6 +1142,30 @@ pub(in crate::game) fn player_left(game: &mut Game<'_>, uuid: u128, name: &str) 
     let now = chrono::Utc::now().timestamp_millis();
     LEFT.lock().unwrap_or_else(|e| e.into_inner()).push((uuid, name.to_owned(), at, now));
     BUSY.store(true, std::sync::atomic::Ordering::Relaxed);
+}
+
+/// A joining, respawning or spawn-setting player, for `/rtp`'s random start (`Places::arrived`, `respawned`,
+/// `spawn_point`).
+pub(in crate::game) fn spawn_news(game: &mut Game<'_>, uuid: u128, kind: &'static str) {
+    if !game.native_on(ID) {
+        return;
+    }
+    SPAWNS.lock().unwrap_or_else(|e| e.into_inner()).push((uuid, kind));
+    BUSY.store(true, std::sync::atomic::Ordering::Relaxed);
+}
+
+/// Hands the spawn news to `Places`.
+fn note_spawns(smp: &mut Smp) {
+    let news = std::mem::take(&mut *SPAWNS.lock().unwrap_or_else(|e| e.into_inner()));
+    if let Ok(p) = &mut smp.places {
+        for (uuid, kind) in news {
+            match kind {
+                "join" => p.arrived(uuid),
+                "respawn" => p.respawned(uuid),
+                cause => p.spawn_point(uuid, cause),
+            }
+        }
+    }
 }
 
 /// The players who left since the last look, into `last_positions.json`.
@@ -1628,7 +1667,7 @@ pub(in crate::game) fn menu_closed(game: &mut Game<'_>, uuid: u128, window: i32)
     if let Some(a) = &mut smp.auction
         && a.views.get(&uuid).is_some_and(|v| v.0 == Some(window))
     {
-        a.views.remove(&uuid);
+        a.close(uuid);
         return;
     }
     // A round under way carries on and is paid all the same.
@@ -2267,9 +2306,10 @@ fn ah_command(game: &mut Game<'_>, smp: &mut Smp, me: &Player, trades: bool, now
         return vec![Out::Error("The economy is off: its file can't be read (see the server log).".into())];
     };
     e.seen(me.uuid, &me.name);
+    let played = smp.places.as_ref().map_or(0, |p| p.played_seconds(me.uuid));
     let reply = {
         let mut bag = GameBag(game);
-        a.command(e, me, trades, &mut bag, now, line)
+        a.command(e, me, trades, &mut bag, played, now, line)
     };
     match reply {
         Some(smp_auction::Reply::Out(out)) => out,
@@ -2296,7 +2336,7 @@ fn open_ah(game: &mut Game<'_>, smp: &mut Smp, uuid: u128, page: smp_auction::Pa
             Vec::new()
         }
         None => {
-            a.views.remove(&uuid);
+            a.close(uuid);
             vec![Out::Error("The auction house couldn't open.".into())]
         }
     }
@@ -2309,16 +2349,18 @@ fn named_stack(item: &str, count: u32, name: &str, color: &str) -> ItemStack {
     stack
 }
 
-/// The auction house menu's cells as items.
-fn ah_items(smp: &Smp, uuid: u128) -> Vec<Option<ItemStack>> {
-    let Some(a) = &smp.auction else {
+/// The auction house menu's cells as items; the cells are kept as what the
+/// player sees, so a click means the listing drawn in its slot.
+fn ah_items(smp: &mut Smp, uuid: u128) -> Vec<Option<ItemStack>> {
+    let now = chrono::Utc::now().timestamp_millis();
+    let Some(a) = &mut smp.auction else {
         return Vec::new();
     };
+    let cells = a.draw(uuid, &smp.shop_config.categories, now);
+    let a = &*a;
     let economy = smp.economy.as_ref().ok();
     let money = |n: i64| economy.map_or_else(|| n.to_string(), |e| e.money(n));
-    let now = chrono::Utc::now().timestamp_millis();
-    let cats = &smp.shop_config.categories;
-    a.layout(uuid, cats, now)
+    cells
         .into_iter()
         .map(|cell| {
             use smp_auction::Cell as C;
@@ -2410,7 +2452,7 @@ fn ah_clicked(game: &mut Game<'_>, smp: &mut Smp, uuid: u128, slot: i32) {
     let out = match click {
         Click::Nothing => return,
         Click::Close => {
-            a.views.remove(&uuid);
+            a.close(uuid);
             game.native_close_menu(uuid);
             return;
         }
@@ -2498,6 +2540,7 @@ pub(in crate::game) fn tick(game: &mut Game<'_>) {
         }
     }
     note_leavers(smp);
+    note_spawns(smp);
     // `/vanish`, once a second: the game told who is hidden (after a
     // restart), and the subtitle sent to each vanished player on.
     let vanished = smp.vanish.as_ref().map(|v| v.quiet()).unwrap_or_default();

@@ -1,0 +1,31 @@
+pub fn register(models: &mut Vec<String>) {
+    models.extend(
+        [
+            "arcadiandream:arcadian_render/entity_equipment_humanoid_hihiirokane",
+            "arcadiandream:arcadian_render/entity_equipment_humanoid_makaite",
+            "arcadiandream:arcadian_render/entity_equipment_humanoid_leggings_hihiirokane",
+            "arcadiandream:arcadian_render/entity_equipment_humanoid_leggings_makaite",
+            "arcadiandream:arcadian_render/entity_fairy_fairy_blue",
+            "arcadiandream:arcadian_render/entity_fairy_fairy_green",
+            "arcadiandream:arcadian_render/entity_fairy_fairy_red",
+            "arcadiandream:arcadian_render/entity_fairy_fairy_wings",
+            "arcadiandream:arcadian_render/entity_fairy_fairy_yellow",
+            "arcadiandream:arcadian_render/entity_fairy_ice_fairy",
+            "arcadiandream:arcadian_render/entity_fairy_ice_fairy_wings",
+            "arcadiandream:arcadian_render/entity_fairy_sunflower_fairy",
+            "arcadiandream:arcadian_render/entity_fairy_sunflower_fairy_wings",
+            "arcadiandream:arcadian_render/entity_villager_profession_antiquarian",
+            "arcadiandream:arcadian_render/entity_zombie_villager_profession_antiquarian",
+            "arcadiandream:arcadian_render/models_armor_hihiirokane_layer_1",
+            "arcadiandream:arcadian_render/models_armor_hihiirokane_layer_2",
+            "arcadiandream:arcadian_render/models_armor_makaite_layer_1",
+            "arcadiandream:arcadian_render/models_armor_makaite_layer_2",
+            "arcadiandream:arcadian_render/models_armor_ordinary_armor",
+            "arcadiandream:arcadian_render/models_item_folding_chair",
+            "arcadiandream:arcadian_render/models_item_nue_trident",
+            "arcadiandream:arcadian_render/models_trinket_magatama_necklace",
+        ]
+        .into_iter()
+        .map(str::to_owned),
+    );
+}

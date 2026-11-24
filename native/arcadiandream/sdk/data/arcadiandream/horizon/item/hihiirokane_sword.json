@@ -1,0 +1,32 @@
+{
+  "template": "minecraft:netherite_sword",
+  "components": {
+    "minecraft:item_name": {
+      "translate": "item.arcadiandream.hihiirokane_sword"
+    },
+    "!minecraft:cooking_fuel": {},
+    "minecraft:max_damage": 2561,
+    "minecraft:repairable": {
+      "items": "arcadiandream:hihiirokane_ingot"
+    },
+    "minecraft:damage_resistant": {
+      "types": "#minecraft:is_fire"
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "id": "arcadiandream:hihiirokane_sword_attack_damage",
+        "type": "minecraft:attack_damage",
+        "amount": 8,
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "id": "arcadiandream:hihiirokane_sword_attack_speed",
+        "type": "minecraft:attack_speed",
+        "amount": -2.4,
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ]
+  }
+}

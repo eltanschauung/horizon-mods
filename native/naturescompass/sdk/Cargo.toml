@@ -1,0 +1,12 @@
+[package]
+name = "naturescompass_native"
+version = "1.9.7-horizon.3"
+edition = "2024"
+license = "CC-BY-NC-SA-4.0"
+publish = false
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
+
+[dev-dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api", features = ["testing"] }

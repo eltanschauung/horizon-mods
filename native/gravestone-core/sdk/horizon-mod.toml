@@ -1,0 +1,141 @@
+id = "gravestone_core"
+name = "Gravestone Mod"
+version = "1.1.0"
+description = "Recover items from gravestones with an obituary and minimap waypoints."
+authors = ["wareal-nah", "eltanschauung"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "glue"
+file = "crates/horizon-client/src/game.rs"
+name = "gravestone_glue"
+source = "src/mixins/gravestone_glue.rs"
+
+[[native.mixin]]
+id = "loot-drops"
+kind = "WRAP_OPERATION"
+target = "horizon_client::game::native_hooks::living_drops::Game::native_living_drops"
+helper = "src/mixins/loot_drops.rs"
+bindings = [
+    { name = "game", ty = "&mut Game<'_>", value = "$receiver" },
+    { name = "call", ty = "mod_api::__private::LivingDropsCall<'_>", value = "$arg0" },
+    { name = "run", ty = "impl FnOnce(&mut Game<'_>, mod_api::__private::LivingDropsCall<'_>) -> ()", value = "$operation" },
+]
+selector = "self.fire_living_drops"
+require = 1
+ordinal = 0
+
+[[native.mixin]]
+id = "player-respawned"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_player_respawned"
+helper = "src/mixins/player_respawned.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "player", ty = "u128", value = "player" },
+    { name = "name", ty = "&str", value = "name" },
+]
+
+[[native.mixin]]
+id = "right-click-block"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_right_click_block"
+helper = "src/mixins/right_click_block.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "click", ty = "&mod_api::BlockClick<'_>", value = "click" },
+    { name = "result", ty = "&mut mod_api::InteractionResult", value = "&mut *cancellation_result" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+
+[[native.mixin]]
+id = "destroy-block"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_break_block"
+helper = "src/mixins/destroy_block.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "pos", ty = "[i32; 3]", value = "pos" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+
+[[native.mixin]]
+id = "tick"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::client_tick_post::Game::native_client_tick_post"
+helper = "src/mixins/tick.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[native.mixin]]
+id = "use-item"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::right_click_item::Game::native_right_click_item"
+helper = "src/mixins/use_item.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "click", ty = "&mod_api::ItemClick<'_>", value = "click" },
+    { name = "result", ty = "&mut mod_api::InteractionResult", value = "&mut *cancellation_result" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+
+[[native.mixin]]
+id = "drop-inventory"
+kind = "HEAD"
+target = "horizon_client::game::item_entities::Game::drop_inventory"
+helper = "src/mixins/drop_inventory.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "dying", ty = "&crate::game::creatures::DyingDrops<'_>", value = "dying" },
+]
+
+[[native.mixin]]
+id = "screen-post"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_screen_render_post"
+helper = "src/mixins/screen_post.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "&mut *draw" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+]
+
+[[native.mixin]]
+id = "mouse-press"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_screen_mouse_button_pressed_pre"
+helper = "src/mixins/mouse_press.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+    { name = "screen", ty = "&mod_api::ScreenView<'_>", value = "screen" },
+    { name = "button", ty = "i32", value = "button" },
+    { name = "modifiers", ty = "u32", value = "modifiers" },
+    { name = "canceled", ty = "&mut bool", value = "&mut *canceled" },
+]
+
+[[native.mixin]]
+id = "grave-radar"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_level_tick_post"
+helper = "src/mixins/radar.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "level", ty = "mod_api::LevelRef", value = "level" },
+]
+
+[[native.mixin]]
+id = "grave-obituary-tick"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::base::Game::native_player_tick_post"
+helper = "src/mixins/obituary_tick.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
