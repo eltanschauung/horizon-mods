@@ -8,4 +8,4 @@ side = "both"
 capabilities = ["registries"]
 
 [dependencies]
-thmobs_native = "=0.9.6"
+thmobs_native = "=0.9.8"
