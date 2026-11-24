@@ -8,8 +8,13 @@ use std::collections::{BTreeMap, HashSet};
 use std::sync::atomic::{Ordering};
 use std::sync::Arc;
 
+/// Whether `m` is a doll mob, named or not.
+fn doll_type(m: &Mob) -> bool {
+    m.kind.id == DOLL_TYPE
+}
+
 fn kind_of(m: &Mob) -> Option<Kind> {
-    if m.species() != Species::Chicken {
+    if !doll_type(m) {
         return None;
     }
     match m.custom_name.as_deref()? {
@@ -131,9 +136,12 @@ pub fn ensure(m: &mut Mob, w: &MobWorld) {
     {
         m.ai.target = Some(Who::Mob(g));
     }
+    if doll_type(m) {
+        tick_doll(m, w);
+        return;
+    }
     match m.species() {
         Species::Sheep => tick_sheep(m),
-        Species::Chicken => tick_doll(m, w),
         Species::Creeper | Species::Enderman | Species::ZombifiedPiglin | Species::Piglin => {}
         _ => {
             if m.category() == "monster" && !m.ai.targets.has("TargetGoliath") {
@@ -254,25 +262,57 @@ fn tick_sheep(m: &mut Mob) {
     }
 }
 
-/// A chicken named as a doll, whether or not the api crate has spoken for it yet: the sound hooks
+/// A doll mob named as a doll, whether or not the api crate has spoken for it yet: the sound hooks
 /// ask this, so a doll is quiet from its first tick, on a client too.
 pub fn is_doll_mob(m: &Mob) -> bool {
     kind_of(m).is_some()
+}
+
+/// How high Aya floats over the ground, and how far down she looks for it.
+const AYA_HOVER: f64 = 1.0;
+const AYA_GROUND_LOOK: i32 = 4;
+
+/// Aya in flight: no gravity, and a gentle climb or sink to `AYA_HOVER` over the ground under her.
+/// Over a drop deeper than she looks she glides down slowly. On her owner's head she rides.
+fn hover(m: &mut Mob, w: &MobWorld) {
+    if in_mode(m, RIDE) {
+        m.no_gravity = false;
+        return;
+    }
+    m.no_gravity = true;
+    let (x, z) = (m.position.x.floor() as i32, m.position.z.floor() as i32);
+    let y0 = m.position.y.floor() as i32;
+    let ground = (0..=AYA_GROUND_LOOK)
+        .map(|d| y0 - d)
+        .find(|&y| w.facts.get(w.world.block(x, y - 1, z)).full_collision)
+        .map(f64::from);
+    m.velocity.y = match ground {
+        Some(g) => ((g + AYA_HOVER - m.position.y) * 0.3).clamp(-0.15, 0.2),
+        None => -0.08,
+    };
 }
 
 fn tick_doll(m: &mut Mob, w: &MobWorld) {
     let Some(kind) = kind_of(m) else { return };
     // Silent stops the hurt, death and step sounds; the doll-voice hook stops the rest.
     m.silent = true;
-    m.extra.egg_time = i32::MAX;
-    // Checked every tick: the game may hand the mob its chicken type back.
+    // A doll falls slowly, flapping its skirt (the chicken's `aiStep`), and takes no fall damage.
+    if !m.on_ground && m.velocity.y < 0.0 && !m.no_gravity {
+        m.velocity.y *= 0.6;
+    }
+    m.fall_distance = 0.0;
+    // Aya flies: she floats about a block off the ground, wherever she goes.
+    if kind == Kind::Aya {
+        hover(m, w);
+    }
+    // Checked every tick: the game may hand the mob its type's sounds back.
     if !m.kind.sounds[0].is_empty() {
         let kind = Arc::make_mut(&mut m.kind);
         kind.sounds = ["", "", ""];
     }
     // Every walk and run of a doll scales from this.
     m.attrs.speed = m.kind.speed * SPEED_SCALE * speed_factor(kind);
-    // A doll is sturdier than a chicken: a doll placed before this gets its new health in full.
+    // A doll's health is its own: a doll placed before this gets its new health in full.
     let health = levelled_health(max_health(kind), level_of(m.id));
     if m.attrs.max_health != health {
         m.attrs.max_health = health;
@@ -779,7 +819,14 @@ fn near_owner(m: &Mob, cx: &Cx, s: &Seen) -> bool {
 }
 
 fn enemy(s: &Seen) -> bool {
-    (patrol_target(s) || touhou_attacker(s) || angry_golem(s)) && !is_doll(s.id)
+    (patrol_target(s) || touhou_attacker(s) || angry_golem(s)) && !off_limits(s)
+}
+
+/// What no doll ever shoots or strikes: any doll (known to this side or not: one far off, or whose
+/// first tick hasn't said whose it is yet, is a doll by its type), a tamed or owned animal, and a
+/// mount such as a broom.
+fn off_limits(s: &Seen) -> bool {
+    is_doll(s.id) || s.kind.id == DOLL_TYPE || s.tame || s.owner.is_some() || MOUNTS.lock().is_ok_and(|m| m.contains(&s.id))
 }
 
 /// An iron golem that has turned on the player: fighting dolls go for it like any hostile mob.
@@ -1527,7 +1574,7 @@ impl Goal for Explode {
             cx.events.push(MobEvent::Sound("entity.creeper.primed", me, 1.0, 0.5));
         }
         if self.fuse >= FUSE {
-            cx.events.push(MobEvent::Explode(me, blast(m.id, EXPLODE_STRENGTH), Species::Chicken, false));
+            cx.events.push(MobEvent::Explode(me, blast(m.id, EXPLODE_STRENGTH), m.species(), false));
             blasted(m.id);
             self.fuse = 0;
             self.target = None;
@@ -2205,7 +2252,7 @@ impl Snipe {
         match mark {
             Mark::Mob(id) => w
                 .seen(id)
-                .filter(|s| s.alive)
+                .filter(|s| s.alive && !off_limits(s))
                 .map(|s| (pos(s), [s.position.x, (s.position.y + s.eye_y) / 2.0, s.position.z])),
             Mark::Player(p) => {
                 let o = OWNERS.lock().ok()?.get(&p).copied()?;
@@ -2230,7 +2277,7 @@ impl Snipe {
         let range = Self::range(m);
         let from = here(m);
         if let Some(a) = my_attacker(m, cx)
-            && cx.w.seen(a).is_some_and(|s| snipe_reach(pos(s), from, range))
+            && cx.w.seen(a).is_some_and(|s| !off_limits(s) && snipe_reach(pos(s), from, range))
         {
             return Some(Mark::Mob(a));
         }
@@ -2239,10 +2286,11 @@ impl Snipe {
             .w
             .others
             .iter()
-            .filter(|s| s.id != m.id && s.alive && snipe_reach(pos(s), from, range))
+            .filter(|s| s.id != m.id && s.alive && !off_limits(s) && snipe_reach(pos(s), from, range))
             .filter(|s| {
                 if secret {
-                    !spares(m.id, Who::Mob(s.id))
+                    // Chickens are beneath her notice.
+                    s.species != Species::Chicken && !spares(m.id, Who::Mob(s.id))
                 } else {
                     fights_back(m, s) || (enemy(s) && !spares(m.id, Who::Mob(s.id)))
                 }
@@ -2286,9 +2334,14 @@ impl Snipe {
                 if len <= ORB_SPEED + 0.5 {
                     match orb.mark {
                         // DamageSource.causePlayerDamage(owner): the kill is the owner's.
+                        // Never a doll, whoever's, even one it was not meant for.
                         Mark::Mob(target) => {
-                            cx.events.push(MobEvent::AttackMob { target, amount: orb.damage, source: Damage::player(here(m)) });
-                            worked(m.id);
+                            let doll = cx.w.seen(target).is_some_and(|s| s.kind.id == DOLL_TYPE || is_doll(s.id));
+                            let amount = if doll { 0.0 } else { orb_damage(target, orb.damage) };
+                            if amount > 0.0 {
+                                cx.events.push(MobEvent::AttackMob { target, amount, source: Damage::player(here(m)) });
+                                worked(m.id);
+                            }
                         }
                         Mark::Player(p) => hit_player(m.id, p, orb.damage),
                     }
@@ -2375,7 +2428,7 @@ impl Goal for Snipe {
         }
         if Self::in_sight(m, cx.w, mark, aim) {
             self.lost = 0;
-            self.counter = SNIPE_EVERY;
+            self.counter = if in_mode(m, SNIPE) { SNIPE_EVERY } else { SNIPE_EVERY_PATROL };
             self.fire(m, cx, mark);
         } else {
             self.lost += 10;
@@ -4370,7 +4423,7 @@ impl Goal for Detonate {
             cx.events.push(MobEvent::ParticleAt { kind: "smoke", at: [me[0], me[1] + 0.6, me[2]], velocity: [0.0, 0.05, 0.0] });
         }
         if self.fuse >= PUNCH_FUSE {
-            cx.events.push(MobEvent::Explode(here(m), blast(m.id, EXPLODE_STRENGTH), Species::Chicken, false));
+            cx.events.push(MobEvent::Explode(here(m), blast(m.id, EXPLODE_STRENGTH), m.species(), false));
             blasted(m.id);
         }
     }
@@ -4399,7 +4452,7 @@ impl Goal for Mission {
         m.nav_stop();
         m.fall_distance = 0.0;
         if BURST.lock().is_ok_and(|mut b| b.remove(&m.id)) {
-            cx.events.push(MobEvent::Explode(here(m), blast(m.id, GUIGNOL_BLAST), Species::Chicken, false));
+            cx.events.push(MobEvent::Explode(here(m), blast(m.id, GUIGNOL_BLAST), m.species(), false));
         }
     }
     fn box_clone(&self) -> Box<dyn Goal> {

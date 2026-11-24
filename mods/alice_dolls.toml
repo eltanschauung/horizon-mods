@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "dolls", "assets"]
 
 [[versions]]
+version = "0.16.0"
+published = "2026-11-24"
+game = "26.3"
+file = "alice_dolls-0.16.0.hmod"
+sha256 = "19aa6f4927fd5c496332c49727fb2d22516e96e28e11f720a539531ba6526771"
+changelog = "Declares the doll mob, alice_dolls:doll (a small ground mob's body at the doll's size, silent, the chicken's speed). Needs alice_dolls_native 0.43.0."
+
+[[versions]]
 version = "0.15.1"
 published = "2026-11-20"
 game = "26.3"
