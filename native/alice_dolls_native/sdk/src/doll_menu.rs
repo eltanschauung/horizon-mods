@@ -50,8 +50,7 @@ fn stand_nbt() -> Compound {
 }
 
 pub(crate) fn register(registrar: &mut dyn Registrar) {
-    // Dolls use the chicken entity type, whose built-in equipment handler would win.
-    registrar.entity_capability_before_game(&mod_api::ENTITY_ITEMS, KIND, |host, entity, ()| {
+    registrar.entity_capability(&mod_api::ENTITY_ITEMS, KIND, |host, entity, ()| {
         DOLL.has(host, Holder::Entity(entity.id())).ok().filter(|exists| *exists)?;
         Some(Box::new(DollInventory(entity, false)))
     });
