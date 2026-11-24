@@ -376,7 +376,7 @@ fn charm_mode(host: &mut dyn ServerHost, player: PlayerRef) -> Option<u64> {
 }
 
 fn uses_spawn_budget(kind: &str) -> bool {
-    kind == FAIRIES[0] || kind == FAIRIES[2]
+    matches!(source_kind(kind), "arcadiandream:fairy" | "arcadiandream:ice_fairy")
 }
 
 pub fn despawn_level(
@@ -536,6 +536,16 @@ pub fn spawn(host: &mut dyn ServerHost, level: LevelRef) {
         if !settings["fairyOptions"][enabled].as_bool().unwrap_or(true) {
             continue;
         }
+        // The copies occupy the same spawn budget as their corresponding original.
+        let name = if roll & (1 << 31) != 0 {
+            match name {
+                "arcadiandream:fairy" => "thmobs:woodland_fairy",
+                "arcadiandream:ice_fairy" => "thmobs:frost_fairy",
+                _ => name,
+            }
+        } else {
+            name
+        };
         let capped = uses_spawn_budget(name);
         let number = if capped {
             number.min(remaining)
