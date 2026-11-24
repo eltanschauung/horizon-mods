@@ -5,7 +5,7 @@ summary = "The recipes and the Potion of Dolphin's Grace of Minecraft Misogynist
 description = """
 **This is one of the two parts of [Minecraft Misogynist Unexpansion](https://playhorizon.dev/mods/misogynist_unexpansion_native), and does little alone.** Install both: this one, the assets, and the native part.
 
-It holds the recipes for honey, honeycomb, glow ink, froglights and fish eggs, and the Potion of Dolphin's Grace."""
+It holds the recipes for honey, honeycomb, glow ink, froglights and fish eggs, the Potion of Dolphin's Grace, and the old water's textures."""
 authors = ["mxpbxb"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
@@ -14,6 +14,14 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion.png"
 categories = ["game-mechanics", "library"]
 tags = ["vanilla", "recipes"]
+
+[[versions]]
+version = "0.2.0"
+published = "2026-11-24"
+game = "26.3"
+file = "misogynist_unexpansion-0.2.0.hmod"
+sha256 = "3e4d1f7d45a8921df16bc5940e61c57f4b3fbf4b9438959413e146682ddb91a4"
+changelog = "The old water's textures: beta-style still and flowing water in place of vanilla's. Needs misogynist_unexpansion_native 0.18.0."
 
 [[versions]]
 version = "0.1.0"

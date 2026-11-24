@@ -17,8 +17,10 @@ description = """
 - **Deepslate digs faster:** only 15% slower than stone, not twice as slow (its ores and cobbled and polished kinds alike).
 - **Walk on powder snow** as if you wore leather boots, and **right-click a grown crop** to harvest and replant it.
 - **Key Binds search by key:** the Key Binds search finds a binding by the key it is on.
+- **The old water:** beta's water textures (with the assets), one water colour everywhere and the old dark, thick water fog; each switched in `old_water.cfg`.
+- **No Dried Ghast, no Pigstep:** the Dried Ghast has no recipe and drops nothing; a Pigstep disc in any loot is one of C418's original discs instead.
 - **Fishing as it was:** treasure anywhere again, not only in open water, and tropical fish 7 times in 100.
-- **Recipes for what they gave:** honey (slime, sugar, a bottle), honeycomb (smelted honey), glow ink (ink and glowstone), froglights (a light block ringed with slime), fish eggs (nine tropical fish), fish scales (from tropical fish) and a Potion of Dolphin's Grace (crafted).
+- **Recipes for what they gave:** honey (slime, sugar, a bottle), honeycomb (smelted honey), glow ink (ink and glowstone), froglights (a light block ringed with slime), fish eggs (nine tropical fish), fish scales (from tropical fish; turtle scutes and eggs are named fish scales and fish eggs) and a Potion of Dolphin's Grace (crafted).
 
 Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. No Minecraft code or assets are included."""
 authors = ["mxpbxb"]
@@ -29,6 +31,14 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.18.0"
+published = "2026-11-24"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.18.0.hmod"
+sha256 = "2844fc5cda6c1738b6d040e8a10d161b222f196ad03a1e08d2c5be1f808dd70d"
+changelog = "The old water (beta's textures from the assets 0.2.0, one water colour everywhere and the old dark, thick water fog, switched in old_water.cfg). Fish scales and fish eggs are named so everywhere, the hotbar included. No Dried Ghast: no recipe, and a broken one drops nothing (nether fossils still place one). No Pigstep: in any chest or loot it is one of C418's twelve original discs instead, at random. Needs the assets 0.2.0."
 
 [[versions]]
 version = "0.16.0"
