@@ -458,6 +458,17 @@ pub fn spawn(host: &mut dyn ServerHost, level: LevelRef) {
         .collect();
     let dimension = level.dimension_id();
     let settings = crate::config::config();
+    let mut woodland = false;
+    let mut frost = false;
+    if remaining != 0 {
+        for key in host.entity_type_keys() {
+            match key.id(host).as_str() {
+                "thmobs:woodland_fairy" => woodland = true,
+                "thmobs:frost_fairy" => frost = true,
+                _ => {}
+            }
+        }
+    }
     for (player, pos, _) in &players {
         let angle =
             (time as f64 * 1.618 + player.uuid() as u64 as f64).sin() * std::f64::consts::TAU;
@@ -539,8 +550,8 @@ pub fn spawn(host: &mut dyn ServerHost, level: LevelRef) {
         // The copies occupy the same spawn budget as their corresponding original.
         let name = if roll & (1 << 31) != 0 {
             match name {
-                "arcadiandream:fairy" => "thmobs:woodland_fairy",
-                "arcadiandream:ice_fairy" => "thmobs:frost_fairy",
+                "arcadiandream:fairy" if woodland => "thmobs:woodland_fairy",
+                "arcadiandream:ice_fairy" if frost => "thmobs:frost_fairy",
                 _ => name,
             }
         } else {
