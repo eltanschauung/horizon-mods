@@ -122,6 +122,11 @@ struct Frame;
 impl BlockPart for Frame {}
 #[mod_api::horizon_part]
 impl BlockEntityPart for Frame {
+    fn block_entity_view_distance(&self, event: &mut BlockEntityViewDistanceEvent<'_>) {
+        // The engine still restricts submissions to drawn sections.
+        event.distance = 1024.0;
+    }
+
     fn block_entity_ticks(&self, _: &dyn Host, event: &mut BlockEntityTicksEvent<'_>) {
         event.ticks |= frames::ticks(event.block);
     }
