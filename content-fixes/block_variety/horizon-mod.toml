@@ -8,4 +8,4 @@ side = "both"
 capabilities = ["registries"]
 
 [dependencies]
-block_variety_native = "=0.6.0"
+block_variety_native = "=0.6.1"
