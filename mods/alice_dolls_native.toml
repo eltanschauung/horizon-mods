@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.43.1"
+published = "2026-11-24"
+game = "26.3"
+file = "alice_dolls_native-0.43.1.hmod"
+sha256 = "d3a4fa1b0659cb2cb6c5b8ba149fbbd4d0f405ef93c6ff6e0dd015442ad514cb"
+changelog = "Doll inventories open again. A doll is a data-defined mob, and the game finds an entity's inventory by its type among the built-in ones only, so a doll's never was and its screen closed at once; each doll screen is now backed by an invisible marker armour stand at the doll, standing in for it, removed when the screen closes. Goliaths are found again for items used at their body. Needs the assets 0.16.0."
+
+[[versions]]
 version = "0.43.0"
 published = "2026-11-24"
 game = "26.3"

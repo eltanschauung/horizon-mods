@@ -1,5 +1,14 @@
 //! Doll menus borrow the entity's journaled attachment as their backing inventory.
+//!
+//! A doll is a data-defined mob (`alice_dolls:doll`), and the engine finds an entity's
+//! capabilities by its type among the built-in ones only: a doll's own `ENTITY_ITEMS` is never
+//! found, and a menu backed by it closed at once. Each open doll menu is backed instead by a
+//! stand-in, an invisible marker armour stand at the doll, whose items are the doll's.
 
+use std::collections::HashMap;
+use std::sync::{LazyLock, Mutex};
+
+use mod_api::{Compound, Tag};
 use mod_api::{
     EntityRef, Holder, Host, ItemResource, MenuReplace, MenuSlotPlace, Registrar, ResourceHandler,
     ServerHost, Text, Transaction,
@@ -12,11 +21,55 @@ const BAUBLES: usize = 512;
 const FILLER: usize = BAUBLES + goals::BAUBLE_SLOTS;
 const SWITCH: usize = FILLER + 2;
 
+/// The stand-ins: stand -> doll, and player -> (dimension, stand) for the menu they have open.
+static STAND_FOR: LazyLock<Mutex<HashMap<u32, u32>>> = LazyLock::new(Default::default);
+static STAND_OF: LazyLock<Mutex<HashMap<u128, (String, u32)>>> = LazyLock::new(Default::default);
+const STAND_TAG: &str = "alice_dolls_menu";
+
+fn stand_nbt() -> Compound {
+    [
+        ("Invisible".into(), Tag::Byte(1)),
+        ("Marker".into(), Tag::Byte(1)),
+        ("NoGravity".into(), Tag::Byte(1)),
+        ("Invulnerable".into(), Tag::Byte(1)),
+        ("Silent".into(), Tag::Byte(1)),
+        ("Tags".into(), Tag::List(vec![Tag::String(STAND_TAG.into())])),
+    ]
+    .into()
+}
+
 pub(crate) fn register(registrar: &mut dyn Registrar) {
     registrar.entity_capability(&mod_api::ENTITY_ITEMS, KIND, |host, entity, ()| {
         DOLL.has(host, Holder::Entity(entity.id())).ok().filter(|exists| *exists)?;
         Some(Box::new(DollInventory(entity)))
     });
+    // Ahead of the game's own, and only for a stand standing in for a doll: any other stand is
+    // the game's.
+    registrar.entity_capability_before_game(&mod_api::ENTITY_ITEMS, "minecraft:armor_stand", |host, stand, ()| {
+        let doll = STAND_FOR.lock().ok()?.get(&stand.id()).copied()?;
+        DOLL.has(host, Holder::Entity(doll)).ok().filter(|exists| *exists)?;
+        Some(Box::new(DollInventory(host.entity(doll)?)))
+    });
+}
+
+/// The stand-in for `player`'s doll menu, gone: the menu closed or another replaces it.
+pub(crate) fn release(host: &mut dyn ServerHost, player: u128) {
+    let Some((_, stand)) = STAND_OF.lock().ok().and_then(|mut s| s.remove(&player)) else { return };
+    STAND_FOR.lock().ok().map(|mut s| s.remove(&stand));
+    if let Some(entity) = host.entity(stand) {
+        entity.remove(host, mod_api::RemovalReason::Discarded);
+    }
+}
+
+/// A new stand-in for doll `doll`, at it, for `player`'s menu.
+fn stand_in(host: &mut dyn ServerHost, player: u128, doll: EntityRef) -> Option<EntityRef> {
+    release(host, player);
+    let dimension = doll.level(host)?.dimension_id().to_owned();
+    let at = doll.position(host)?;
+    let stand = host.summon(&dimension, "minecraft:armor_stand", at, stand_nbt())?;
+    STAND_FOR.lock().ok()?.insert(stand, doll.id());
+    STAND_OF.lock().ok()?.insert(player, (dimension, stand));
+    host.entity(stand)
 }
 
 pub(crate) fn open(
@@ -29,21 +82,31 @@ pub(crate) fn open(
     replace: MenuReplace,
 ) -> Option<i32> {
     let player = host.player(uuid)?;
-    let entity = host.entity(id)?;
+    let doll = host.entity(id)?;
     let rows = (layout.slots + goals::BAUBLE_CELLS).div_ceil(9);
     let total_rows = rows + usize::from(has_switch);
     let name = format!("alice_dolls_native:inventory_{total_rows}");
     let kind = host.menu_keys().into_iter().find(|kind| kind.id(host) == name)?;
     let window = player.open_mod_menu(host, kind, title, Vec::new(), None, replace).ok()??;
-    if !bind(host, uuid, entity, window, layout, has_switch) {
+    let Some(stand) = stand_in(host, uuid, doll) else {
+        crate::debug(host, &format!("inventory {id}: no stand-in for its menu"));
         host.close_menu(uuid);
+        release(host, uuid);
+        return None;
+    };
+    if !bind(host, uuid, stand, window, layout, has_switch) {
+        crate::debug(host, &format!("inventory {id}: its menu's slots would not bind"));
+        host.close_menu(uuid);
+        release(host, uuid);
         return None;
     }
     Some(window)
 }
 
 pub(crate) fn refresh(host: &mut dyn ServerHost, uuid: u128, id: u32, window: i32, layout: goals::MenuLayout) {
-    if let Some(entity) = host.entity(id) {
+    let stand = STAND_OF.lock().ok().and_then(|s| s.get(&uuid).map(|(_, stand)| *stand));
+    let backs_it = stand.is_some_and(|s| STAND_FOR.lock().is_ok_and(|f| f.get(&s) == Some(&id)));
+    if let Some(entity) = stand.filter(|_| backs_it).and_then(|s| host.entity(s)) {
         let _ = bind(host, uuid, entity, window, layout, true);
     }
 }

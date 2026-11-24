@@ -1400,9 +1400,10 @@ fn goliath_in_sight(host: &mut dyn ServerHost, player: &PlayerView) -> Option<u3
     let mut best: Option<(f64, u32)> = None;
     let level = host.level(&player.dimension)?;
     for entity in level.entities_in(host, player.position.map(|x| x - 8.0), player.position.map(|x| x + 8.0)).unwrap_or_default() {
-        let (Some(kind), Some(at)) = (entity.kind(host), entity.position(host)) else { continue };
+        // A doll's type has no key the engine resolves (it is data-defined): its doll data says.
+        let Some(at) = entity.position(host) else { continue };
         let id = entity.id();
-        if kind.id(host) != KIND || !doll_of(host, id).is_some_and(|d| d.name == goals::GOLIATH || d.name == goals::NETHERITE_GOLIATH) {
+        if !doll_of(host, id).is_some_and(|d| d.name == goals::GOLIATH || d.name == goals::NETHERITE_GOLIATH) {
             continue;
         }
         let lo = [at[0] - 0.6, at[1], at[2] - 0.6];
@@ -3291,6 +3292,7 @@ impl Mod {
         // so it doesn't stop this one (its items went back to the player when it closed).
         if OPEN.lock().is_ok_and(|o| o.contains_key(&player)) && host.menu_contents(player).is_none() {
             debug(host, &format!("inventory {id}: a doll screen of this player's was left over; cleared"));
+            doll_menu::release(host, player);
             OPEN.lock().ok().map(|mut o| o.remove(&player));
             GRID_OPEN.lock().ok().map(|mut g| g.remove(&player));
             MENU_VIEWS.lock().ok().map(|mut v| v.remove(&player));
@@ -4237,6 +4239,7 @@ impl Hooks for Mod {
             goals::set_chest_open(None);
         }
         if let Some(id) = inventory.or(bauble) {
+            doll_menu::release(host, event.uuid);
             if let Ok(data) = DOLL.get(host, Holder::Entity(id)) {
                 goals::put_inventory(id, data.items.clone());
                 goals::set_baubles(id, worn_names(&data.baubles));
