@@ -1,0 +1,12 @@
+{
+  "template": "minecraft:wandering_trader",
+  "attributes": {
+    "minecraft:max_health": 2.0,
+    "minecraft:movement_speed": 0.6
+  },
+  "body_size": [
+    0.6,
+    1.95,
+    1.62
+  ]
+}
