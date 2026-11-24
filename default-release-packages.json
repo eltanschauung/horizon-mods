@@ -61,8 +61,8 @@
   },
   {
     "kind": "content",
-    "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.7.2/thkaguyamod-0.7.2.hmod",
-    "sha256": "1550d00f1750b948299a8b9e4127d334a9c2befbb817989c01df57f3db53dda0"
+    "url": "https://github.com/mxpbxb/touhou-items/releases/download/v0.8.0/thkaguyamod-0.8.0.hmod",
+    "sha256": "3a9fd83ef9c4235ba5f8f1504df130c68a25c15377bec9358970d87bd8f29e80"
   },
   {
     "kind": "native",

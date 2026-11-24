@@ -17,7 +17,7 @@ The items of Touhou Items Mod (Itutu no Nandai MOD+, by kuro-anco) and Grimoire 
 - **Shots and lasers** that fire, Grimoire of Alice's masks (effects by experience level), the Fire-Rat Robe and the Kappa Cap.
 - **Blocks**: crafting tables, divine spirits, Grimoire of Alice's blocks and the Onbashira pillar, and Journey To Gensokyo's ores in all three dimensions.
 
-Every weapon takes the enchantments a sword takes. About 190 of the originals' recipes are carried over; everything is in the creative tabs.
+Every weapon takes the enchantments a sword takes. The character weapons (but the Mochi Hammer), masks, treasures and spell cards are not crafted; everything is in the creative tabs.
 
 Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. Touhou Project by ZUN: a non-commercial fan work. The original mods' art and designs are their creators'. No Minecraft code or assets are included."""
 authors = ["kuro-anco (Touhou Items Mod)", "SPELLCARD PLUS authors", "Katrix (Journey To Gensokyo)", "Arekkuusu (Grimoire of Alice)", "mxpbxb (Horizon port)", "Xalcon (Torchmaster's Mega Torch, MIT)"]
