@@ -17,7 +17,7 @@ description = """
 - **Deepslate digs faster:** only 15% slower than stone, not twice as slow (its ores and cobbled and polished kinds alike).
 - **Walk on powder snow** as if you wore leather boots, and **right-click a grown crop** to harvest and replant it.
 - **Key Binds search by key:** the Key Binds search finds a binding by the key it is on.
-- **The old water:** beta's water textures (with the assets), one water colour everywhere and the old dark, thick water fog; each switched in `old_water.cfg`.
+- **The old water:** beta's water textures (with the assets), beta's one blue everywhere (warm and lukewarm oceans a little lighter) and the old dark, thick water fog; each switched in `old_water.cfg`.
 - **No Dried Ghast, no Pigstep:** the Dried Ghast has no recipe and drops nothing; a Pigstep disc in any loot is one of C418's original discs instead.
 - **Fishing as it was:** treasure anywhere again, not only in open water, and tropical fish 7 times in 100.
 - **Recipes for what they gave:** honey (slime, sugar, a bottle), honeycomb (smelted honey), glow ink (ink and glowstone), froglights (a light block ringed with slime), fish eggs (nine tropical fish), fish scales (from tropical fish; turtle scutes and eggs are named fish scales and fish eggs) and a Potion of Dolphin's Grace (crafted).
@@ -31,6 +31,14 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.18.1"
+published = "2026-11-24"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.18.1.hmod"
+sha256 = "bda182e489d85480c1569a53a1d34ba4c717515f6c40c1aecbafd8be467a96fd"
+changelog = "The old water is beta's one blue everywhere and never milky (the native mod tints it blue, as the assets 0.2.1's textures are grey). Warm and lukewarm oceans lean a little towards their own lighter blue. Needs the assets 0.2.1."
 
 [[versions]]
 version = "0.18.0"

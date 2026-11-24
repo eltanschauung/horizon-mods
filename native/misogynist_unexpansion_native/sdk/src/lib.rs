@@ -372,7 +372,7 @@ impl Hooks for Mod {
 
     /// One water colour everywhere (white, under the old textures' own blue), while `colour` is on.
     fn biome_colors(&self, _: &dyn ClientHost, event: &mut mod_api::BiomeColorsEvent<'_>) {
-        if let Some(tint) = water_settings().water_tint() {
+        if let Some(tint) = water_settings().water_tint(event.biome, event.colors.water) {
             event.colors.water = tint;
         }
     }

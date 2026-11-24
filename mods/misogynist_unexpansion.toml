@@ -16,6 +16,14 @@ categories = ["game-mechanics", "library"]
 tags = ["vanilla", "recipes"]
 
 [[versions]]
+version = "0.2.1"
+published = "2026-11-24"
+game = "26.3"
+file = "misogynist_unexpansion-0.2.1.hmod"
+sha256 = "4cfbb8592752dda8c221b426688509f36ee458dc40bb513cf343f4b96b21f2ca"
+changelog = "The old water's textures are grey, as vanilla's are: the native mod 0.18.1 tints them beta's blue. Needs misogynist_unexpansion_native 0.18.1."
+
+[[versions]]
 version = "0.2.0"
 published = "2026-11-24"
 game = "26.3"

@@ -3,9 +3,12 @@
 //!
 //! - The textures: the content mod's block atlas puts its beta-style still and flowing water
 //!   (`misogynist_unexpansion:block/old_water_still`, `_flow`, drawn by `gen_content.py`) in place
-//!   of vanilla's water sprites. Nothing here: they come and go with the content mod.
-//! - `colour`: one water colour everywhere, no biome tint: white, so the old textures' own blue
-//!   shows (`biome_colors`).
+//!   of vanilla's water sprites. Nothing here: they come and go with the content mod. They are
+//!   grey, as vanilla's are, so the colour comes from the tint whichever texture is drawn (a white
+//!   tint on vanilla's grey water, where the atlas swap didn't take, made it milky).
+//! - `colour`: one water colour everywhere, no biome tint: beta's blue, [`OLD_WATER`]
+//!   (`biome_colors`); only warm and lukewarm oceans lean a little ([`WARM_LEAN`]) towards their
+//!   own lighter blue.
 //! - `fog`: water fog as in beta: dark blue, darker the less sky reaches you, and thick, gone
 //!   16 blocks out (`compute_fog_color`, `render_fog`).
 //!
@@ -13,6 +16,9 @@
 //! the defaults when missing, and read again when it changes, within ten seconds.
 
 pub const FILE: &str = "old_water.cfg";
+
+/// Beta's water blue, the one water colour everywhere.
+pub const OLD_WATER: u32 = 0x40_64F0;
 
 /// Old water fog: from 16 blocks behind the eye to 16 in front (Nostalgic Tweaks' old density).
 pub const FOG_START: f32 = -16.0;
@@ -65,10 +71,32 @@ impl Settings {
         s
     }
 
-    /// Every biome's water colour, or None to keep the biome's own.
-    pub fn water_tint(&self) -> Option<u32> {
-        self.colour.then_some(0xFF_FFFF)
+    /// `biome`'s water colour, given its own (`own`), or None to keep the biome's own. Beta's blue
+    /// everywhere, but warm and lukewarm oceans lean a little towards their own lighter blue.
+    pub fn water_tint(&self, biome: &str, own: u32) -> Option<u32> {
+        if !self.colour {
+            return None;
+        }
+        let name = biome.rsplit(':').next().unwrap_or(biome);
+        Some(match name {
+            "warm_ocean" | "deep_warm_ocean" | "lukewarm_ocean" | "deep_lukewarm_ocean" => {
+                blend(OLD_WATER, own, WARM_LEAN)
+            }
+            _ => OLD_WATER,
+        })
     }
+}
+
+/// How far warm and lukewarm oceans' water leans from beta's blue towards their own colour.
+pub const WARM_LEAN: f32 = 0.3;
+
+/// `a` moved `t` (0 to 1) of the way to `b`, channel by channel (0xRRGGBB).
+fn blend(a: u32, b: u32, t: f32) -> u32 {
+    (0..3).fold(0, |out, i| {
+        let shift = 16 - 8 * i;
+        let (x, y) = (((a >> shift) & 0xFF) as f32, ((b >> shift) & 0xFF) as f32);
+        out | (((x + (y - x) * t).round() as u32) << shift)
+    })
 }
 
 /// Old water fog's colour at `sky_light` (0 to 15) where the eye is: Nostalgic Tweaks' table.
@@ -140,9 +168,25 @@ mod tests {
     }
 
     #[test]
-    fn the_tint_is_white_or_the_biomes() {
-        assert_eq!(Settings::default().water_tint(), Some(0xFF_FFFF));
-        assert_eq!(Settings { colour: false, fog: true }.water_tint(), None);
+    fn the_tint_is_beta_blue_or_the_biomes() {
+        let on = Settings::default();
+        assert_eq!(on.water_tint("minecraft:plains", 0x3F76E4), Some(OLD_WATER));
+        assert_eq!(on.water_tint("minecraft:swamp", 0x617B64), Some(OLD_WATER));
+        assert_ne!(OLD_WATER, 0xFF_FFFF);
+        assert_eq!(Settings { colour: false, fog: true }.water_tint("minecraft:plains", 0x3F76E4), None);
+    }
+
+    #[test]
+    fn warm_oceans_lean_a_little_to_their_own_blue() {
+        let warm = 0x43D5EE;
+        let tint = Settings::default().water_tint("minecraft:warm_ocean", warm).unwrap();
+        let g = |c: u32| (c >> 8) & 0xFF;
+        assert!(g(OLD_WATER) < g(tint) && g(tint) < g(warm));
+        // Still mostly beta's blue.
+        assert!(g(tint) - g(OLD_WATER) < g(warm) - g(tint));
+        assert_ne!(Settings::default().water_tint("minecraft:deep_lukewarm_ocean", 0x45ADF2), Some(OLD_WATER));
+        assert_eq!(blend(0x000000, 0xFFFFFF, 0.0), 0);
+        assert_eq!(blend(0x000000, 0xFFFFFF, 1.0), 0xFFFFFF);
     }
 
     #[test]
