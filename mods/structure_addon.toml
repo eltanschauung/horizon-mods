@@ -9,7 +9,7 @@ A data-only mod that brings several old world-generation mods to Horizon:
 - **Recurrent Complex:** surface buildings (towers, pyramids, forts, huts) and underground crypts.
 - **Ancient Structures:** German, Japanese and Mayan buildings, villages and temples.
 - **Generatormods:** building templates, Great Walls, walled cities with streets and cellular-automaton ruins, plus underground cities and dungeons.
-- **Wild Caves:** cave decoration and miner camps.
+- **Wild Caves:** cave decoration, miner camps and big ore veins (but not its diamond veins).
 
 Surface structures are very rare, hundreds of chunks apart; underground ones are more common.
 
@@ -22,6 +22,14 @@ source = "https://github.com/mxpbxb/structure-addon"
 icon = "icons/structure_addon.png"
 categories = ["worldgen", "adventure"]
 tags = ["structures", "dungeons", "caves", "stone"]
+
+[[versions]]
+version = "0.4.1"
+published = "2026-11-25"
+game = "26.3"
+file = "structure_addon-0.4.1.hmod"
+sha256 = "96386489f41a544ec50d15fa4c7f158b5359dd66a865ccbd9d148a4706b87253"
+changelog = "Wild Caves' diamond ore veins (up to a hundred large diamond ore blobs in one spot) are left out. The other ore veins and the game's own diamond ore are unchanged. Only newly generated chunks change."
 
 [[versions]]
 version = "0.4.0"
