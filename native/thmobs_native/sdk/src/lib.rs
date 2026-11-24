@@ -20,9 +20,10 @@ mod model;
 mod models_gen;
 mod pattern;
 mod shot;
+mod spatial;
 mod vec;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::sync::{LazyLock, Mutex};
 
 use mod_api::{
@@ -101,6 +102,28 @@ struct Server {
     named_wait: u32,
 }
 
+#[derive(Default)]
+struct Population {
+    mobs: BTreeMap<u32, &'static mobs::Mob>,
+    hostiles: BTreeMap<u32, bool>,
+}
+
+// Separate from SERVER: summoning during a spawn attempt can run lifecycle hooks.
+static POPULATIONS: LazyLock<Mutex<HashMap<String, Population>>> =
+    LazyLock::new(Mutex::default);
+
+fn tracked_mobs(dimension: &str) -> Vec<(u32, &'static mobs::Mob)> {
+    POPULATIONS.lock().ok()
+        .and_then(|levels| Some(levels.get(dimension)?.mobs.iter().map(|(&id, &mob)| (id, mob)).collect()))
+        .unwrap_or_default()
+}
+
+fn tracked_hostiles(dimension: &str, active: bool) -> Vec<(u32, bool)> {
+    POPULATIONS.lock().ok()
+        .and_then(|levels| Some(levels.get(dimension)?.hostiles.iter().filter(|&(_, &creeper)| active || creeper).map(|(&id, &creeper)| (id, creeper)).collect()))
+        .unwrap_or_default()
+}
+
 /// Apply the hard 128-block distance rule to wild mobs, including neutral
 /// fairies. Named characters, summons and persistent mobs retain their state.
 pub fn despawn_wild_mobs(host: &mut dyn ServerHost, level: LevelRef, departing: Option<u128>) {
@@ -110,9 +133,9 @@ pub fn despawn_wild_mobs(host: &mut dyn ServerHost, level: LevelRef, departing: 
             .map(|p| p.entity().position(host))
             .collect::<Option<Vec<_>>>()
     }) else { return };
-    for entity in resident_entities(host, level).unwrap_or_default() {
-        let Some(kind) = entity.kind(host).map(|kind| kind.id(host)) else { continue };
-        if !mobs::by_kind(&kind).is_some_and(|mob| mob.spawn.is_some() && !named(mob))
+    for (id, mob) in tracked_mobs(level.dimension_id()) {
+        let Some(entity) = host.entity(id) else { continue };
+        if mob.spawn.is_none() || named(mob)
             || !entity.position(host).is_some_and(|at| {
                 players.iter().all(|p| (0..3).map(|i| (at[i] - p[i]).powi(2)).sum::<f64>() > 128.0 * 128.0)
             })
@@ -355,21 +378,6 @@ fn resident_entities(host: &dyn Host, level: LevelRef) -> Option<Vec<mod_api::En
         .or_else(|| level.entities_in(host, [f64::MIN; 3], [f64::MAX; 3]))
 }
 
-fn level_entities(host: &dyn Host, dimension: &str) -> Vec<(u32, String, [f64; 3])> {
-    host.level(dimension)
-        .and_then(|level| resident_entities(host, level))
-        .unwrap_or_default()
-        .into_iter()
-        .filter_map(|entity| {
-            Some((
-                entity.id(),
-                entity.kind(host)?.id(host),
-                entity.position(host)?,
-            ))
-        })
-        .collect()
-}
-
 fn block_id(host: &dyn Host, level: LevelRef, pos: [i32; 3]) -> Option<String> {
     level.block(host, pos).map(|block| block.id(host))
 }
@@ -474,32 +482,34 @@ impl Server {
             .push(Live { shot: s, owner });
     }
 
-    fn tick(&mut self, host: &mut dyn ServerHost, dimension: &str) -> Batch {
+    fn tick(&mut self, host: &mut dyn ServerHost, dimension: &str, mobs: &[(u32, &mobs::Mob)]) -> Batch {
         let mut batch = Batch::default();
         let level = host.level(dimension);
-        let entities = level_entities(host, dimension);
-        let here: HashSet<u32> = entities.iter().map(|(id, _, _)| *id).collect();
-        self.classic = entities
-            .iter()
-            .filter(|(_, k, _)| is_classic(k))
-            .map(|(id, _, _)| *id)
-            .collect();
-        self.halved = entities
-            .iter()
-            .filter(|(_, k, _)| k == GREAT_DOLL)
-            .map(|(id, _, _)| *id)
-            .collect();
-        let halved = self.halved.clone();
-        let scale = |owner: u32| if halved.contains(&owner) { 0.5 } else { 1.0 };
-        // Players by their entity id, for what a shot does to a player itself.
-        let player_ids: HashMap<u32, u128> = players(host, dimension)
-            .into_iter()
-            .filter(|p| p.dimension == dimension && p.entity_id > 0)
+        let here = |id| mobs.binary_search_by_key(&id, |(id, _)| *id).is_ok();
+        let queued = ai::FIRED.lock().is_ok_and(|q| q.iter().any(|(id, _, _)| here(*id)))
+            || ai::CASTS.lock().is_ok_and(|q| q.iter().any(|(id, _)| here(*id)));
+        if !queued && !self.casts.contains_key(dimension) && !self.stops.contains_key(dimension)
+            && self.shots.get(dimension).is_none_or(Vec::is_empty)
+        {
+            return batch;
+        }
+        self.classic.clear();
+        self.halved.clear();
+        for &(id, spec) in mobs {
+            if spec.classic() {
+                self.classic.insert(id);
+            }
+            if spec.id == "yukari_great_doll" {
+                self.halved.insert(id);
+            }
+        }
+        let dimension_players = players(host, dimension);
+        let player_ids: HashMap<u32, u128> = dimension_players.iter()
+            .filter(|p| p.entity_id > 0)
             .map(|p| (p.entity_id as u32, p.uuid))
             .collect();
-        let player = players(host, dimension)
-            .into_iter()
-            .filter(|p| p.dimension == dimension && p.health > 0.0 && p.game_mode != 3)
+        let player = dimension_players.iter()
+            .filter(|p| p.health > 0.0 && p.game_mode != 3)
             .map(|p| V3::from_array(p.position) + v3(0.0, 0.9, 0.0))
             .collect::<Vec<_>>();
 
@@ -509,15 +519,12 @@ impl Server {
             .map(|mut q| {
                 let (fired, keep) = std::mem::take(&mut *q)
                     .into_iter()
-                    .partition(|(id, _, _)| here.contains(id));
+                    .partition(|(id, _, _)| here(*id));
                 *q = keep;
                 fired
             })
             .unwrap_or_default();
         for (owner, s, sound) in fired {
-            if !here.contains(&owner) {
-                continue;
-            }
             if sound && let Some(l) = level {
                 l.play_sound(
                     host,
@@ -535,15 +542,12 @@ impl Server {
             .map(|mut q| {
                 let (declared, keep) = std::mem::take(&mut *q)
                     .into_iter()
-                    .partition(|(id, _)| here.contains(id));
+                    .partition(|(id, _)| here(*id));
                 *q = keep;
                 declared
             })
             .unwrap_or_default();
         for (mob, number) in declared {
-            if !here.contains(&mob) {
-                continue;
-            }
             let full = self.classic.contains(&mob);
             let card = if full {
                 Card::classic_by_number(number)
@@ -686,7 +690,7 @@ impl Server {
         let mut stops = self.stops.remove(dimension).unwrap_or_default();
         stops.retain_mut(|s| {
             s.left -= 1;
-            s.left > 0 && here.contains(&s.mob)
+            s.left > 0 && here(s.mob)
         });
         let stopped: Vec<(V3, i32)> = stops
             .iter()
@@ -705,19 +709,30 @@ impl Server {
                     .copied()
                     .min_by(|a, b| (*a - at).length().total_cmp(&(*b - at).length()))
             };
-            let bodies: Vec<(u32, bool, [[f64; 3]; 2])> = entities
-                .iter()
-                .filter_map(|(id, kind, _)| {
-                    let e = host.entity(*id)?;
+            // One snapshot per active projectile tick. The SDK box API scans
+            // the level even for a small box, so index the reusable snapshot.
+            let mut index = spatial::Grid::default();
+            let bodies: Vec<_> = level.and_then(|l| resident_entities(host, l))
+                .unwrap_or_default()
+                .into_iter()
+                .filter_map(|e| {
                     host.living(e)?;
-                    Some((*id, is_ours(kind), bounds(host, e)?))
+                    if is_ours(&e.kind(host)?.id(host)) {
+                        return None;
+                    }
+                    let b = bounds(host, e)?;
+                    index.insert(b);
+                    Some((e.id(), b))
                 })
                 .collect();
+            let mut candidates = Vec::new();
+
             let mut shots = self.shots.remove(dimension).unwrap_or_default();
             let mut kept = Vec::with_capacity(shots.len());
             let mut fresh = Vec::new();
             let drained: Vec<Live> = shots.drain(..).collect();
             for mut live in drained {
+                let scale = if self.halved.contains(&live.owner) { 0.5 } else { 1.0 };
                 // In stopped time a shot that has flown two ticks hangs until the time runs again.
                 if live.shot.hold == 0 && live.shot.ticks >= 2 && live.shot.anchor.is_none() {
                     let at = live.shot.pos;
@@ -802,10 +817,10 @@ impl Server {
                 // Gagouji Cyclone's shots turn at their shooter's target at their end.
                 if live.shot.special == special::SEEK_TARGET && live.shot.ticks >= live.shot.end {
                     if let (Some(t), Some(from)) =
-                        (player.first(), bodies.iter().find(|b| b.0 == live.owner))
+                        (player.first(), host.entity(live.owner).and_then(|e| bounds(host, e)))
                     {
                         let s = &mut live.shot;
-                        s.angle = angle_to(middle(from.2), *t - v3(0.0, 0.9, 0.0));
+                        s.angle = angle_to(middle(from), *t - v3(0.0, 0.9, 0.0));
                         s.motion = s.angle * s.speed();
                     }
                     let s = &mut live.shot;
@@ -845,10 +860,7 @@ impl Server {
                 // Fantasy Seal's amulets: out, still, a change of colour, then at the target, twice.
                 if (11100..=11105).contains(&live.shot.special) && live.shot.ticks == live.shot.end
                 {
-                    let from = bodies
-                        .iter()
-                        .find(|b| b.0 == live.owner)
-                        .map(|b| middle(b.2));
+                    let from = host.entity(live.owner).and_then(|e| bounds(host, e)).map(middle);
                     fantasy_seal(&mut live.shot, from.zip(player.first().copied()));
                     batch.fired.push(live.shot.clone());
                 }
@@ -865,7 +877,7 @@ impl Server {
                         f64::from(s.laser),
                         f64::from(s.size),
                         live.owner,
-                        s.damage_for(false, difficulty) * scale(live.owner),
+                        s.damage_for(false, difficulty) * scale,
                     );
                     let moving = s.speed() > 1e-6;
                     if let Some(l) = level {
@@ -891,12 +903,14 @@ impl Server {
                         }
                     }
                     let length = f64::from(live.shot.laser);
-                    for (id, ours, b) in &bodies {
-                        if *id == owner_id || *ours {
+                    let end = from + dir * length.max(1e-6);
+                    for &candidate in index.query(spatial::swept(from.array(), end.array(), size), &mut candidates) {
+                        let (id, b) = bodies[candidate];
+                        if id == owner_id {
                             continue;
                         }
-                        if ray_box(from, dir, length.max(1e-6), grow(*b, size)).is_some() {
-                            hurt(host, *id, damage, owner_id);
+                        if ray_box(from, dir, length.max(1e-6), grow(b, size)).is_some() {
+                            hurt(host, id, damage, owner_id);
                         }
                     }
                 } else if !hit && s.solid() && s.special == special::SPOILER {
@@ -909,13 +923,15 @@ impl Server {
                         v3(0.0, 1.0, 0.0)
                     };
                     let (prev, size) = (s.prev, f64::from(s.size));
-                    let touched = bodies.iter().find(|(id, ours, b)| {
-                        *id != live.owner
-                            && !*ours
-                            && ray_box(prev, dir, reach.max(1e-6), grow(*b, size * 0.5)).is_some()
-                    });
-                    if let Some((id, _, _)) = touched {
-                        if let Some(uuid) = player_ids.get(id) {
+                    let reach = reach.max(1e-6);
+                    let end = prev + dir * reach;
+                    let touched = index.query(spatial::swept(prev.array(), end.array(), size * 0.5), &mut candidates)
+                        .iter().map(|&i| bodies[i]).find(|(id, b)| {
+                            *id != live.owner
+                                && ray_box(prev, dir, reach, grow(*b, size * 0.5)).is_some()
+                        });
+                    if let Some((id, _)) = touched {
+                        if let Some(uuid) = player_ids.get(&id) {
                             for effect in ["minecraft:wither", "minecraft:hunger"] {
                                 if let Some(player) = host.player(*uuid) {
                                     apply_effect(host, player.entity(), effect, 400, 1);
@@ -936,23 +952,24 @@ impl Server {
                     } else {
                         v3(0.0, 1.0, 0.0)
                     };
-                    for (id, ours, b) in &bodies {
-                        // A mob's danmaku passes through the mobs of this mod.
-                        if *id == live.owner || *ours {
+                    let end = s.prev + dir * reach.max(1e-6);
+                    for &candidate in index.query(spatial::swept(s.prev.array(), end.array(), f64::from(s.size) * 0.5), &mut candidates) {
+                        let (id, b) = bodies[candidate];
+                        if id == live.owner {
                             continue;
                         }
                         if ray_box(
                             s.prev,
                             dir,
                             reach.max(1e-6),
-                            grow(*b, f64::from(s.size) * 0.5),
+                            grow(b, f64::from(s.size) * 0.5),
                         )
                         .is_some()
                         {
                             hurt(
                                 host,
-                                *id,
-                                s.damage_for(false, difficulty) * scale(live.owner),
+                                id,
+                                s.damage_for(false, difficulty) * scale,
                                 live.owner,
                             );
                             hit = true;
@@ -1087,17 +1104,17 @@ impl Server {
 
     /// The classic bosses' bars: each player within 64 blocks sees the boss's health in all its cards,
     /// its name and the card it is casting. A bar goes when its boss is gone or out of reach.
-    fn boss_bars(&mut self, host: &mut dyn ServerHost, dimension: &str) {
+    fn boss_bars(&mut self, host: &mut dyn ServerHost, dimension: &str, bosses: &[(u32, &mobs::Mob)]) {
+        if bosses.is_empty() && !self.bars.values().any(|(level, _, _)| level == dimension) {
+            return;
+        }
         let players: Vec<_> = players(host, dimension)
             .into_iter()
             .filter(|p| p.dimension == dimension)
             .collect();
         let mut want: HashMap<(u128, u32), (String, i32, String)> = HashMap::new();
-        for (id, kind, at) in level_entities(host, dimension) {
-            if !is_classic(&kind) {
-                continue;
-            }
-            let Some(spec) = mobs::by_kind(&kind) else {
+        for &(id, spec) in bosses {
+            let Some(at) = host.entity(id).and_then(|e| e.position(host)) else {
                 continue;
             };
             let health = ai::status(id).map_or(spec.max_health(), |s| s.0);
@@ -1183,7 +1200,7 @@ impl Server {
 
     /// About once a second for each player, a try at a group of one of our mobs 24 to 48 blocks off,
     /// by the original's weights, biomes and rules.
-    fn spawn(&mut self, host: &mut dyn ServerHost, dimension: &str) {
+    fn spawn(&mut self, host: &mut dyn ServerHost, dimension: &str, mobs: &[(u32, &mobs::Mob)]) {
         let Some(level) = host.level(dimension) else {
             return;
         };
@@ -1198,30 +1215,26 @@ impl Server {
             return;
         }
         self.named_wait = self.named_wait.saturating_sub(1);
-        let entities = level_entities(host, dimension);
-        let mut ours: Vec<[f64; 3]> = entities
-            .iter()
-            .filter(|(_, k, _)| is_ours(k))
-            .map(|(_, _, p)| *p)
-            .collect();
-        let mut alive: HashSet<String> = entities
-            .iter()
-            .filter(|(_, k, _)| is_ours(k))
-            .map(|(_, k, _)| k.to_string())
-            .collect();
+        let mut population = None;
+        let mut spawned_named = HashSet::new();
         self.config
             .refresh(|| Some(host.instance_dir().join("config")));
         let cfg = self.config.config.clone();
-        let total: u32 = mobs::MOBS
-            .iter()
-            .filter_map(|m| cfg.rule(m))
-            .map(|r| r.weight)
-            .sum();
+        let mut weight = None;
         for p in players {
             // `rate` tries a second, about, at twenty ticks a second.
-            if f64::from(self.rng.float()) >= cfg.rate / 20.0 || total == 0 {
+            if f64::from(self.rng.float()) >= cfg.rate / 20.0 {
                 continue;
             }
+            let total = *weight.get_or_insert_with(|| {
+                mobs::MOBS.iter().filter_map(|m| cfg.rule(m)).map(|r| r.weight).sum()
+            });
+            if total == 0 {
+                continue;
+            }
+            let ours = population.get_or_insert_with(|| mobs.iter()
+                .filter_map(|(id, _)| host.entity(*id)?.position(host))
+                .collect::<Vec<_>>());
             let near = ours
                 .iter()
                 .filter(|q| (q[0] - p.position[0]).hypot(q[2] - p.position[2]) < 64.0)
@@ -1248,7 +1261,7 @@ impl Server {
             if is_named
                 && (self.named_wait > 0
                     || self.rng.int(100) >= NAMED_CHANCE
-                    || alive.contains(&format!("thmobs:{}", mob.id)))
+                    || (spawned_named.contains(mob.id) || mobs.iter().any(|(_, resident)| resident.id == mob.id)))
             {
                 continue;
             }
@@ -1334,7 +1347,7 @@ impl Server {
                 if summon(host, dimension, this, at).is_some() {
                     ours.push(at);
                     if is_named {
-                        alive.insert(format!("thmobs:{}", mob.id));
+                        spawned_named.insert(mob.id);
                     }
                 }
             }
@@ -1738,14 +1751,8 @@ fn begin_phase(id: u32, next: &mobs::Phase) {
 /// The classic bosses' cards, as the Wither's phases: each has all its cards' health in one bar, and
 /// each card's worth it loses breaks the card it is on and starts the next. One blow can break only
 /// one card: past that, it starts the next card with that card's full share.
-fn classic_cards(host: &mut dyn ServerHost, dimension: &str) {
-    for (id, kind, _) in level_entities(host, dimension) {
-        if !is_classic(&kind) {
-            continue;
-        }
-        let Some(spec) = mobs::by_kind(&kind) else {
-            continue;
-        };
+fn classic_cards(host: &mut dyn ServerHost, dimension: &str, bosses: &[(u32, &mobs::Mob)]) {
+    for &(id, spec) in bosses {
         let Some((health, _)) = ai::status(id) else {
             continue;
         };
@@ -2664,16 +2671,63 @@ impl Hooks for Mod {
         event.layers.extend(model::layers());
     }
 
+    fn server_stopped(&self, _: &mut dyn ServerHost, _: &mut mod_api::ServerStoppedEvent) {
+        if let Ok(mut levels) = POPULATIONS.lock() {
+            for id in levels.values().flat_map(|level| level.mobs.keys()) {
+                ai::pending(*id);
+                forget(*id);
+            }
+            levels.clear();
+        }
+        if let Ok(mut server) = SERVER.lock() {
+            server.shots.clear();
+            server.casts.clear();
+            server.stops.clear();
+            server.classic.clear();
+            server.halved.clear();
+            server.bars.clear();
+        }
+    }
+
     fn entity_join_level(
         &self,
         _host: &mut dyn ServerHost,
         event: &mut mod_api::EntityJoinLevelEvent<'_>,
     ) -> Flow {
+        let mob = mobs::by_kind(event.kind);
+        let creeper = event.kind == "minecraft:creeper";
+        if mob.is_some() || creeper || (ai::monster(event.kind) && !matches!(event.kind, "minecraft:enderman" | "minecraft:zombified_piglin" | "minecraft:piglin")) {
+            if let Ok(mut levels) = POPULATIONS.lock() {
+                let level = levels.entry(event.dimension.to_owned()).or_default();
+                if let Some(mob) = mob {
+                    level.mobs.insert(event.entity, mob);
+                } else {
+                    level.hostiles.insert(event.entity, creeper);
+                }
+            }
+        }
         if is_ours(event.kind) {
             forget(event.entity);
             ai::pending(event.entity);
         }
         Flow::Continue
+    }
+
+    fn entity_leave_level(
+        &self,
+        _: &mut dyn ServerHost,
+        event: &mut mod_api::EntityLeaveLevelEvent<'_>,
+    ) {
+        if let Ok(mut levels) = POPULATIONS.lock() {
+            if let Some(level) = levels.get_mut(event.dimension) {
+                level.mobs.remove(&event.entity);
+                level.hostiles.remove(&event.entity);
+            }
+        }
+        if is_ours(event.kind) {
+            forget(event.entity);
+            ai::pending(event.entity);
+        }
     }
 
     /// A boss out of health goes on to its next phase, as `moveDanmakuAttack` had it: back to full
@@ -2821,7 +2875,10 @@ impl Hooks for Mod {
         if event.level.game_time(host).is_some_and(|tick| tick.rem_euclid(100) == 0) {
             despawn_wild_mobs(host, event.level, None);
         }
-        ai::tick_level(host, event.level);
+        let mobs: Vec<_> = tracked_mobs(dimension).into_iter()
+            .filter(|(id, _)| host.entity(*id).and_then(|e| e.level(host)) == Some(event.level))
+            .collect();
+        ai::tick_level(host, event.level, &mobs);
         TICKS.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         // A refill that finds no living mob in any dimension within a few ticks is dropped: its
         // mob is gone, and the id may come to another.
@@ -2831,12 +2888,13 @@ impl Hooks for Mod {
                 !set_mob_health(host, dimension, id, hp) && t.saturating_sub(at) <= BLOW_TICKS
             });
         }
-        classic_cards(host, dimension);
+        let bosses: Vec<_> = mobs.iter().copied().filter(|(_, spec)| spec.classic()).collect();
+        classic_cards(host, dimension, &bosses);
         let batch = match SERVER.lock() {
             Ok(mut server) => {
-                server.spawn(host, dimension);
-                let batch = server.tick(host, dimension);
-                server.boss_bars(host, dimension);
+                server.spawn(host, dimension, &mobs);
+                let batch = server.tick(host, dimension, &mobs);
+                server.boss_bars(host, dimension, &bosses);
                 batch
             }
             Err(_) => return,

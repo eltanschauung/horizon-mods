@@ -87,6 +87,20 @@ static STATES: LazyLock<Mutex<HashMap<u32, (Danmaku, i32)>>> = LazyLock::new(Def
 static LAST_HURT: LazyLock<Mutex<HashMap<u32, u32>>> = LazyLock::new(Default::default);
 
 pub fn pending(id: u32) {
+    for set in [&*OURS, &*ATTACKING, &*DECOYS] {
+        if let Ok(mut set) = set.lock() {
+            set.remove(&id);
+        }
+    }
+    if let Ok(mut fired) = FIRED.lock() {
+        fired.retain(|(owner, _, _)| *owner != id);
+    }
+    if let Ok(mut casts) = CASTS.lock() {
+        casts.retain(|(owner, _)| *owner != id);
+    }
+    if let Ok(mut buffs) = BUFFS.lock() {
+        buffs.retain(|owner| *owner != id);
+    }
     if let Ok(mut states) = STATES.lock() {
         states.remove(&id);
     }
@@ -170,7 +184,10 @@ fn configure(host: &mut dyn ServerHost, mob: MobRef, spec: &mobs::Mob) {
     }
 }
 
-pub fn tick_level(host: &mut dyn ServerHost, level: LevelRef) {
+pub fn tick_level(host: &mut dyn ServerHost, level: LevelRef, tracked: &[(u32, &'static mobs::Mob)]) {
+    if tracked.is_empty() {
+        return;
+    }
     let players: Vec<_> = level
         .online_players(host)
         .unwrap_or_default()
@@ -195,31 +212,18 @@ pub fn tick_level(host: &mut dyn ServerHost, level: LevelRef) {
             })
         })
         .collect();
-    let entities = level.all_entities(host).unwrap_or_default();
-    let ours_here: std::collections::HashSet<u32> = entities
-        .iter()
-        .filter_map(|entity| crate::is_ours(&entity.kind(host)?.id(host)).then_some(entity.id()))
-        .collect();
+    let ids = tracked.iter().map(|&(id, _)| id);
     if let Ok(mut ours) = OURS.lock() {
-        ours.extend(ours_here.iter().copied());
+        ours.extend(ids);
     }
-
-    for entity in entities
-        .iter()
-        .copied()
-        .filter(|entity| ours_here.contains(&entity.id()))
-    {
-        let (Some(mob), Some(living), Some(kind), Some(position), Some(velocity)) = (
+    for &(id, spec) in tracked {
+        let Some(entity) = host.entity(id) else { continue };
+        let (Some(mob), Some(living), Some(position), Some(velocity)) = (
             host.mob(entity),
             host.living(entity),
-            entity.kind(host),
             entity.position(host),
             entity.velocity(host),
         ) else {
-            continue;
-        };
-        let kind = kind.id(host);
-        let Some(spec) = mobs::by_kind(&kind) else {
             continue;
         };
         let Some(health) = living.health(host) else {
@@ -330,11 +334,11 @@ pub fn tick_level(host: &mut dyn ServerHost, level: LevelRef) {
             mob.set_target(host, target);
         }
     }
-    redirect_hostiles(host, level, &entities, &ours_here);
+    redirect_hostiles(host, level, tracked);
 }
 
 /// Vanilla's monster species with a targeting selector.
-fn monster(kind: &str) -> bool {
+pub(crate) fn monster(kind: &str) -> bool {
     let Some(id) = kind.strip_prefix("minecraft:") else {
         return false;
     };
@@ -385,69 +389,67 @@ fn monster(kind: &str) -> bool {
 fn redirect_hostiles(
     host: &mut dyn ServerHost,
     level: LevelRef,
-    entities: &[EntityRef],
-    ours: &std::collections::HashSet<u32>,
+    ours: &[(u32, &mobs::Mob)],
 ) {
-    let priority: Vec<_> = entities
-        .iter()
-        .copied()
-        .filter_map(|entity| {
-            let id = entity.id();
-            if !ours.contains(&id) {
+    use crate::spatial::{Grid, swept};
+
+    let decoys = DECOYS.lock().unwrap_or_else(|err| err.into_inner());
+    let attacking = ATTACKING.lock().unwrap_or_else(|err| err.into_inner());
+    let active = ours.iter().any(|(id, _)| decoys.contains(id) || attacking.contains(id));
+    let hostiles = crate::tracked_hostiles(level.dimension_id(), active);
+    if hostiles.is_empty() {
+        return;
+    }
+    let priority = {
+        ours.iter().filter_map(|&(id, _)| {
+            let decoy = decoys.contains(&id);
+            if !decoy && !attacking.contains(&id) {
                 return None;
             }
-            let decoy = DECOYS.lock().is_ok_and(|decoys| decoys.contains(&id));
-            let active = ATTACKING
-                .lock()
-                .is_ok_and(|attacking| attacking.contains(&id));
-            if !decoy && !active {
-                return None;
-            }
+            let entity = host.entity(id)?;
             let living = host.living(entity)?;
             if living.health(host)? <= 0.0 {
                 return None;
             }
-            Some((living, V3::from_array(entity.position(host)?), decoy))
-        })
-        .collect();
-    for &entity in entities {
-        if ours.contains(&entity.id()) {
-            continue;
+            let pos = entity.position(host)?;
+            Some((living, V3::from_array(pos), decoy))
+        }).collect::<Vec<_>>()
+    };
+    drop(attacking);
+    drop(decoys);
+    let use_grid = priority.len() > 16;
+    let mut grid = Grid::default();
+    if use_grid {
+        for &(_, pos, decoy) in &priority {
+            let at = pos.array();
+            grid.insert(swept(at, at, if decoy { 40.0 } else { 16.0 }));
         }
-        let (Some(mob), Some(kind)) = (host.mob(entity), entity.kind(host)) else {
-            continue;
-        };
-        let id = kind.id(host);
-        if id == "minecraft:creeper" {
-            if mob
-                .target(host)
-                .is_some_and(|target| ours.contains(&target.entity().id()))
-            {
+    }
+    let all: Vec<_> = (0..priority.len()).collect();
+    let mut candidates = Vec::new();
+    for (id, creeper) in hostiles {
+        let Some(entity) = host.entity(id) else { continue };
+        let Some(mob) = host.mob(entity) else { continue };
+        if creeper {
+            if mob.target(host).is_some_and(|target| {
+                ours.binary_search_by_key(&target.entity().id(), |(id, _)| *id).is_ok()
+            }) {
                 mob.set_target(host, None);
             }
             continue;
         }
-        if priority.is_empty()
-            || matches!(
-                id.as_str(),
-                "minecraft:enderman" | "minecraft:zombified_piglin" | "minecraft:piglin"
-            )
-            || !monster(&id)
-        {
-            continue;
-        }
-        let Some(at) = entity.position(host).map(V3::from_array) else {
-            continue;
-        };
-        let near = priority
-            .iter()
-            .filter_map(|&(target, pos, decoy)| {
-                let distance = (pos - at).length();
+        let Some(at) = entity.position(host) else { continue };
+        let pos = V3::from_array(at);
+        let nearby = if use_grid { grid.query([at, at], &mut candidates) } else { &all };
+        let near = nearby.iter()
+            .map(|&i| priority[i])
+            .filter_map(|(target, to, decoy)| {
+                let distance = (to - pos).length();
                 (distance <= if decoy { 40.0 } else { 16.0 })
-                    .then_some((target, distance, decoy, pos))
+                    .then_some((target, distance, decoy, to))
             })
-            .filter(|&(_, _, decoy, pos)| {
-                decoy || level.line_of_sight(host, at.array(), pos.array()) == Some(true)
+            .filter(|&(_, _, decoy, to)| {
+                decoy || level.line_of_sight(host, at, to.array()) == Some(true)
             })
             .min_by(|a, b| b.2.cmp(&a.2).then(a.1.total_cmp(&b.1)));
         if let Some((target, _, _, _)) = near {

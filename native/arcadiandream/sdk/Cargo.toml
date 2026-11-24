@@ -1,6 +1,6 @@
 [package]
 name = "mod-arcadiandream"
-version = "0.1.0+sdk.2"
+version = "0.1.0+sdk.4"
 edition = "2024"
 publish = false
 

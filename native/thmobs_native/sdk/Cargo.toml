@@ -1,6 +1,6 @@
 [package]
 name = "mod-thmobs_native"
-version = "0.9.6+sdk.1"
+version = "0.9.6+sdk.3"
 edition = "2024"
 publish = false
 

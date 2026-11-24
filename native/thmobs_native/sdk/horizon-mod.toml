@@ -1,6 +1,6 @@
 id = "thmobs_native"
 name = "Touhou Mobs"
-version = "0.9.6+sdk.1"
+version = "0.9.6+sdk.3"
 description = "Touhou fairies, youkai, bosses and NPCs with danmaku, spawn rules and classic boss phases."
 authors = ["mxpbxb"]
 api = "0.2"
