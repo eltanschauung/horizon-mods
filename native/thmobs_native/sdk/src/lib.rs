@@ -2528,9 +2528,6 @@ fn pose(root: &mut ModelPart, model: &str, mob: &MobRender<'_>) {
     }
 }
 
-/// Point and power items (Touhou Items'), as the original's fairies dropped `EntityTHItem`s: one to
-/// three points from a fairy and now and then a power item; ten to twenty from a boss, with big power
-/// items, and sometimes full power, an extend or a bomb.
 /// The Yukari umbrella (Yukari Gaps): Yukari drops it 70 times in 100, the Great Doll every time.
 const UMBRELLA: &str = "yukari_gap:yukari_umbrella";
 
@@ -2557,7 +2554,7 @@ fn umbrella_chance(kind: &str) -> u32 {
     }
 }
 
-fn drop_points(host: &mut dyn ServerHost, id: u32, boss: bool, kind: &str) {
+fn drop_points(host: &mut dyn ServerHost, id: u32, kind: &str) {
     let Some(entity) = host.entity(id) else {
         return;
     };
@@ -2572,52 +2569,28 @@ fn drop_points(host: &mut dyn ServerHost, id: u32, boss: bool, kind: &str) {
         Mutex::new(Rng::new(seed))
     });
     let roll = |n: u32| LOOT_RANDOM.lock().map_or(0, |mut rng| rng.int(n));
-    let points = if boss { 10 + roll(11) } else { 1 + roll(3) };
-    // Power: a fairy now and then drops a small one; a boss always drops big ones, and sometimes
-    // full power or an extra life.
-    // Doll Points drop one time in 25.
-    let mut drops = Vec::new();
-    if roll(25) == 0 {
-        drops.push(("thkaguyamod:point_item", points));
+    // Every mob, boss or not, drops what the fairies drop: Arcadian Dream's fairy loot table, 1 to 4
+    // power and point items; a bomb and an extend 10% and 2.5% respectively, a star 15%, the Fairy
+    // Playground disc 1%. No boss has drops of its own (only Yukari's umbrella, below).
+    let mut drops = vec![
+        ("arcadiandream:power_item", 1 + roll(4)),
+        ("arcadiandream:point_item", 1 + roll(4)),
+    ];
+    if roll(10) == 0 {
+        drops.push(("arcadiandream:bomb_item", 1));
     }
-    if FAIRIES.contains(&kind) {
-        // Arcadian Dream's fairy loot table: 1 to 4 power and point items; a bomb and an extend
-        // 10% and 2.5% respectively, a star 15%, the Fairy Playground disc 1.
-        drops = vec![
-            ("arcadiandream:power_item", 1 + roll(4)),
-            ("arcadiandream:point_item", 1 + roll(4)),
-        ];
-        if roll(10) == 0 {
-            drops.push(("arcadiandream:bomb_item", 1));
-        }
-        if roll(40) == 0 {
-            drops.push(("arcadiandream:extend_item", 1));
-        }
-        if roll(20) < 3 {
-            drops.push(("arcadiandream:star_item", 1));
-        }
-        if roll(100) == 0 {
-            drops.push(("arcadiandream:music_disc_fairy_playground", 1));
-        }
-    } else if boss {
-        drops.push(("thkaguyamod:big_power_item", 2 + roll(3)));
-        drops.push(("thkaguyamod:small_power_item", 4 + roll(5)));
-        if roll(4) == 0 {
-            drops.push(("thkaguyamod:full_power_item", 1));
-        }
-        if roll(3) == 0 {
-            drops.push(("thkaguyamod:extend_item", 1));
-        }
-        if roll(2) == 0 {
-            drops.push(("thkaguyamod:bomb_item", 1));
-        }
-    } else {
-        if roll(3) == 0 {
-            drops.push(("thkaguyamod:small_power_item", 1 + roll(2)));
-        }
-        if roll(25) == 0 {
-            drops.push(("thkaguyamod:big_power_item", 1));
-        }
+    if roll(40) == 0 {
+        drops.push(("arcadiandream:extend_item", 1));
+    }
+    if roll(20) < 3 {
+        drops.push(("arcadiandream:star_item", 1));
+    }
+    if roll(100) == 0 {
+        drops.push(("arcadiandream:music_disc_fairy_playground", 1));
+    }
+    // The others also drop Touhou Items' Doll Points one time in 25, as before.
+    if !FAIRIES.contains(&kind) && roll(25) == 0 {
+        drops.push(("thkaguyamod:point_item", 1 + roll(3)));
     }
     if roll(100) < umbrella_chance(kind) {
         drops.push((UMBRELLA, 1));
@@ -2715,7 +2688,7 @@ impl Hooks for Mod {
         }
         let Some(next) = next else {
             // Gone for good: it scatters Point items, a boss many more than a fairy.
-            drop_points(host, event.entity, !spec.phases.is_empty(), kind);
+            drop_points(host, event.entity, kind);
             forget(event.entity);
             return Flow::Continue;
         };
