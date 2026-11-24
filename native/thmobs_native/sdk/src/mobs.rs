@@ -185,7 +185,7 @@ pub const MOBS: &[Mob] = &[
     },
     Mob {
         id: "sunflower_fairy", name: "Sunflower Fairy", look: Look::Model("kaguya/ModelSunFlowerFairy", &["fairy_10"]),
-        health: 20.0, ai: FAIRY_AI, attack: attack::fairy, fairy_counter: true, start: &[1], start_ai: &[], phases: &[],
+        health: 6.0, ai: FAIRY_AI, attack: attack::fairy, fairy_counter: true, start: &[1], start_ai: &[], phases: &[],
         spawn: spawn(3, 1, 1, FAIRY_BIOMES, Light::Fairy), burns: false, npc: false, egg: (0xFFD800, 0x8FD3FF),
     },
     Mob {
