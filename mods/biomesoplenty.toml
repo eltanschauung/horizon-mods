@@ -18,6 +18,14 @@ categories = ["worldgen", "decoration"]
 tags = ["biomes", "textures", "old", "bop"]
 
 [[versions]]
+version = "0.2.9"
+published = "2026-11-25"
+game = "26.3"
+file = "biomesoplenty-0.2.9.hmod"
+sha256 = "ed8065f821195226d60423b3558271433fd0c24fea87acb1087460db559ccfee"
+changelog = "Worlds load again: the signs' loot tables used the old key condition, which the game no longer reads, and crashed the game. They use conditions."
+
+[[versions]]
 version = "0.2.8"
 published = "2026-11-20"
 game = "26.3"
