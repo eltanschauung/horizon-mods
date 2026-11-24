@@ -28,6 +28,22 @@ categories = ["adventure", "game-mechanics"]
 tags = ["touhou", "mobs", "bosses", "danmaku"]
 
 [[versions]]
+version = "0.9.8"
+published = "2026-11-24"
+game = "26.3"
+file = "thmobs_native-0.9.8.hmod"
+sha256 = "7b125baf835f11cf4c4cb926d3c2415e15f746740f7eff884b9572a72a83d159"
+changelog = "Rumia and the other bosses drop what the fairies drop: Arcadian Dream's fairy loot (1 to 4 power and point items, sometimes a bomb, an extend, a star or the Fairy Playground disc), not Touhou Items' power items, Full Power, Extends and Bombs. The non-fairies still drop 1 to 3 Doll Points one time in 25, and Yukari her umbrella. Assets unchanged."
+
+[[versions]]
+version = "0.9.7"
+published = "2026-11-24"
+game = "26.3"
+file = "thmobs_native-0.9.7.hmod"
+sha256 = "7a43a99664cc3cfb04d01945a2d2b44403738bd1395e161a25257ad61aa2a325"
+changelog = "Yukari steps out of the gap you came out of, right behind you, not two blocks off. Giga Gaps bring Yukari Great Doll again: since Yukari Gaps 0.7.0 a global gap is its own block, yukari_gap:giga_gap, which wasn't counted as a gap, so no one came through one. The SDK package, built from this index's SDK port with the change on top. Assets unchanged."
+
+[[versions]]
 version = "0.9.6"
 published = "2026-11-18"
 game = "26.3"

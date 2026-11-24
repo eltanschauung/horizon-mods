@@ -1695,6 +1695,29 @@ fn slow(s: &mut Shot) {
     s.limit *= DOLL_SPEED;
 }
 
+/// Whether `block` is one of Yukari Gaps' gaps, and if so whether it is a Giga Gap (a gap made
+/// global with a Yukari umbrella, since Yukari Gaps 0.7.0).
+fn gap_kind(block: &str) -> Option<bool> {
+    let id = block.split('[').next().unwrap_or(block);
+    match id {
+        "yukari_gap:yukari_gap" => Some(false),
+        "yukari_gap:giga_gap" => Some(true),
+        _ => None,
+    }
+}
+
+/// The gap a player arrived by, from the gap blocks found round `to`: the one nearest across, at
+/// its lower half (its lowest block in that column). Its position, and whether it is a Giga Gap.
+fn arrival_gap(found: &[([i32; 3], bool)], to: [i32; 3]) -> Option<([i32; 3], bool)> {
+    let across = |p: &[i32; 3]| (p[0] - to[0]).pow(2) + (p[2] - to[2]).pow(2);
+    let nearest = found.iter().min_by_key(|(p, _)| (across(p), (p[1] - to[1]).abs()))?;
+    found
+        .iter()
+        .filter(|(p, _)| p[0] == nearest.0[0] && p[2] == nearest.0[2])
+        .min_by_key(|(p, _)| p[1])
+        .copied()
+}
+
 /// Whether a gap made global with a Yukari umbrella is by `to`: Yukari Gaps keeps its gaps in
 /// `yukari_gap/gaps.tsv` in the world, a line each (`H`, dimension, x, y, z of its lower half,
 /// facing, owner, locked, global, ...).
@@ -2512,9 +2535,6 @@ fn pose(root: &mut ModelPart, model: &str, mob: &MobRender<'_>) {
     }
 }
 
-/// Point and power items (Touhou Items'), as the original's fairies dropped `EntityTHItem`s: one to
-/// three points from a fairy and now and then a power item; ten to twenty from a boss, with big power
-/// items, and sometimes full power, an extend or a bomb.
 /// The Yukari umbrella (Yukari Gaps): Yukari drops it 70 times in 100, the Great Doll every time.
 const UMBRELLA: &str = "yukari_gap:yukari_umbrella";
 
@@ -2541,7 +2561,7 @@ fn umbrella_chance(kind: &str) -> u32 {
     }
 }
 
-fn drop_points(host: &mut dyn ServerHost, id: u32, boss: bool, kind: &str) {
+fn drop_points(host: &mut dyn ServerHost, id: u32, kind: &str) {
     let Some(entity) = host.entity(id) else {
         return;
     };
@@ -2556,52 +2576,28 @@ fn drop_points(host: &mut dyn ServerHost, id: u32, boss: bool, kind: &str) {
         Mutex::new(Rng::new(seed))
     });
     let roll = |n: u32| LOOT_RANDOM.lock().map_or(0, |mut rng| rng.int(n));
-    let points = if boss { 10 + roll(11) } else { 1 + roll(3) };
-    // Power: a fairy now and then drops a small one; a boss always drops big ones, and sometimes
-    // full power or an extra life.
-    // Doll Points drop one time in 25.
-    let mut drops = Vec::new();
-    if roll(25) == 0 {
-        drops.push(("thkaguyamod:point_item", points));
+    // Every mob, boss or not, drops what the fairies drop: Arcadian Dream's fairy loot table, 1 to 4
+    // power and point items; a bomb and an extend 10% and 2.5% respectively, a star 15%, the Fairy
+    // Playground disc 1%. No boss has drops of its own (only Yukari's umbrella, below).
+    let mut drops = vec![
+        ("arcadiandream:power_item", 1 + roll(4)),
+        ("arcadiandream:point_item", 1 + roll(4)),
+    ];
+    if roll(10) == 0 {
+        drops.push(("arcadiandream:bomb_item", 1));
     }
-    if FAIRIES.contains(&kind) {
-        // Arcadian Dream's fairy loot table: 1 to 4 power and point items; a bomb and an extend
-        // 10% and 2.5% respectively, a star 15%, the Fairy Playground disc 1.
-        drops = vec![
-            ("arcadiandream:power_item", 1 + roll(4)),
-            ("arcadiandream:point_item", 1 + roll(4)),
-        ];
-        if roll(10) == 0 {
-            drops.push(("arcadiandream:bomb_item", 1));
-        }
-        if roll(40) == 0 {
-            drops.push(("arcadiandream:extend_item", 1));
-        }
-        if roll(20) < 3 {
-            drops.push(("arcadiandream:star_item", 1));
-        }
-        if roll(100) == 0 {
-            drops.push(("arcadiandream:music_disc_fairy_playground", 1));
-        }
-    } else if boss {
-        drops.push(("thkaguyamod:big_power_item", 2 + roll(3)));
-        drops.push(("thkaguyamod:small_power_item", 4 + roll(5)));
-        if roll(4) == 0 {
-            drops.push(("thkaguyamod:full_power_item", 1));
-        }
-        if roll(3) == 0 {
-            drops.push(("thkaguyamod:extend_item", 1));
-        }
-        if roll(2) == 0 {
-            drops.push(("thkaguyamod:bomb_item", 1));
-        }
-    } else {
-        if roll(3) == 0 {
-            drops.push(("thkaguyamod:small_power_item", 1 + roll(2)));
-        }
-        if roll(25) == 0 {
-            drops.push(("thkaguyamod:big_power_item", 1));
-        }
+    if roll(40) == 0 {
+        drops.push(("arcadiandream:extend_item", 1));
+    }
+    if roll(20) < 3 {
+        drops.push(("arcadiandream:star_item", 1));
+    }
+    if roll(100) == 0 {
+        drops.push(("arcadiandream:music_disc_fairy_playground", 1));
+    }
+    // The others also drop Touhou Items' Doll Points one time in 25, as before.
+    if !FAIRIES.contains(&kind) && roll(25) == 0 {
+        drops.push(("thkaguyamod:point_item", 1 + roll(3)));
     }
     if roll(100) < umbrella_chance(kind) {
         drops.push((UMBRELLA, 1));
@@ -2750,7 +2746,7 @@ impl Hooks for Mod {
         }
         let Some(next) = next else {
             // Gone for good: it scatters Point items, a boss many more than a fairy.
-            drop_points(host, event.entity, !spec.phases.is_empty(), kind);
+            drop_points(host, event.entity, kind);
             forget(event.entity);
             return Flow::Continue;
         };
@@ -2829,23 +2825,28 @@ impl Hooks for Mod {
         Some(InteractionResult::Consume)
     }
 
-    /// A Yukari gap used: once in 2,000, Yukari comes through after the player.
+    /// A Yukari gap used: once in 2,000, Yukari comes out of the gap after the player (a Giga Gap
+    /// brings Yukari Great Doll).
     fn player_teleported(&self, host: &mut dyn ServerHost, event: &mut PlayerTeleportedEvent<'_>) {
         let Some(level) = host.level(event.dimension) else {
             return;
         };
         let to = event.to.map(|c| c.floor() as i32);
-        let by_gap = (-2..=2).any(|dx| {
-            (-1..=3).any(|dy| {
-                (-2..=2).any(|dz| {
-                    block_id(host, level, [to[0] + dx, to[1] + dy, to[2] + dz])
-                        .is_some_and(|b| b.starts_with("yukari_gap:yukari_gap"))
-                })
-            })
-        });
-        if !by_gap {
-            return;
+        // Yukari Gaps sets the player down one block in front of the gap's lower half.
+        let mut found = Vec::new();
+        for dx in -2..=2 {
+            for dy in -1..=3 {
+                for dz in -2..=2 {
+                    let pos = [to[0] + dx, to[1] + dy, to[2] + dz];
+                    if let Some(id) = block_id(host, level, pos).and_then(|b| gap_kind(&b)) {
+                        found.push((pos, id));
+                    }
+                }
+            }
         }
+        let Some((gap, giga)) = arrival_gap(&found, to) else {
+            return;
+        };
         let roll = SERVER.lock().map_or(1, |mut s| s.rng.int(YUKARI_FROM_GAP));
         if roll != 0 {
             return;
@@ -2853,8 +2854,8 @@ impl Hooks for Mod {
         let Some(yukari) = mobs::MOBS.iter().find(|m| m.id == "yukari") else {
             return;
         };
-        let yukari = if global_gap_near(host, event.dimension, to) {
-            // A gap made global with a Yukari umbrella brings the Great Doll instead.
+        let yukari = if giga || global_gap_near(host, event.dimension, gap) {
+            // A Giga Gap (a gap made global with a Yukari umbrella) brings the Great Doll instead.
             let Some(doll) = mobs::by_kind(GREAT_DOLL) else {
                 return;
             };
@@ -2864,7 +2865,8 @@ impl Hooks for Mod {
                 .filter(|_| SERVER.lock().is_ok_and(|mut s| s.rng.int(CLASSIC_IN) == 0))
                 .unwrap_or(yukari)
         };
-        let at = [event.to[0] + 2.0, event.to[1] + 0.5, event.to[2] + 2.0];
+        // Out of the gap itself: it has no collision, so she steps out of it behind the player.
+        let at = [f64::from(gap[0]) + 0.5, f64::from(gap[1]), f64::from(gap[2]) + 0.5];
         let dimension = event.dimension.to_owned();
         summon(host, &dimension, yukari, at);
     }
@@ -3120,6 +3122,18 @@ mod tests {
         assert!(daytime(1000));
         assert!(daytime(23_800));
         assert!(!daytime(18_000));
+    }
+
+    #[test]
+    fn yukari_comes_out_of_the_lower_half_of_the_gap_arrived_by() {
+        assert_eq!(gap_kind("yukari_gap:yukari_gap"), Some(false));
+        assert_eq!(gap_kind("yukari_gap:giga_gap[half=upper]"), Some(true));
+        assert_eq!(gap_kind("yukari_gap:yukari_umbrella"), None);
+        // The player stands at (11, 64, 10), one block east of a Giga Gap at (10, 64, 10); another
+        // gap is farther off.
+        let found = [([10, 65, 10], true), ([10, 64, 10], true), ([13, 64, 12], false), ([13, 65, 12], false)];
+        assert_eq!(arrival_gap(&found, [11, 64, 10]), Some(([10, 64, 10], true)));
+        assert_eq!(arrival_gap(&[], [11, 64, 10]), None);
     }
 
     #[test]
