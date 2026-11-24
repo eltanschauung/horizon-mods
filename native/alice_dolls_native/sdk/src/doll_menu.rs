@@ -13,7 +13,8 @@ const FILLER: usize = BAUBLES + goals::BAUBLE_SLOTS;
 const SWITCH: usize = FILLER + 2;
 
 pub(crate) fn register(registrar: &mut dyn Registrar) {
-    registrar.entity_capability(&mod_api::ENTITY_ITEMS, KIND, |host, entity, ()| {
+    // Dolls use the chicken entity type, whose built-in equipment handler would win.
+    registrar.entity_capability_before_game(&mod_api::ENTITY_ITEMS, KIND, |host, entity, ()| {
         DOLL.has(host, Holder::Entity(entity.id())).ok().filter(|exists| *exists)?;
         Some(Box::new(DollInventory(entity)))
     });
