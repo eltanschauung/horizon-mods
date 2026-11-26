@@ -51,8 +51,8 @@
   },
   {
     "kind": "native",
-    "url": "https://github.com/mxpbxb/block-variety/releases/download/v0.5.0/block_variety_native-0.5.0.hnmod",
-    "sha256": "645473dcbdff7bd80cb1219902e82d58c9f6c88184998a4daffbff0bd14d7d84"
+    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/block_variety_native-0.7.0/block_variety_native-0.7.0.hmod",
+    "sha256": "2fe0741ad2964a88200d5e5ddac26c5ea7be5c89494a422c7904e0cb5a55d722"
   },
   {
     "kind": "content",
@@ -75,9 +75,14 @@
     "sha256": "9f255397987318c963312f1b01be30f60353d2a4bf76f4bfe112745627b26a0e"
   },
   {
+    "kind": "content",
+    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/misogynist_unexpansion-0.2.2/misogynist_unexpansion-0.2.2.hmod",
+    "sha256": "433fd51b94c166c2e15ba60bd4892bad10a9cf2516f1af06b36bf5c1613b4d24"
+  },
+  {
     "kind": "native",
-    "url": "https://github.com/mxpbxb/minecraft-misogynist-unexpansion/releases/download/v0.16.0/misogynist_unexpansion_native-0.16.0.hnmod",
-    "sha256": "5e3c4f634160f47f5a0307f25ea944bc0b9b99baba9340e39bd96e334db1f583"
+    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/misogynist_unexpansion_native-0.19.1/misogynist_unexpansion_native-0.19.1.hmod",
+    "sha256": "0deb39bf112836a69f7eac121f2070d901570a71ce1021e9d82e06e50c74f0eb"
   },
   {
     "kind": "content",

@@ -1,6 +1,6 @@
 id = "block_variety"
 name = "Block Variety"
-version = "0.4.0"
+version = "0.5.0"
 description = "Every block of Chipped (by Terrarium) and Chisel (by the Chisel team), turned into one another with the chisel, and the frames of Block Carpentry (by PianoManu), which take on the look of any block put in them, and the Item Trash Can of Trash Cans (by SuperMartijn642) (needs block_variety_native). No crafting stations: hold blocks in your offhand and use the chisel, or use it on a placed block."
 authors = ["Terrarium (Chipped)", "Chisel team (Chisel)", "PianoManu (Block Carpentry)", "SuperMartijn642 (Trash Cans)", "mxpbxb (Horizon port)"]
 api = "0.2"
@@ -8,4 +8,4 @@ side = "both"
 capabilities = ["registries"]
 
 [dependencies]
-block_variety_native = "=0.6.1"
+block_variety_native = "=0.7.0"
