@@ -32,8 +32,8 @@ impl BodyPose for HeadlessBody {
 }
 
 pub(in crate::game) fn frame_pre(game: &mut Game<'_>) {
-    let (auto_hide, configured_hands) = fpm::settings();
-    let enabled = game.on(fpm::ID)
+    let (configured_enabled, auto_hide, configured_hands) = fpm::settings();
+    let enabled = configured_enabled && game.on(fpm::ID)
         && game.camera_type.is_first_person()
         && !game.spectator()
         && game.sleeping.is_none()

@@ -10,11 +10,11 @@ pub mod view_policy;
 pub const ID: &str = "firstpersonmodel_horizon";
 
 thread_local! {
-    static SETTINGS: Cell<(bool, bool)> = const { Cell::new((true, true)) };
+    static SETTINGS: Cell<(bool, bool, bool)> = const { Cell::new((true, true, true)) };
     static CANCEL_HANDS: Cell<bool> = const { Cell::new(false) };
 }
 
-pub fn settings() -> (bool, bool) {
+pub fn settings() -> (bool, bool, bool) {
     SETTINGS.with(Cell::get)
 }
 
@@ -25,6 +25,7 @@ pub fn cancel_hands(cancel: bool) {
 fn refresh(host: &dyn ClientHost) {
     SETTINGS.with(|state| {
         state.set((
+            host.setting_bool("enabled").unwrap_or(true),
             host.setting_bool("auto_hide_body").unwrap_or(true),
             host.setting_bool("vanilla_hands").unwrap_or(true),
         ));
@@ -37,6 +38,11 @@ struct FirstPersonModel;
 #[mod_api::horizon_mod]
 impl Hooks for FirstPersonModel {
     fn register(&self, registrar: &mut dyn Registrar, _: &RegistrationContext) {
+        let _ = registrar.register_setting(SettingSpec::toggle(
+            "enabled",
+            "firstpersonmodel_horizon.enabled",
+            true,
+        ));
         let _ = registrar.register_setting(SettingSpec::toggle(
             "vanilla_hands",
             "firstpersonmodel_horizon.vanilla_hands",
