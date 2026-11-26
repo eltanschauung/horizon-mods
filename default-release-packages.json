@@ -81,8 +81,8 @@
   },
   {
     "kind": "native",
-    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/misogynist_unexpansion_native-0.19.1/misogynist_unexpansion_native-0.19.1.hmod",
-    "sha256": "0deb39bf112836a69f7eac121f2070d901570a71ce1021e9d82e06e50c74f0eb"
+    "url": "https://github.com/eltanschauung/horizon-mods/releases/download/misogynist_unexpansion_native-0.19.1-sdk.2/misogynist_unexpansion_native-0.19.1+sdk.2.hmod",
+    "sha256": "8152e32a38d4a5f47b8d32ae8444e95d345825987cdd7f5a6072479a3ac787c6"
   },
   {
     "kind": "content",
