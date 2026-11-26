@@ -1319,6 +1319,41 @@ fn doll_nbt(doll: &Doll) -> Compound {
 /// The doll inventory each player has open: the doll, and the menu's window id.
 static OPEN: LazyLock<Mutex<HashMap<u128, (u32, i32)>>> = LazyLock::new(Default::default);
 
+/// Moscow's screens: her shown slots holding more than an item's stack, for each viewer's client to
+/// draw the real counts.
+fn count_big(host: &mut dyn ServerHost) {
+    let viewers: Vec<u128> = MENU_VIEWS.lock().map(|v| v.keys().copied().collect()).unwrap_or_default();
+    for player in viewers {
+        let Some((doll, _)) = OPEN.lock().ok().and_then(|o| o.get(&player).copied()) else { continue };
+        let Some((offset, view)) = GRID_OPEN.lock().ok().and_then(|g| g.get(&player).copied()) else { continue };
+        if !doll_of(host, doll).is_some_and(|d| d.name == goals::MOSCOW) {
+            continue;
+        }
+        let Ok(data) = DOLL.get(host, Holder::Entity(doll)) else { continue };
+        let h: &dyn Host = host;
+        let big: Vec<(u16, String, u32)> = (0..view)
+            .filter_map(|i| {
+                let s = data.items.get(offset + i)?.as_ref()?;
+                (s.count > max_stack_size(h, &s.item).unwrap_or(64)).then(|| (i as u16, s.item.clone(), s.count))
+            })
+            .collect();
+        if let Ok(mut views) = MENU_VIEWS.lock()
+            && let Some(v) = views.get_mut(&player)
+            && v.title != doll_menu::ENDER_TITLE
+        {
+            v.big = big;
+        }
+    }
+}
+
+/// A count as the slot shows it: up to 999 in full, then in thousands.
+fn short_count(count: u32) -> String {
+    match count {
+        0..=999 => count.to_string(),
+        _ => format!("{}k", count / 1000),
+    }
+}
+
 fn same_kind(a: &ItemStack, b: &ItemStack) -> bool {
     // Empty extra data is none: a stack that has been through a menu may carry it.
     fn data(s: &ItemStack) -> Option<&StackData> {
@@ -1464,6 +1499,10 @@ static CLIENT_SWITCH: Mutex<Option<i32>> = Mutex::new(None);
 static CLIENT_ENDER: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 /// Players who asked for their ender chest from Moscow's screen.
 static ENDERS: Mutex<Vec<u128>> = Mutex::new(Vec::new());
+/// Clicks on Moscow's screen for the server to do (`doll_menu::big_click`), by player; and this
+/// client's, to send on its next tick.
+static BIG_CLICKS: Mutex<Vec<(u128, usize, bool, bool)>> = Mutex::new(Vec::new());
+static CLIENT_BIG: Mutex<Vec<(usize, bool, bool)>> = Mutex::new(Vec::new());
 static SCROLLED: Mutex<Vec<(u128, i32)>> = Mutex::new(Vec::new());
 /// Scrolled screens to open again, with how many ticks they have waited for the old one to close.
 static REOPEN: Mutex<Vec<(u128, u32, u8)>> = Mutex::new(Vec::new());
@@ -1655,6 +1694,28 @@ static CLIENT_MENU: Mutex<Option<net::Menu>> = Mutex::new(None);
 /// The last mouse press on a doll screen, and how soon after it the next is a double-click.
 static LAST_PRESS: Mutex<Option<Instant>> = Mutex::new(None);
 const DOUBLE_CLICK: Duration = Duration::from_millis(260);
+
+/// A click on Moscow's screen for the server to do, past the game's slots: a plain click on one of
+/// her storage slots, or a shift-click on the player's inventory (into her). The screen's slot,
+/// the button, and shift. A shift-click on her slots stays the game's: it hands out a stack.
+fn moscow_click(view: &net::Menu, screen: &mod_api::ScreenView<'_>, right: bool, shift: bool) -> Option<(usize, bool, bool)> {
+    let [rx, ry, _, _] = screen.rect;
+    let over = |x: f32, y: f32| (x..x + 16.0).contains(&(screen.mouse[0] - rx)) && (y..y + 16.0).contains(&(screen.mouse[1] - ry));
+    if !shift {
+        return (0..view.view)
+            .filter(|&i| doll_menu::plain_slot(view.total, view.offset + i))
+            .find(|&i| over(8.0 + 18.0 * (i % 9) as f32, 18.0 + 18.0 * (i / 9) as f32))
+            .map(|i| (i, right, false));
+    }
+    let rows: usize = screen.menu?.strip_prefix("alice_dolls_native:inventory_")?.parse().ok()?;
+    let inventory_y = 31.0 + 18.0 * rows as f32;
+    (0..36)
+        .find(|&k| match k {
+            0..27 => over(8.0 + 18.0 * (k % 9) as f32, inventory_y + 18.0 * (k / 9) as f32),
+            _ => over(8.0 + 18.0 * (k - 27) as f32, inventory_y + 58.0),
+        })
+        .map(|k| (rows * 9 + k, false, true))
+}
 
 /// Whether `screen` is a doll's inventory screen (not its bauble screen or the panels).
 fn on_doll_screen(host: &dyn ClientHost, screen: &mod_api::ScreenView<'_>) -> bool {
@@ -3379,7 +3440,7 @@ impl Mod {
             host.action_bar(player, Text::literal("Last 4 slots: armour (helmet last) · the one before: shield · the 3x3 below: baubles"));
         }
         if let Ok(mut views) = MENU_VIEWS.lock() {
-            views.insert(player, net::Menu { title, total: size, offset, view, empty: vec![false; view], switch_window: switch.then_some(window) });
+            views.insert(player, net::Menu { title, total: size, offset, view, empty: vec![false; view], switch_window: switch.then_some(window), big: Vec::new(), big_clicks: true });
         }
         goals::set_chest_open(Some(id));
         if let Some(doll) = doll_of(host, id) {
@@ -3394,7 +3455,7 @@ impl Mod {
             return;
         };
         if let Ok(mut views) = MENU_VIEWS.lock() {
-            let view = net::Menu { title: doll_menu::ENDER_TITLE.into(), total: 0, offset: 0, view: 27, empty: vec![false; 27], switch_window: None };
+            let view = net::Menu { title: doll_menu::ENDER_TITLE.into(), total: 0, offset: 0, view: 27, empty: vec![false; 27], switch_window: None, big: Vec::new(), big_clicks: true };
             views.insert(player, view);
         }
     }
@@ -3787,6 +3848,14 @@ impl mod_api::IPayloadHandler for DollPacket {
             {
                 enders.push(player.uuid());
             }
+        } else if self.0 == net::BIG_CLICK {
+            if let Ok(player) = context.player()
+                && let Some((slot, right, shift)) = net::decode_big_click(&bytes.0)
+                && let Ok(mut clicks) = BIG_CLICKS.lock()
+                && clicks.len() < 64
+            {
+                clicks.push((player.uuid(), slot, right, shift));
+            }
         } else if self.0 == net::ROCK_SWITCH {
             if let Ok(player) = context.player()
                 && let Ok(window) = <[u8; 4]>::try_from(bytes.0.as_slice())
@@ -3934,6 +4003,9 @@ impl Hooks for Mod {
         for channel in [net::SCROLL, net::ROCK_SWITCH, net::ENDER] {
             payloads.play_to_server(mod_api::PayloadId(channel.into()), std::sync::Arc::new(DollPacket(channel)));
         }
+        // Optional: a client still joins a server from before 0.43.3, which hasn't got it (and
+        // then leaves Moscow's clicks to the game, see `big_clicks`).
+        payloads.optional().play_to_server(mod_api::PayloadId(net::BIG_CLICK.into()), std::sync::Arc::new(DollPacket(net::BIG_CLICK)));
         for channel in [net::FX, net::MENU, net::PHOTO] {
             payloads.play_to_client(mod_api::PayloadId(channel.into()), Some(std::sync::Arc::new(DollPacket(channel))));
         }
@@ -4047,13 +4119,25 @@ impl Hooks for Mod {
     /// The outlines of a doll's armour and shield slots, where they are empty, as vanilla draws them
     /// in the player's own inventory and Touhou Little Maid in its maid's.
     fn screen_render_post(&self, host: &dyn ClientHost, event: &mut ScreenRenderPostEvent<'_>) {
-        let Some(net::Menu { title: name, total: size, offset, view, empty, .. }) = CLIENT_MENU.lock().ok().and_then(|v| v.clone()) else {
+        let Some(net::Menu { title: name, total: size, offset, view, empty, big, .. }) = CLIENT_MENU.lock().ok().and_then(|v| v.clone()) else {
             return;
         };
-        if event.screen.title.is_none_or(|t| host.text_string(t).ok().as_deref() != Some(name.as_str())) || size <= goals::ARMOUR_SLOTS {
+        if event.screen.title.is_none_or(|t| host.text_string(t).ok().as_deref() != Some(name.as_str())) {
             return;
         }
         let [x, y, _, _] = event.screen.rect;
+        // Moscow's slots past an item's stack: the item drawn again over a blank slot, with her count.
+        for (i, item, count) in big.iter().filter(|b| usize::from(b.0) < view) {
+            let i = usize::from(*i);
+            let (sx, sy) = (x + 8.0 + 18.0 * (i % 9) as f32, y + 18.0 + 18.0 * (i / 9) as f32);
+            if let Some(stack) = ItemStack::new(item.clone(), 1).to_game(host) {
+                event.draw.fill([sx, sy, 16.0, 16.0], 0xFF8B_8B8B);
+                event.draw.gui_draw_item_with(&stack, [sx, sy], Some(&short_count(*count)));
+            }
+        }
+        if size <= goals::ARMOUR_SLOTS {
+            return;
+        }
         let first = !OUTLINES_LOGGED.swap(true, std::sync::atomic::Ordering::Relaxed);
         let slots = [
             (goals::armour_slot(size, 0), "helmet"),
@@ -4109,6 +4193,12 @@ impl Hooks for Mod {
                     CLIENT_ENDER.store(true, std::sync::atomic::Ordering::Relaxed);
                     return Flow::Cancel;
                 }
+                if view.big_clicks
+                    && let Some(click) = moscow_click(&view, event.screen, event.button == 1, event.modifiers & 1 != 0)
+                {
+                    CLIENT_BIG.lock().ok().filter(|c| c.len() < 16).map(|mut c| c.push(click));
+                    return Flow::Cancel;
+                }
             }
         }
         let Some(view) = CLIENT_MENU.lock().ok().and_then(|view| view.clone()) else { return Flow::Continue };
@@ -4153,6 +4243,10 @@ impl Hooks for Mod {
         let pov_over = AYA_POV.lock().is_ok_and(|p| p.is_none());
         if pov_over && let Some(mode) = AYA_HUD.lock().ok().and_then(|mut h| h.take()) {
             host.set_hud_mode(mode);
+        }
+        let clicks: Vec<(usize, bool, bool)> = CLIENT_BIG.lock().map(|mut c| std::mem::take(&mut *c)).unwrap_or_default();
+        for (slot, right, shift) in clicks {
+            let _ = host.send_payload_to_server(&mod_api::PayloadId(net::BIG_CLICK.into()), mod_api::PayloadBytes(net::encode_big_click(slot, right, shift)));
         }
         if CLIENT_ENDER.swap(false, std::sync::atomic::Ordering::Relaxed) {
             let _ = host.send_payload_to_server(&mod_api::PayloadId(net::ENDER.into()), mod_api::PayloadBytes(Vec::new()));
@@ -4465,6 +4559,7 @@ impl Hooks for Mod {
         }
         self.send_fx(host, &players);
         // Doll screens: each viewer's client told of theirs when it changes, and when it closes.
+        count_big(host);
         let views: HashMap<u128, Vec<u8>> =
             MENU_VIEWS.lock().map(|v| v.iter().map(|(p, m)| (*p, net::encode_menu(Some(m)))).collect()).unwrap_or_default();
         let mut sends: Vec<(u128, Vec<u8>)> = Vec::new();
@@ -4588,6 +4683,21 @@ impl Hooks for Mod {
             let mine = known(doll).is_some_and(|k| k.doll.name == goals::MOSCOW && k.owner == player);
             if mine {
                 self.at_doll(host, doll, ORDER_WAIT, Box::new(move |m: &Mod, host: &mut dyn ServerHost| m.open_ender(host, player, doll)));
+            }
+        }
+        // Clicks on Moscow's screen that go past an item's stack: done here, and her slots shown again.
+        let clicks: Vec<(u128, usize, bool, bool)> = BIG_CLICKS.lock().map(|mut c| std::mem::take(&mut *c)).unwrap_or_default();
+        for (player, slot, right, shift) in clicks {
+            let Some((doll, window)) = OPEN.lock().ok().and_then(|o| o.get(&player).copied()) else { continue };
+            let Some((offset, view)) = GRID_OPEN.lock().ok().and_then(|g| g.get(&player).copied()) else { continue };
+            if !doll_of(host, doll).is_some_and(|d| d.name == goals::MOSCOW) {
+                continue;
+            }
+            if doll_menu::big_click(host, player, doll, offset, view, slot, right, shift) {
+                let size = DOLL.get(host, Holder::Entity(doll)).map_or(0, |d| d.items.len());
+                let switch = size > 0 && has_rock_switch(goals::MOSCOW);
+                let layout = goals::MenuLayout { slots: view, offset, total: size };
+                let _ = doll_menu::refresh(host, player, doll, window, layout, switch);
             }
         }
         let switched = SWITCHED.lock().map(|mut pending| std::mem::take(&mut *pending)).unwrap_or_default();

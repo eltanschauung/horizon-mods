@@ -268,8 +268,9 @@ pub fn is_doll_mob(m: &Mob) -> bool {
     kind_of(m).is_some()
 }
 
-/// How high Aya floats over the ground, and how far down she looks for it.
-const AYA_HOVER: f64 = 1.0;
+/// How high Aya floats over the ground, and how far down she looks for it. Under a block: a path's
+/// waypoint counts as reached only within a block of height.
+const AYA_HOVER: f64 = 0.85;
 const AYA_GROUND_LOOK: i32 = 4;
 
 /// Aya in flight: no gravity, and a gentle climb or sink to `AYA_HOVER` over the ground under her.
@@ -290,6 +291,11 @@ fn hover(m: &mut Mob, w: &MobWorld) {
         Some(g) => ((g + AYA_HOVER - m.position.y) * 0.3).clamp(-0.15, 0.2),
         None => -0.08,
     };
+    // Over ground she counts as standing on it: walking paths are only made and followed by a mob
+    // on the ground, and she moves at her walking speed instead of the slow speed in the air.
+    if ground.is_some() {
+        m.on_ground = true;
+    }
 }
 
 fn tick_doll(m: &mut Mob, w: &MobWorld) {

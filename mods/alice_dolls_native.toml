@@ -25,6 +25,22 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.43.4"
+published = "2026-11-27"
+game = "26.3"
+file = "alice_dolls_native-0.43.4.hmod"
+sha256 = "073b681b3dfe13e32be8389ad3d57e6892cbd70aefb52710224dc105ebed5557"
+changelog = "Joins servers still on 0.43.2 again: 0.43.3 was refused by them (incompatible payload alice_dolls_native:big_click). Moscow's big stacks need the server on 0.43.4 too; on an older server her slots work as before. Needs the assets 0.16.0."
+
+[[versions]]
+version = "0.43.3"
+published = "2026-11-25"
+game = "26.3"
+file = "alice_dolls_native-0.43.3.hmod"
+sha256 = "21df61b26e40624e251e90f74261261e2f5eb7bfb82aab0d5b4842851d83f92b"
+changelog = "Aya walks again while she flies: she follows paths at her walking speed, floating a little under a block up. Moscow's slots hold more than 64, up to her stack size: clicks on her slots and shift-clicks from the inventory go past the game's stack cap, a click takes out at most a stack, and slots past a stack show their real count. Needs the assets 0.16.0."
+
+[[versions]]
 version = "0.43.2"
 published = "2026-11-24"
 game = "26.3"
