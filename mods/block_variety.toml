@@ -5,7 +5,7 @@ summary = "The blocks, textures and recipes of Block Variety. Needs the Block Va
 description = """
 **This is one of the two parts of [Block Variety](https://playhorizon.dev/mods/block_variety_native), and does nothing alone.** Install both: this one, the assets, and the native part.
 
-It holds the 4,858 blocks of Chipped (by Terrarium) and Chisel (by the Chisel team), the 37 frames of Block Carpentry (by PianoManu) and the Item Trash Can of Trash Cans (by SuperMartijn642), with their models, textures, loot, tags and recipes, the chisel and the hammer, used with their creators' permission."""
+It holds the 7,578 blocks of Chipped (by Terrarium) and Chisel (by the Chisel team), the 37 frames of Block Carpentry (by PianoManu) and the Item Trash Can of Trash Cans (by SuperMartijn642), with their models, textures, loot, tags and recipes (each block cut in the stonecutter from any block of its group), the chisel and the hammer, used with their creators' permission."""
 authors = ["Terrarium (Chipped)", "Chisel team (Chisel)", "PianoManu (Block Carpentry)", "SuperMartijn642 (Trash Cans)", "mxpbxb (Horizon port)"]
 owners = ["mxpbxb"]
 owner_ids = [73505523]
@@ -14,6 +14,14 @@ source = "https://github.com/mxpbxb/block-variety"
 icon = "icons/block_variety.png"
 categories = ["decoration", "library"]
 tags = ["blocks", "building", "chisel", "assets"]
+
+[[versions]]
+version = "0.5.0"
+published = "2026-11-25"
+game = "26.3"
+file = "block_variety-0.5.0.hmod"
+sha256 = "2191fdc0ee5d7ea115e50febd04c5db5114002517989f4151643bdf647903e70"
+changelog = "2,720 Chipped 1.18.2 blocks for the vanilla blocks Chipped 1.18.1 gave none to (iron and the other metal blocks, raw ore blocks, logs, stems, leaves, doors, trapdoors, glazed terracotta, deepslate, tuff and more), recoloured to Programmer Art Continuation. Every block is cut in the stonecutter from any block of its group (7,848 recipes), so JEI shows how each is made. Structure Add-on's limestone, marble, andesite and basalt are in the matching groups. Chisel's own stones, its metals and Chipped's wood glass, which have no vanilla block, are crafted from vanilla things. Needs block_variety_native 0.7.0."
 
 [[versions]]
 version = "0.4.0"
