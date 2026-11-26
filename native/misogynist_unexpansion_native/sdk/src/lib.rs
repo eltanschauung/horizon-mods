@@ -20,7 +20,7 @@
 //!   animals, wolves, cats, rabbits, horses and squid drawn with the grown model and textures at the
 //!   old sizes (`babies.rs`).
 //! - Tropical fish drop fish scales (turtle scutes), nine times in ten; turtle scutes and eggs are
-//!   called fish scales and fish eggs.
+//!   called fish scales and fish eggs, everywhere their name shows (their default item name).
 //! - Fishing as before the open-water rule: treasure anywhere, a pond as an ocean; and tropical fish
 //!   five in a hundred more often (7, out of cod's share).
 //! - No sculk patches or sculk veins in new terrain (the mixins `no-sculk-placed` and
@@ -34,6 +34,9 @@
 //!   theirs), not twice as slow.
 //! - No leaf litter, wildflowers or pink petals in new terrain (the same mixins); those already
 //!   in a world stay. They and kelp are crafted instead (`ground.rs`).
+//! - The old water: beta's textures (the content mod's), no biome tint and the old water fog, the
+//!   last two switched in `old_water.cfg` (`water.rs`, after Nostalgic Tweaks' old water fog).
+//! - No Dried Ghast, and no Pigstep: C418's discs in its place (`retired.rs`).
 //!
 //! The first recipes and the Potion of Dolphin's Grace are the content mod `misogynist_unexpansion`;
 //! the sculk ones come from this native half, so that content file stays as servers know it.
@@ -44,9 +47,11 @@ mod config;
 mod enchant;
 mod farming;
 mod ground;
+mod retired;
 mod villagers;
+mod water;
 
-use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering};
 use std::sync::{LazyLock, Mutex};
 
 use mod_api::{
@@ -56,15 +61,42 @@ use mod_api::{
     PlayerBreakSpeedEvent, PrepareItemEnchantEvent, Registrar, RegistrationContext,
     RenderLivingPreEvent, RightClickBlockEvent, ServerHost, Tag, Text, serde_json::Value,
 };
+use mod_api::client::fog::FogType;
 
 #[derive(Default)]
 struct Mod;
 
 static CONFIG: LazyLock<Mutex<config::Loaded>> = LazyLock::new(|| Mutex::new(config::Loaded::new()));
+/// `old_water.cfg` (`water.rs`), read on this client.
+static WATER: Mutex<water::Loaded> = Mutex::new(water::Loaded::new());
+/// A client world is open, and whether its water colours are still to be asked for.
+static IN_WORLD: AtomicBool = AtomicBool::new(false);
+static RECOLOUR: AtomicBool = AtomicBool::new(false);
+/// The dimension this client is in, for the sky light at the eye.
+static CLIENT_DIMENSION: Mutex<String> = Mutex::new(String::new());
+
+fn water_settings() -> water::Settings {
+    WATER.lock().map(|w| w.settings).unwrap_or_default()
+}
+
+/// The names Misogyny gives vanilla items, as their default `item_name`.
+const RENAMED: [(&str, &str); 2] = [("minecraft:turtle_scute", "Fish Scales"), ("minecraft:turtle_egg", "Fish Eggs")];
+
 /// Cows, pigs and chickens that just joined a world, to set to the temperate variant next tick.
 static TO_REVERT: Mutex<Vec<(u32, String)>> = Mutex::new(Vec::new());
 /// Ticks between reads of the babies' looks.
 static SCAN: AtomicU32 = AtomicU32::new(0);
+/// By dimension: the mobs with newer looks already checked by the periodic pass.
+static CHECKED: LazyLock<Mutex<std::collections::HashMap<String, std::collections::HashSet<u32>>>> =
+    LazyLock::new(Default::default);
+/// Passes between the periodic pass's reads of one mob already checked.
+const RECHECK_EVERY: u32 = 10;
+
+/// Whether the periodic pass reads mob `id` in pass `round`: always the first time, then one
+/// pass in `RECHECK_EVERY`.
+fn recheck(checked: bool, id: u32, round: u32) -> bool {
+    !checked || id.wrapping_add(round) % RECHECK_EVERY == 0
+}
 static ROLL: AtomicU64 = AtomicU64::new(0x9E37_79B9_7F4A_7C15);
 
 /// A number from 0 to 99.
@@ -200,6 +232,15 @@ impl Hooks for Mod {
     fn data_pack_files(&self, _: &mut dyn ServerHost, event: &mut DataPackFilesEvent<'_>) {
         event.files.extend(farming::recipes());
         event.files.extend(ground::recipes());
+        event.files.extend(retired::files());
+    }
+
+    /// Fish scales and fish eggs by name, wherever the name shows: the hotbar, a tooltip, a
+    /// dropped item's label.
+    fn modify_default_components(&self, _: &dyn DataLoadContext, event: &mut mod_api::ModifyDefaultComponentsEvent<'_>) {
+        if let Some((_, name)) = RENAMED.iter().find(|(id, _)| *id == event.item) {
+            event.components.insert("minecraft:item_name".into(), mod_api::serde_json::json!({"text": name}));
+        }
     }
 
     /// A grown crop right-clicked: harvested and replanted.
@@ -251,6 +292,7 @@ impl Hooks for Mod {
 
     fn client_level_unload(&self, _: &mut dyn ClientHost, _: &mut mod_api::ClientLevelUnloadEvent<'_>) {
         babies::clear();
+        IN_WORLD.store(false, Ordering::Relaxed);
     }
 
     /// Apply the same mining speed on the client and server.
@@ -276,6 +318,7 @@ impl Hooks for Mod {
             "minecraft:gameplay/fishing/fish" => more_tropical_fish(event.table),
             _ => {}
         }
+        retired::replace_pigstep(event.table);
     }
 
     /// A removed mob never joins: not spawned, not loaded. A cow, pig or chicken that joins is set
@@ -307,13 +350,25 @@ impl Hooks for Mod {
             babies::scan(host, level);
         }
         if n % 40 == 5 {
+            // Mobs are put back to their original look as they join; this pass reads each one's
+            // saved data again only one pass in `RECHECK_EVERY`, spread by id.
+            let round = n / 40;
+            let mut checked = CHECKED.lock().unwrap_or_else(|e| e.into_inner());
+            let known = checked.entry(level.dimension_id().to_owned()).or_default();
+            let mut alive = std::collections::HashSet::new();
             for entity in level.all_entities(host).unwrap_or_default() {
                 if let Some(kind) = entity.kind(host).map(|key| key.id(host))
                     && has_variant(&kind)
                 {
-                    revert_look(host, entity.id(), &kind);
+                    let id = entity.id();
+                    alive.insert(id);
+                    if recheck(known.contains(&id), id, round) {
+                        revert_look(host, id, &kind);
+                        known.insert(id);
+                    }
                 }
             }
+            known.retain(|id| alive.contains(id));
         }
         if let Ok(mut c) = CONFIG.lock() {
             c.refresh(host.config_files(), &host.instance_dir());
@@ -336,6 +391,81 @@ impl Hooks for Mod {
 
     fn render_living_pre(&self, host: &dyn ClientHost, event: &mut RenderLivingPreEvent<'_>) -> Flow {
         babies::draw(host, event)
+    }
+
+    /// One water colour everywhere (white, under the old textures' own blue), while `colour` is on.
+    fn biome_colors(&self, _: &dyn ClientHost, event: &mut mod_api::BiomeColorsEvent<'_>) {
+        if let Some(tint) = water_settings().water_tint(event.biome, event.colors.water) {
+            event.colors.water = tint;
+        }
+    }
+
+    fn client_level_load(&self, _: &mut dyn ClientHost, event: &mut mod_api::ClientLevelLoadEvent<'_>) {
+        if let Ok(mut d) = CLIENT_DIMENSION.lock() {
+            *d = event.dimension.to_owned();
+        }
+        IN_WORLD.store(true, Ordering::Relaxed);
+        RECOLOUR.store(true, Ordering::Relaxed);
+    }
+
+    /// The old water textures: the content mod's pack `assets/misogynist_unexpansion/resourcepacks/old_water`, always on and out
+    /// of the pack screen while `old_water.cfg` wants them. Read as the game starts, so a change to
+    /// them takes a restart.
+    fn add_pack_finders(&self, host: HostSide<'_>, event: &mut mod_api::AddPackFindersEvent<'_>) {
+        let HostSide::Client(host) = host else { return };
+        if event.packs.pack_type() != mod_api::PackType::ClientResources {
+            return;
+        }
+        let on = WATER.lock().map(|mut w| {
+            w.refresh(host.config_files());
+            w.settings.textures_on()
+        });
+        if !on.unwrap_or(true) {
+            return;
+        }
+        let Ok(location) = mod_api::Identifier::parse(water::PACK) else { return };
+        let mut pack = mod_api::PackRegistration::new(location, mod_api::PackType::ClientResources, Text::literal("Old water"));
+        pack.always_active = true;
+        pack.hidden = true;
+        let _ = event.packs.add_pack_finders(pack);
+    }
+
+    /// `old_water.cfg` read again; the water colours asked for once a world is open, and again
+    /// when the file changed.
+    fn client_tick_post(&self, host: &mut dyn ClientHost, _: &mut mod_api::ClientTickPostEvent) {
+        let changed = WATER.lock().map(|mut w| w.refresh(host.config_files())).unwrap_or(false);
+        if changed {
+            RECOLOUR.store(true, Ordering::Relaxed);
+        }
+        if IN_WORLD.load(Ordering::Relaxed) && RECOLOUR.swap(false, Ordering::Relaxed) {
+            host.refresh_biome_colors();
+        }
+    }
+
+    /// Old water fog's colour: dark blue, darker the less sky reaches the eye.
+    fn compute_fog_color(&self, host: &dyn ClientHost, event: &mut mod_api::ComputeFogColorEvent<'_>) {
+        if event.fog_type != FogType::Water || !water_settings().fog_on() {
+            return;
+        }
+        let dimension = CLIENT_DIMENSION.lock().map(|d| d.clone()).unwrap_or_default();
+        let eye = event.camera.map(|c| c.floor() as i32);
+        let sky = host
+            .level(&dimension)
+            .and_then(|level| level.brightness(host, mod_api::LightLayer::Sky, eye))
+            .unwrap_or(15);
+        *event.rgb = water::fog_rgb(sky);
+    }
+
+    /// Old water fog's distance: thick, gone 16 blocks out. Closer fog (blindness) stays.
+    fn render_fog(&self, _: &dyn ClientHost, event: &mut mod_api::RenderFogEvent<'_>) {
+        if event.fog_type != FogType::Water || !water_settings().fog_on() || event.fog.environmental_end <= water::FOG_END {
+            return;
+        }
+        let fog = &mut *event.fog;
+        fog.environmental_start = water::FOG_START;
+        fog.environmental_end = water::FOG_END;
+        fog.sky_end = water::FOG_END;
+        fog.cloud_end = water::FOG_END;
     }
 }
 
@@ -397,5 +527,15 @@ mod tests {
         let w = |n: &str| entries.iter().find(|e| e["name"] == n).unwrap()["weight"].as_i64().unwrap();
         assert_eq!((w("minecraft:tropical_fish"), w("minecraft:cod")), (7, 55));
         assert_eq!(entries.iter().map(|e| e["weight"].as_i64().unwrap()).sum::<i64>(), 100);
+    }
+}
+
+#[cfg(test)]
+mod recheck_tests {
+    #[test]
+    fn mobs_are_checked_first_then_one_pass_in_ten() {
+        assert!(super::recheck(false, 7, 1));
+        let passes = (0..super::RECHECK_EVERY).filter(|&r| super::recheck(true, 7, r)).count();
+        assert_eq!(passes, 1);
     }
 }

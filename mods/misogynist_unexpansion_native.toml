@@ -17,8 +17,10 @@ description = """
 - **Deepslate digs faster:** only 15% slower than stone, not twice as slow (its ores and cobbled and polished kinds alike).
 - **Walk on powder snow** as if you wore leather boots, and **right-click a grown crop** to harvest and replant it.
 - **Key Binds search by key:** the Key Binds search finds a binding by the key it is on.
+- **The old water:** beta's water textures (with the assets), beta's one blue everywhere (warm and lukewarm oceans a little lighter) and the old dark, thick water fog; each switched in `old_water.cfg`.
+- **No Dried Ghast, no Pigstep:** the Dried Ghast has no recipe and drops nothing; a Pigstep disc in any loot is one of C418's original discs instead.
 - **Fishing as it was:** treasure anywhere again, not only in open water, and tropical fish 7 times in 100.
-- **Recipes for what they gave:** honey (slime, sugar, a bottle), honeycomb (smelted honey), glow ink (ink and glowstone), froglights (a light block ringed with slime), fish eggs (nine tropical fish), fish scales (from tropical fish) and a Potion of Dolphin's Grace (crafted).
+- **Recipes for what they gave:** honey (slime, sugar, a bottle), honeycomb (smelted honey), glow ink (ink and glowstone), froglights (a light block ringed with slime), fish eggs (nine tropical fish), fish scales (from tropical fish; turtle scutes and eggs are named fish scales and fish eggs) and a Potion of Dolphin's Grace (crafted).
 
 Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. No Minecraft code or assets are included."""
 authors = ["mxpbxb"]
@@ -29,6 +31,38 @@ source = "https://github.com/mxpbxb/minecraft-misogynist-unexpansion"
 icon = "icons/misogynist_unexpansion_native.png"
 categories = ["game-mechanics", "mobs"]
 tags = ["vanilla", "mobs", "classic"]
+
+[[versions]]
+version = "0.19.1"
+published = "2026-11-25"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.19.1.hmod"
+sha256 = "0deb39bf112836a69f7eac121f2070d901570a71ce1021e9d82e06e50c74f0eb"
+changelog = "Server performance: the old babies' looks no longer clone every mob's saved data a few times a second. Grown mobs are skipped by their baby flag, a baby's look is read again every few seconds, nothing is scanned in a dimension with no players, and the check that keeps cows, pigs, chickens and wolves in their original look reads each one far less often. Needs the assets 0.2.2."
+
+[[versions]]
+version = "0.19.0"
+published = "2026-11-25"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.19.0.hmod"
+sha256 = "0b1fa16523e345e975085af7fc1ea6c105dd7367d73eae2dc9b55f20bd3d64cc"
+changelog = "Old or new water, on each client: old_water.cfg has water = old or new (new is the game's own water, none of the old textures, colour or fog), and textures, colour and fog can each be turned off. The old textures are a resource pack in the assets that this mod turns on as the game starts, so switching them takes a restart. Needs the assets 0.2.2."
+
+[[versions]]
+version = "0.18.1"
+published = "2026-11-24"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.18.1.hmod"
+sha256 = "bda182e489d85480c1569a53a1d34ba4c717515f6c40c1aecbafd8be467a96fd"
+changelog = "The old water is beta's one blue everywhere and never milky (the native mod tints it blue, as the assets 0.2.1's textures are grey). Warm and lukewarm oceans lean a little towards their own lighter blue. Needs the assets 0.2.1."
+
+[[versions]]
+version = "0.18.0"
+published = "2026-11-24"
+game = "26.3"
+file = "misogynist_unexpansion_native-0.18.0.hmod"
+sha256 = "2844fc5cda6c1738b6d040e8a10d161b222f196ad03a1e08d2c5be1f808dd70d"
+changelog = "The old water (beta's textures from the assets 0.2.0, one water colour everywhere and the old dark, thick water fog, switched in old_water.cfg). Fish scales and fish eggs are named so everywhere, the hotbar included. No Dried Ghast: no recipe, and a broken one drops nothing (nether fossils still place one). No Pigstep: in any chest or loot it is one of C418's twelve original discs instead, at random. Needs the assets 0.2.0."
 
 [[versions]]
 version = "0.16.0"
