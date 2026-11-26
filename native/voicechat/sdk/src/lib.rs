@@ -114,7 +114,7 @@ impl Hooks for VoiceChat {
             let width = event.draw.text_width(&line.text) + 4.0;
             let (x, y) = event.corners.place(corner, width, 12.0);
             event.draw.fill([x, y, width, 12.0], 0x9000_0000);
-            event.draw.text(&line.text, [x + 2.0, y + 2.0], line.rgb, true);
+            event.draw.text(&line.text, [x + 2.0, y + 2.0], line.rgb | 0xff00_0000, true);
         }
     }
 

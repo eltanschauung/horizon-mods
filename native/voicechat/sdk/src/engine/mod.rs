@@ -277,6 +277,7 @@ struct Voice {
     loaded: bool,
     session: Option<Session>,
     display_names: HashMap<u128, String>,
+    character_names: bool,
     /// Custom payloads for the server, sent at the tick.
     outbox: Vec<(String, Vec<u8>)>,
     /// Settings to write back, and chat lines for the player.
@@ -297,6 +298,7 @@ fn voice() -> MutexGuard<'static, Voice> {
             loaded: false,
             session: None,
             display_names: HashMap::new(),
+            character_names: false,
             outbox: Vec::new(),
             store: Vec::new(),
             chat: Vec::new(),
@@ -850,8 +852,9 @@ const RED: u32 = 0xFF5555;
 const YELLOW: u32 = 0xFFFF55;
 
 /// Resolve the current character names for the already-known voice participants.
-pub fn update_display_names(resolve: impl Fn(u128) -> Option<String>) {
+pub fn update_display_names(character_names: bool, resolve: impl Fn(u128) -> Option<String>) {
     let mut voice = voice();
+    voice.character_names = character_names;
     voice.display_names = voice
         .session
         .iter()
@@ -921,7 +924,11 @@ pub fn hud(ptt_key: &str) -> Vec<Line> {
         .filter(|(_, (at, _))| now - *at < Duration::from_millis(300))
         .map(|(id, (_, whisper))| {
             let name = v.display_names.get(id).cloned().unwrap_or_else(|| {
-                session.states.get(id).map_or_else(|| "Someone".into(), |s| s.name.clone())
+                if v.character_names {
+                    format!("Player_{:08x}", (*id >> 96) as u32)
+                } else {
+                    session.states.get(id).map_or_else(|| "Someone".into(), |s| s.name.clone())
+                }
             });
             (name, *whisper)
         })

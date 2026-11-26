@@ -27,7 +27,7 @@ fn voicechat_hud(
             let w = game.native_text_width(batch, &label.text) + 4.0;
             let [x, y] = [label.at[0] - w / 2.0, label.at[1] - 6.0];
             game.native_fill(batch, [x, y, w, 12.0], 0x6000_0000);
-            game.native_text(batch, &label.text, [x + 2.0, y + 2.0], label.rgb, true);
+            game.native_text(batch, &label.text, [x + 2.0, y + 2.0], label.rgb | 0xff00_0000, true);
         }
     }
 }
