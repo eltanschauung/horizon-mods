@@ -241,12 +241,12 @@ impl Session {
     }
 
     /// The names of a group's members, sorted.
-    fn members(&self, group: u128, display_names: &HashMap<u128, String>, exclude: Option<u128>) -> Vec<String> {
+    fn members(&self, group: u128, name: impl Fn(u128) -> String, exclude: Option<u128>) -> Vec<String> {
         let mut names: Vec<String> = self
             .states
             .iter()
             .filter(|(id, p)| Some(**id) != exclude && p.group == Some(group) && !p.disconnected)
-            .map(|(id, p)| display_names.get(id).cloned().unwrap_or_else(|| p.name.clone()))
+            .map(|(&id, _)| name(id))
             .collect();
         names.sort_by_key(|n| n.to_lowercase());
         names
@@ -659,7 +659,7 @@ impl Voice {
                         id: g.id,
                         name: g.name.clone(),
                         has_password: g.has_password,
-                        members: s.members(g.id, &self.display_names, None),
+                        members: s.members(g.id, |id| self.participant_name(id), None),
                         ours: s.group == Some(g.id),
                     })
                     .collect()
@@ -909,7 +909,7 @@ pub fn hud(ptt_key: &str) -> Vec<Line> {
     }
     if let Some(g) = session.group.and_then(|g| session.groups.get(&g)) {
         lines.push(line(format!("Group: {}", g.name), GREEN));
-        let members = session.members(g.id, &v.display_names, session.secret.as_ref().map(|s| s.player));
+        let members = session.members(g.id, |id| v.participant_name(id), session.secret.as_ref().map(|s| s.player));
         if !members.is_empty() {
             lines.push(line(format!("  with {}", members.join(", ")), GREY));
         }
@@ -923,13 +923,7 @@ pub fn hud(ptt_key: &str) -> Vec<Line> {
         .iter()
         .filter(|(_, (at, _))| now - *at < Duration::from_millis(300))
         .map(|(id, (_, whisper))| {
-            let name = v.display_names.get(id).cloned().unwrap_or_else(|| {
-                if v.character_names {
-                    format!("Player_{:08x}", (*id >> 96) as u32)
-                } else {
-                    session.states.get(id).map_or_else(|| "Someone".into(), |s| s.name.clone())
-                }
-            });
+            let name = v.participant_name(*id);
             (name, *whisper)
         })
         .collect();
@@ -1033,12 +1027,13 @@ pub fn command(line: &str) -> Option<Vec<String>> {
             }
             _ => out("Volume: 0 to 200"),
         },
-        ["volume", name, n] => {
+        ["volume", name @ .., n] if !name.is_empty() => {
+            let name = name.join(" ");
             let Ok(n) = n.parse::<u32>().map(|n| n.min(400)) else {
                 return Some(out("Volume: 0 to 400"));
             };
             let id = v.session.as_ref().and_then(|s| {
-                s.states.values().find(|p| p.name.eq_ignore_ascii_case(name)).map(|p| p.uuid)
+                s.states.keys().copied().find(|&id| v.participant_name(id).eq_ignore_ascii_case(&name))
             });
             match id {
                 Some(id) => {
@@ -1073,7 +1068,7 @@ pub fn command(line: &str) -> Option<Vec<String>> {
             let lines: Vec<String> = groups
                 .into_iter()
                 .map(|g| {
-                    let members = s.members(g.id, &v.display_names, None);
+                    let members = s.members(g.id, |id| v.participant_name(id), None);
                     format!(
                         "{}{}{}: {}",
                         g.name,
@@ -1126,6 +1121,17 @@ pub fn command(line: &str) -> Option<Vec<String>> {
 }
 
 impl Voice {
+    fn participant_name(&self, id: u128) -> String {
+        if let Some(name) = self.display_names.get(&id) {
+            return name.clone();
+        }
+        if self.character_names {
+            return format!("Player_{:08x}", (id >> 96) as u32);
+        }
+        self.session.as_ref().and_then(|session| session.states.get(&id))
+            .map_or_else(|| "Someone".into(), |state| state.name.clone())
+    }
+
     fn status(&self) -> Vec<String> {
         let mut out = Vec::new();
         let Some(s) = self.session.as_ref() else {
@@ -1153,9 +1159,9 @@ impl Voice {
         }
         let mut names: Vec<String> = s
             .states
-            .values()
-            .filter(|p| !p.disconnected)
-            .map(|p| format!("{}{}", p.name, if p.disabled { " (off)" } else if p.muted { " (muted)" } else { "" }))
+            .iter()
+            .filter(|(_, p)| !p.disconnected)
+            .map(|(&id, p)| format!("{}{}", self.participant_name(id), if p.disabled { " (off)" } else if p.muted { " (muted)" } else { "" }))
             .collect();
         names.sort();
         if !names.is_empty() {

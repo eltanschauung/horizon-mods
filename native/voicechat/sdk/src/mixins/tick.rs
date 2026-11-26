@@ -39,10 +39,7 @@ fn voicechat_tick(game: &mut crate::game::Game<'_>) {
         voicechat::from_setting(key, game.setting(vc::ID, key))
     });
     vc::update_display_names(game.pack.character_catalog.get(0).is_some(), |uuid| {
-        Some(game.character_for(uuid).map_or_else(
-            || format!("Player_{:08x}", (uuid >> 96) as u32),
-            |character| character.display_name().plain().to_string(),
-        ))
+        game.character_for(uuid).map(|character| character.name.clone())
     });
     for (channel, data) in done.payloads {
         game.send(horizon_protocol::packets::play::Serverbound::CustomPayload(
