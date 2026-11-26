@@ -88,6 +88,10 @@ def main():
     fixes = ROOT.parents[1]/'content-fixes/biomesoplenty'/baked_path
     for tree in ('redwood_tree', 'redwood_tree_medium', 'redwood_tree_large'):
         shutil.copytree(fixes/tree, out/baked_path/tree, dirs_exist_ok=True)
+    feature_path = Path('data/biomesoplenty/worldgen/feature')
+    for relative in ('saplings', 'huge_saplings'):
+        fixes = ROOT.parents[1]/'content-fixes/biomesoplenty'/feature_path/relative
+        shutil.copytree(fixes, out/feature_path/relative, dirs_exist_ok=True)
     if args.native_dev:
         for name in ('high_grass','small_fumarole'):
             shutil.copy2(root/f'upstream/data/biomesoplenty/worldgen/feature/{name}.json', out/f'data/biomesoplenty/worldgen/feature/{name}.json')
