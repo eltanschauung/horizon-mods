@@ -16,6 +16,14 @@ categories = ["decoration", "library"]
 tags = ["blocks", "building", "chisel", "assets"]
 
 [[versions]]
+version = "0.5.1"
+published = "2026-11-27"
+game = "26.3"
+file = "block_variety-0.5.1.hmod"
+sha256 = "b3e72919262b67ced9b1f7f92dcb3dbf8245bbd2965735a182c579393d7498c9"
+changelog = "The 7,848 stonecutter recipes from 0.5.0 are removed: a group of n blocks made n recipes of n items each (343,026 item entries in all), synced to every player and indexed by JEI, which used a lot of memory. The chisel still turns any block of a group into the rest, and the crafting recipes stay. Needs block_variety_native 0.7.0."
+
+[[versions]]
 version = "0.5.0"
 published = "2026-11-25"
 game = "26.3"
