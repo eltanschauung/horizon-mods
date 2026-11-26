@@ -412,15 +412,11 @@ impl Hooks for Mod {
     /// of the pack screen while `old_water.cfg` wants them. Read as the game starts, so a change to
     /// them takes a restart.
     fn add_pack_finders(&self, host: HostSide<'_>, event: &mut mod_api::AddPackFindersEvent<'_>) {
-        let HostSide::Client(host) = host else { return };
+        let HostSide::Client(_) = host else { return };
         if event.packs.pack_type() != mod_api::PackType::ClientResources {
             return;
         }
-        let on = WATER.lock().map(|mut w| {
-            w.refresh(host.config_files());
-            w.settings.textures_on()
-        });
-        if !on.unwrap_or(true) {
+        if !water::startup_textures_enabled() {
             return;
         }
         let Ok(location) = mod_api::Identifier::parse(water::PACK) else { return };

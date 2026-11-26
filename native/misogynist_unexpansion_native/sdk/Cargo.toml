@@ -1,6 +1,6 @@
 [package]
 name = "mod-misogynist_unexpansion_native"
-version = "0.19.1+sdk.1"
+version = "0.19.1+sdk.2"
 edition = "2024"
 publish = false
 

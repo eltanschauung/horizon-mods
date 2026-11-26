@@ -20,7 +20,34 @@
 //! Written with the defaults when missing, and read again when it changes, within ten seconds;
 //! the textures take a restart.
 
-pub const FILE: &str = "old_water.cfg";
+use std::fs::File;
+use std::io::Read;
+use std::path::Path;
+use std::sync::OnceLock;
+
+const CONFIG_PATH: &str = "misogynist_unexpansion_native/old_water.cfg";
+
+/// Pack discovery runs before the SDK config service is available. Horizon has
+/// already entered the game directory. Read just this mod's setting once and
+/// leave writing defaults and refreshing the other settings to the tick hook.
+pub fn startup_textures_enabled() -> bool {
+    static ENABLED: OnceLock<bool> = OnceLock::new();
+    *ENABLED.get_or_init(|| {
+        let path = Path::new("config").join(CONFIG_PATH);
+        if !path.is_file() {
+            return Settings::default().textures_on();
+        }
+        let Ok(file) = File::open(path) else {
+            return Settings::default().textures_on();
+        };
+        let limit = mod_api::CONFIG_FILE_MAX;
+        let mut text = String::new();
+        match file.take(limit + 1).read_to_string(&mut text) {
+            Ok(size) if size as u64 <= limit => Settings::parse(&text).textures_on(),
+            _ => Settings::default().textures_on(),
+        }
+    })
+}
 
 /// The content mod's pack with the old textures in place of vanilla's water sprites.
 pub const PACK: &str = "misogynist_unexpansion:assets/misogynist_unexpansion/resourcepacks/old_water";
@@ -168,7 +195,7 @@ impl Loaded {
         if self.loaded && self.ticks % 200 != 0 {
             return false;
         }
-        let path = mod_api::ConfigPath::new(&format!("misogynist_unexpansion_native/{FILE}")).unwrap();
+        let path = mod_api::ConfigPath::new(CONFIG_PATH).unwrap();
         let before = self.settings;
         match files.read(&path) {
             Ok(bytes) => {
