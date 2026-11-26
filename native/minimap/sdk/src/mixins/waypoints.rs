@@ -504,18 +504,12 @@ pub(super) fn markers(game: &Game<'_>, settings: minimap::runtime::Settings) {
     let Some(p) = game.native_player() else {
         return;
     };
-    let (size, bpp) = settings.view();
-    let yaw = game.yaw as f64;
-    let (sin, cos) = yaw.to_radians().sin_cos();
-    let project = |x: f64, z: f64| {
-        let (dx, dz) = ((x - p.x) / f64::from(bpp), (z - p.z) / f64::from(bpp));
-        let (x, y) = if settings.rotate {
-            (-cos * dx - sin * dz, sin * dx - cos * dz)
-        } else {
-            (dx, dz)
-        };
-        (x as f32, y as f32)
+    let (size, _) = settings.view();
+    let Some(view) = game.composed_minimap_view() else {
+        return;
     };
+    let project = |x, z| view.project(x, z, size);
+    let partial = game.clock.camera_fraction();
     let radius = size / 2.0;
     let norm = |x: f32, y: f32| {
         if settings.round {
@@ -530,7 +524,10 @@ pub(super) fn markers(game: &Game<'_>, settings: minimap::runtime::Settings) {
         .iter()
         .filter(|m| m.kind.id.as_str() == "minecraft:player" && !m.is_invisible())
     {
-        let (x, y) = project(m.position.x, m.position.z);
+        let (x, y) = project(
+            m.previous.x + (m.position.x - m.previous.x) * partial,
+            m.previous.z + (m.position.z - m.previous.z) * partial,
+        );
         if norm(x, y) <= radius - 7.0
             && let Some((face, hat)) = m.skin.as_deref().and_then(|skin| skin_rects(game, skin))
         {
@@ -572,7 +569,7 @@ pub(super) fn markers(game: &Game<'_>, settings: minimap::runtime::Settings) {
         for_each_waypoint(game, |point, _, glyph, color| {
             let (mut x, mut y) = project(point[0], point[2]);
             let distance = norm(x, y);
-            let size = 10.0 * (1.0 - 0.75 * (distance / radius).clamp(0.0, 1.0));
+            let size = 10.0 * (1.0 - 0.65 * (distance / radius).clamp(0.0, 1.0));
             // The entire square badge stays inside the map, even on a round map.
             let half = size / 2.0;
             let inset = if settings.round {
@@ -666,8 +663,9 @@ pub(super) fn draw_world(game: &Game<'_>, batch: &mut HudBatch) {
     labels.sort_by(|a, b| b.0.total_cmp(&a.0));
 
     let atlas = &game.gui.atlas;
+    let zoom = game.native_zoom_now().map_or(1.0, |zoom| zoom.factor);
     for (distance, x, y, title, glyph, color) in labels {
-        let distance_scale = (1.0 - 0.9 * (distance / 1000.0).clamp(0.0, 1.0)) as f32;
+        let distance_scale = (1.0 - 0.65 * (distance / 1000.0).clamp(0.0, 1.0)) as f32 * zoom;
         let mut letter = [0; 4];
         draw_badge(
             batch,
@@ -701,7 +699,7 @@ pub(super) fn draw_world(game: &Game<'_>, batch: &mut HudBatch) {
             alpha(u32::MAX, opacity),
             true,
         );
-        if scale < 1.0 {
+        if scale != 1.0 {
             batch.scale_since(
                 start,
                 tx + 2.0 * distance_scale,
