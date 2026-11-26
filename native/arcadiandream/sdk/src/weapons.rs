@@ -431,14 +431,20 @@ fn wear_by(host: &mut dyn ServerHost, player: PlayerRef, place: ItemPlace, amoun
     if amount == 0 || player.game_mode(host) == Some(GameMode::Creative) {
         return;
     }
-    let _ = host.transaction(|host, tx| {
+    let broke = host.transaction(|host, tx| {
         let stack = place.stack(host).ok_or(())?;
         let damage = stack.damage().saturating_add(amount);
-        let applied = if damage >= host.max_damage(stack.item()).unwrap_or(u32::MAX) {
+        let broke = damage >= host.max_damage(stack.item()).unwrap_or(u32::MAX);
+        let applied = if broke {
             place.extract(host, tx, &mod_api::ItemResource::of(&stack), 1) == 1
         } else {
             place.edit(host, tx, |stack| stack.set_damage(damage))
         };
-        applied.then_some(()).ok_or(())
+        applied.then_some(broke).ok_or(())
     });
+    if matches!(broke, Ok(true))
+        && let (Some(level), Some(at)) = (player.level(host), player.entity().position(host))
+    {
+        level.play_sound(host, "minecraft:entity.item.break", at, SoundSource::Players, 0.8, 1.0);
+    }
 }
