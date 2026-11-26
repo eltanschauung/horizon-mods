@@ -1,6 +1,6 @@
 id = "alice_dolls_native"
 name = "Alice Dolls"
-version = "0.43.2+sdk.1"
+version = "0.43.4+sdk.1"
 description = "Collectible Alice dolls with individual AI, inventories and abilities."
 authors = ["iwa_yukinoshita (original Alice's Dolls)", "mxpbxb (Horizon port)"]
 api = "0.2"

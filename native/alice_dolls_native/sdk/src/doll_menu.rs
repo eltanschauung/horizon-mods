@@ -10,9 +10,11 @@ use std::sync::{LazyLock, Mutex};
 
 use mod_api::{Compound, Tag};
 use mod_api::{
-    EntityRef, Holder, Host, ItemResource, MenuReplace, MenuSlotPlace, Registrar, ResourceHandler,
-    ServerHost, Text, Transaction,
+    EntityRef, Holder, Host, HostTransaction, ItemPlace, ItemResource, MenuReplace, MenuSlotPlace, Registrar,
+    ResourceHandler, ServerHost, Text, Transaction,
 };
+
+use crate::players::max_stack_size;
 
 use crate::{DOLL, DollData, KIND, bauble_block, doll_of, goals, same_kind, stack_limit, switch_row};
 use crate::stacks::DollStack;
@@ -305,9 +307,10 @@ impl ResourceHandler<ItemResource> for DollInventory {
     }
 
     fn amount(&self, host: &mut dyn ServerHost, index: usize) -> u32 {
-        DOLL.get(host, self.holder()).ok()
-            .and_then(|data| Self::shown_item(&data, index))
-            .map_or(0, |item| item.count)
+        let Some(item) = DOLL.get(host, self.holder()).ok().and_then(|data| Self::shown_item(&data, index)) else { return 0 };
+        // Past an item's stack (Moscow's slots), the game's slot shows and hands out a stack's
+        // worth and the rest stays; the client draws the real count, and `big_click` goes past it.
+        item.count.min(max_stack_size(host, &item.item).unwrap_or(64).max(1))
     }
 
     fn capacity(&self, host: &mut dyn ServerHost, index: usize, resource: &ItemResource) -> u32 {
@@ -378,4 +381,137 @@ pub fn inventory_screen(menu: &str) -> Option<mod_api::Screen> {
         inventory_x: 8.0,
         ..mod_api::Screen::default()
     })
+}
+
+/// Whether doll slot `d` of `total` is a plain storage slot: not past her slots, not an armour
+/// or shield place.
+pub(crate) fn plain_slot(total: usize, d: usize) -> bool {
+    if d >= total {
+        return false;
+    }
+    total <= goals::ARMOUR_SLOTS
+        || ((0..goals::ARMOUR_SLOTS).all(|part| d != goals::armour_slot(total, part)) && d != goals::shield_slot(total))
+}
+
+/// One of `stack`, as the game's resource.
+fn resource_of(host: &dyn Host, stack: &DollStack) -> Option<ItemResource> {
+    let mut one = stack.clone();
+    one.count = 1;
+    Some(ItemResource::of(&one.to_game(host)?))
+}
+
+/// A click on Moscow's screen done here, past the game's slots (as Sophisticated Backpacks' stack
+/// upgrades do): a menu slot stops at an item's stack, and hers hold more. `slot` is the screen's
+/// slot: one of hers shown from `offset` (`view` of them), taken from or put into with the left
+/// or (`right`) the right button; or with `shift`, one of the player's inventory, moved into her
+/// onto stacks like it first and then into empty slots. Unstackable items stay one to a slot.
+/// What the click changed; nothing is lost when it can't be done.
+pub(crate) fn big_click(
+    host: &mut dyn ServerHost,
+    uuid: u128,
+    doll: u32,
+    offset: usize,
+    view: usize,
+    slot: usize,
+    right: bool,
+    shift: bool,
+) -> bool {
+    let Some(player) = host.player(uuid) else { return false };
+    let Some(menu) = player.container_menu(host) else { return false };
+    let holder = Holder::Entity(doll);
+    let Ok(mut data) = DOLL.get(host, holder) else { return false };
+    let Some(limit) = doll_of(host, doll).and_then(|d| stack_limit(d.name, &data)) else { return false };
+    let limit_of = |host: &dyn Host, item: &str| match max_stack_size(host, item).unwrap_or(64) {
+        1 => 1,
+        _ => limit,
+    };
+    let total = data.items.len();
+    let cursor = ItemPlace::PlayerCursor { menu };
+    if shift {
+        let from = ItemPlace::MenuSlot { menu, slot };
+        let Some(res) = from.resource(host) else { return false };
+        let have = from.amount(host);
+        let Some(moving) = DollStack::from_game(host, res.as_stack()) else { return false };
+        let limit = limit_of(host, &moving.item);
+        let mut left = have;
+        let mut plan: Vec<(usize, u32)> = Vec::new();
+        for merge in [true, false] {
+            for d in (0..total).filter(|&d| plain_slot(total, d)) {
+                let count = match &data.items[d] {
+                    Some(here) if merge && same_kind(here, &moving) => here.count,
+                    None if !merge => 0,
+                    _ => continue,
+                };
+                let put = left.min(limit.saturating_sub(count));
+                if put > 0 {
+                    plan.push((d, put));
+                    left -= put;
+                }
+            }
+        }
+        let moved = have - left;
+        if moved == 0 || host.transaction(|host, tx| if from.extract(host, tx, &res, moved) == moved { Ok(()) } else { Err(()) }).is_err() {
+            return false;
+        }
+        for (d, put) in plan {
+            match &mut data.items[d] {
+                Some(here) => here.count += put,
+                empty => *empty = Some(DollStack { count: put, ..moving.clone() }),
+            }
+        }
+        return DOLL.set(host, holder, data).is_ok();
+    }
+    let d = offset + slot;
+    if slot >= view || !plain_slot(total, d) {
+        return false;
+    }
+    let here = data.items[d].clone();
+    match (cursor.resource(host), here) {
+        (None, None) => return false,
+        // An empty cursor takes a stack's worth (half of what is here with the right button, no
+        // more than a stack).
+        (None, Some(stack)) => {
+            let max = max_stack_size(host, &stack.item).unwrap_or(64).max(1);
+            let take = if right { stack.count.div_ceil(2) } else { stack.count }.min(max);
+            let Some(res) = resource_of(host, &stack) else { return false };
+            if host.transaction(|host, tx| if cursor.insert(host, tx, &res, take) == take { Ok(()) } else { Err(()) }).is_err() {
+                return false;
+            }
+            data.items[d] = (stack.count > take).then(|| DollStack { count: stack.count - take, ..stack });
+        }
+        (Some(res), here) => {
+            let carried = cursor.amount(host);
+            let Some(held) = DollStack::from_game(host, res.as_stack()) else { return false };
+            match here {
+                // Another item: swapped, when what is here fits on the cursor.
+                Some(stack) if !same_kind(&stack, &held) => {
+                    let max = max_stack_size(host, &stack.item).unwrap_or(64);
+                    if stack.count > max || carried > limit_of(host, &held.item) {
+                        return false;
+                    }
+                    let Some(back) = resource_of(host, &stack) else { return false };
+                    let swapped = host.transaction(|host, tx| {
+                        let ok = cursor.extract(host, tx, &res, carried) == carried
+                            && cursor.insert(host, tx, &back, stack.count) == stack.count;
+                        if ok { Ok(()) } else { Err(()) }
+                    });
+                    if swapped.is_err() {
+                        return false;
+                    }
+                    data.items[d] = Some(DollStack { count: carried, ..held });
+                }
+                // The same item or an empty slot: all of the cursor (one with the right button), up
+                // to her stack.
+                here => {
+                    let count = here.as_ref().map_or(0, |s| s.count);
+                    let put = (if right { 1 } else { carried }).min(limit_of(host, &held.item).saturating_sub(count));
+                    if put == 0 || host.transaction(|host, tx| if cursor.extract(host, tx, &res, put) == put { Ok(()) } else { Err(()) }).is_err() {
+                        return false;
+                    }
+                    data.items[d] = Some(DollStack { count: count + put, ..here.unwrap_or(held) });
+                }
+            }
+        }
+    }
+    DOLL.set(host, holder, data).is_ok()
 }

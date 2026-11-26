@@ -14,6 +14,8 @@ pub const ROCK_SWITCH: &str = "alice_dolls_native:rock_switch";
 pub const SCROLL: &str = "alice_dolls_native:scroll";
 /// From a client: the ender chest tab on Moscow's screen clicked.
 pub const ENDER: &str = "alice_dolls_native:ender";
+/// A click on Moscow's screen the server does itself (her slots hold more than a stack).
+pub const BIG_CLICK: &str = "alice_dolls_native:big_click";
 
 /// The most shots and beams one message carries: a message holds 30 000 bytes.
 pub const MAX_SHOTS: usize = 400;
@@ -173,6 +175,12 @@ pub struct Menu {
     pub view: usize,
     pub empty: Vec<bool>,
     pub switch_window: Option<i32>,
+    /// The shown slots holding more than an item's stack (Moscow's): the slot, its item and how
+    /// many, for the client to draw the real count over the game's.
+    pub big: Vec<(u16, String, u32)>,
+    /// Whether the server does Moscow's clicks itself (0.43.3 on): a server from before sends the
+    /// older message, without the big counts, and takes no `big_click`.
+    pub big_clicks: bool,
 }
 
 /// None: the screen closed.
@@ -186,8 +194,16 @@ pub fn encode_menu(menu: Option<&Menu>) -> Vec<u8> {
     let empty = &m.empty[..m.empty.len().min(256)];
     w.u16(empty.len());
     empty.iter().for_each(|&e| w.u8(u8::from(e)));
+    w.u8(u8::from(m.switch_window.is_some()));
     if let Some(window) = m.switch_window {
         w.u32(window as u32);
+    }
+    let big = &m.big[..m.big.len().min(256)];
+    w.u16(big.len());
+    for (slot, item, count) in big {
+        w.u16(usize::from(*slot));
+        w.str(item);
+        w.u32(*count);
     }
     w.0
 }
@@ -203,8 +219,16 @@ pub fn decode_menu(data: &[u8]) -> Result<Option<Menu>, ()> {
         let (total, offset, view) = (r.u16()?, r.u16()?, r.u16()?);
         let n = r.count(256)?;
         let empty = (0..n).map(|_| r.u8().map(|b| b != 0)).collect::<Option<Vec<bool>>>()?;
-        let switch_window = if r.0.is_empty() { None } else { Some(r.u32()? as i32) };
-        Some(Menu { title, total, offset, view, empty, switch_window })
+        // A server before 0.43.3 ends here, or with the switch window alone (4 bytes); the newer
+        // message has a flag byte and the big counts' length at least, never exactly 4 bytes.
+        if matches!(r.0.len(), 0 | 4) {
+            let switch_window = if r.0.is_empty() { None } else { Some(r.u32()? as i32) };
+            return Some(Menu { title, total, offset, view, empty, switch_window, big: Vec::new(), big_clicks: false });
+        }
+        let switch_window = if r.u8()? != 0 { Some(r.u32()? as i32) } else { None };
+        let n = r.count(256)?;
+        let big = (0..n).map(|_| Some((r.u16()? as u16, r.str()?, r.u32()?))).collect::<Option<Vec<_>>>()?;
+        Some(Menu { title, total, offset, view, empty, switch_window, big, big_clicks: true })
     };
     let menu = read(&mut r).ok_or(())?;
     if r.0.is_empty() { Ok(Some(menu)) } else { Err(()) }
@@ -235,6 +259,21 @@ pub fn decode_scroll(data: &[u8]) -> Option<i32> {
 
 pub fn encode_scroll(rows: i32) -> Vec<u8> {
     vec![rows.clamp(-3, 3) as i8 as u8]
+}
+
+/// A click on Moscow's screen: the screen's slot, the right button or the left, shift held or not.
+pub fn encode_big_click(slot: usize, right: bool, shift: bool) -> Vec<u8> {
+    let mut w = Writer(Vec::new());
+    w.u16(slot);
+    w.u8(u8::from(right) | u8::from(shift) << 1);
+    w.0
+}
+
+pub fn decode_big_click(data: &[u8]) -> Option<(usize, bool, bool)> {
+    let mut r = Reader(data);
+    let slot = r.u16()?;
+    let flags = r.u8()?;
+    (r.0.is_empty() && flags < 4).then_some((slot, flags & 1 != 0, flags & 2 != 0))
 }
 
 #[cfg(test)]
@@ -286,7 +325,25 @@ mod tests {
 
     #[test]
     fn a_doll_screen_reaches_its_viewer() {
-        let m = Menu { title: "Horai Doll".into(), total: 18, offset: 0, view: 18, empty: vec![true, false, true], switch_window: Some(9) };
+        let m = Menu { title: "Horai Doll".into(), total: 18, offset: 0, view: 18, empty: vec![true, false, true], switch_window: Some(9), big: vec![(2, "minecraft:cobblestone".into(), 200)], big_clicks: true };
+        assert_eq!(decode_big_click(&encode_big_click(40, true, false)), Some((40, true, false)));
+        // 0.43.2's message: no flag byte, the switch window as the last 4 bytes or nothing.
+        let mut old = Writer(Vec::new());
+        old.str("Moscow Doll");
+        old.u16(18);
+        old.u16(0);
+        old.u16(18);
+        old.u16(1);
+        old.u8(1);
+        let without = old.0.clone();
+        old.u32(7);
+        let with = decode_menu(&old.0).unwrap().unwrap();
+        assert_eq!((with.switch_window, with.big_clicks, with.empty), (Some(7), false, vec![true]));
+        let none = decode_menu(&without).unwrap().unwrap();
+        assert_eq!((none.switch_window, none.big_clicks), (None, false));
+        let plain = Menu { switch_window: None, big: Vec::new(), ..m.clone() };
+        assert!(decode_menu(&encode_menu(Some(&plain))).unwrap().unwrap().big_clicks);
+        assert_eq!(decode_big_click(&encode_big_click(3, false, true)), Some((3, false, true)));
         assert_eq!(decode_menu(&encode_menu(Some(&m))), Ok(Some(m)));
         assert_eq!(decode_menu(&encode_menu(None)), Ok(None));
         assert_eq!(decode_menu(&[1, 0]), Err(()));
