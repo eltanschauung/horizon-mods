@@ -4299,6 +4299,15 @@ impl Hooks for Mod {
         }
     }
 
+    /// Typing on Joon's screen goes into her item search.
+    fn screen_char_typed_pre(&self, host: &dyn ClientHost, event: &mut mod_api::ScreenCharTypedPreEvent<'_>) -> Flow {
+        if !joon_ui::ours(host, event.screen.id) {
+            return Flow::Continue;
+        }
+        joon_ui::typed(event.c);
+        Flow::Cancel
+    }
+
     fn screen_mouse_dragged_pre(&self, host: &dyn ClientHost, event: &mut mod_api::ScreenMouseDraggedPreEvent<'_>) -> Flow {
         if joon_ui::ours(host, event.screen.id) {
             return Flow::Cancel;
@@ -4309,7 +4318,11 @@ impl Hooks for Mod {
     fn screen_key_pressed_pre(&self, host: &dyn ClientHost, event: &mut mod_api::ScreenKeyPressedPreEvent<'_>) -> Flow {
         // On Joon's screen every key but Escape is hers: the inventory key doesn't close it.
         if joon_ui::ours(host, event.screen.id) {
-            return if event.key == "key.keyboard.escape" { Flow::Continue } else { Flow::Cancel };
+            if event.key == "key.keyboard.escape" {
+                return Flow::Continue;
+            }
+            joon_ui::key(event.key);
+            return Flow::Cancel;
         }
         let k = event.key.strip_prefix("key.keyboard.").unwrap_or("");
         let moves_items = matches!(k, "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "f" | "q");

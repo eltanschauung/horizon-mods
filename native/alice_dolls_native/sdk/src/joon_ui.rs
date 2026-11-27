@@ -41,7 +41,31 @@ struct Ui {
     trades_top: usize,
     players_top: usize,
     offer_top: usize,
+    /// The bottom of the Trades tab shows every item in the game (searched by `query`) rather
+    /// than the owner's own.
+    all_items: bool,
+    query: String,
+    /// The items `query` finds, as last drawn, and the first row of them shown.
+    found: Vec<String>,
+    found_top: usize,
     outbox: Vec<JoonAct>,
+}
+
+/// Every item in the game, by id: read once, the first time the search is drawn.
+static ALL_ITEMS: Mutex<Vec<String>> = Mutex::new(Vec::new());
+
+/// The items whose id holds every word of `query` (a whole id, `minecraft:water_bucket`, finds
+/// that one first).
+fn search(all: &[String], query: &str) -> Vec<String> {
+    let q = query.trim().to_lowercase();
+    let words: Vec<&str> = q.split_whitespace().collect();
+    let mut found: Vec<String> = all.iter().filter(|id| words.iter().all(|w| id.contains(w))).cloned().collect();
+    let exact = if q.contains(':') { q.clone() } else { format!("minecraft:{q}") };
+    if let Some(i) = found.iter().position(|id| *id == exact) {
+        let hit = found.remove(i);
+        found.insert(0, hit);
+    }
+    found
 }
 
 static UI: Mutex<Option<Ui>> = Mutex::new(None);
@@ -133,6 +157,20 @@ const GREEN: u32 = 0xFF00_6A00;
 const TRADE_ROWS: usize = 5;
 const PLAYER_ROWS: usize = 7;
 const OFFER_ROWS: usize = 6;
+/// The search's grid: nine to a row, three rows.
+const FOUND_ROWS: usize = 3;
+
+fn mode_rect(o: [f32; 2], all: bool) -> Rect {
+    if all { at(o, 74.0, 115.0, 64.0, 14.0) } else { at(o, 8.0, 115.0, 64.0, 14.0) }
+}
+
+fn search_rect(o: [f32; 2]) -> Rect {
+    at(o, 8.0, 132.0, 162.0, 14.0)
+}
+
+fn found_rect(o: [f32; 2], k: usize) -> Rect {
+    at(o, 8.0 + 18.0 * (k % 9) as f32, 150.0 + 18.0 * (k / 9) as f32, 18.0, 18.0)
+}
 
 /// What a click lands on.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -149,6 +187,11 @@ enum Hit {
     Player(usize),
     Offer(usize),
     Home,
+    /// The bottom of the Trades tab: their own items, or every item.
+    Mode(bool),
+    /// One of the items the search found, by its place in the grid shown.
+    Found(usize),
+    FoundList,
     TradesList,
     PlayersList,
     OffersList,
@@ -250,8 +293,19 @@ fn hits(v: &JoonView, ui: &Ui, o: [f32; 2]) -> Vec<(Rect, Hit)> {
             out.push((at(o, 212.0, 56.0, 36.0, 16.0), Hit::Clear));
             out.push((at(o, 140.0, 76.0, 108.0, 16.0), Hit::Delete));
             out.push((at(o, 176.0, 132.0, 72.0, 20.0), Hit::Stock));
-            for i in 0..v.items.len().min(37) {
-                out.push((item_rect(o, i), Hit::Item(i as u8)));
+            out.push((mode_rect(o, false), Hit::Mode(false)));
+            out.push((mode_rect(o, true), Hit::Mode(true)));
+            if ui.all_items {
+                for k in 0..9 * FOUND_ROWS {
+                    if ui.found_top * 9 + k < ui.found.len() {
+                        out.push((found_rect(o, k), Hit::Found(k)));
+                    }
+                }
+                out.push((at(o, 8.0, 150.0, 168.0, 18.0 * FOUND_ROWS as f32), Hit::FoundList));
+            } else {
+                for i in 0..v.items.len().min(37) {
+                    out.push((item_rect(o, i), Hit::Item(i as u8)));
+                }
             }
         }
         Tab::Send => {
@@ -324,6 +378,14 @@ pub(crate) fn pressed(window: Rect, mouse: [f32; 2], button: i32, shift: bool) {
                 }
                 Some(act)
             }
+            Hit::Mode(all) => {
+                ui.all_items = all;
+                None
+            }
+            Hit::Found(k) => match ui.found.get(ui.found_top * 9 + k).cloned() {
+                Some(id) => pick(ui, t, trade, id),
+                None => None,
+            },
             Hit::Player(i) => v
                 .players
                 .get(i)
@@ -367,10 +429,60 @@ pub(crate) fn scrolled(window: Rect, mouse: [f32; 2], by: f64) {
         }
         if v.visitor {
             roll(&mut ui.offer_top, v.trades.len(), OFFER_ROWS);
+        } else if ui.tab == Tab::Trades && ui.all_items && mouse[1] >= o[1] + 112.0 {
+            roll(&mut ui.found_top, ui.found.len().div_ceil(9), FOUND_ROWS);
         } else if ui.tab == Tab::Trades {
             roll(&mut ui.trades_top, trade_rows(&v), TRADE_ROWS);
         } else {
             roll(&mut ui.players_top, v.players.len(), PLAYER_ROWS);
+        }
+    });
+}
+
+/// The chosen part set to item `id` (one of it), and on to the next empty part.
+fn pick(ui: &mut Ui, t: Option<&ShownTrade>, trade: u8, id: String) -> Option<JoonAct> {
+    let act = JoonAct::SetId { trade, part: ui.part, id };
+    if let Some(next) = (0..3u8).find(|&p| p != ui.part && part_of(t, p).is_none()) {
+        ui.part = next;
+    }
+    Some(act)
+}
+
+/// Whether the screen takes typing now: the item search is showing.
+fn searching(ui: &Ui) -> bool {
+    ui.view.as_ref().is_some_and(|v| !v.visitor) && ui.tab == Tab::Trades && ui.all_items
+}
+
+/// A character typed: into the item search, when it shows.
+pub(crate) fn typed(c: char) {
+    with(|ui| {
+        if searching(ui) && !c.is_control() && ui.query.chars().count() < 48 {
+            ui.query.extend(c.to_lowercase());
+            ui.found_top = 0;
+        }
+    });
+}
+
+/// A key: Backspace in the search, Enter to take the first item it found.
+pub(crate) fn key(name: &str) {
+    with(|ui| {
+        if !searching(ui) {
+            return;
+        }
+        match name {
+            "key.keyboard.backspace" => {
+                ui.query.pop();
+                ui.found_top = 0;
+            }
+            "key.keyboard.enter" | "key.keyboard.keypad.enter" => {
+                let Some(id) = ui.found.first().cloned() else { return };
+                let Some(v) = ui.view.clone() else { return };
+                let trade = ui.chosen.min(MAX_TRADES - 1) as u8;
+                if let Some(a) = pick(ui, v.trades.get(ui.chosen), trade, id) {
+                    ui.outbox.push(a);
+                }
+            }
+            _ => {}
         }
     });
 }
@@ -487,9 +599,44 @@ fn trade_items(host: &dyn ClientHost, d: &mut dyn DrawContext, t: &ShownTrade, x
     }
 }
 
+/// What the item search shows.
+struct Search {
+    on: bool,
+    query: String,
+    found: Vec<String>,
+    top: usize,
+}
+
 pub(crate) fn draw(host: &dyn ClientHost, d: &mut dyn DrawContext, window: Rect, mouse: [f32; 2]) {
-    let Some(Some((v, tab, chosen, part, tops))) = UI.lock().ok().map(|g| {
-        g.as_ref().and_then(|ui| ui.view.clone().map(|v| (v, ui.tab, ui.chosen, ui.part, (ui.trades_top, ui.players_top, ui.offer_top))))
+    // The search, brought up to date: what it finds is kept for the clicks.
+    if with(|ui| searching(ui)) == Some(true) {
+        let all = match ALL_ITEMS.lock() {
+            Ok(mut a) => {
+                if a.is_empty() {
+                    let mut ids: Vec<String> = host
+                        .registry_entries("minecraft:item")
+                        .unwrap_or_default()
+                        .into_iter()
+                        .map(|i| i.to_string())
+                        .filter(|i| i != "minecraft:air")
+                        .collect();
+                    ids.sort();
+                    *a = ids;
+                }
+                a.clone()
+            }
+            Err(_) => Vec::new(),
+        };
+        with(|ui| {
+            ui.found = search(&all, &ui.query);
+            ui.found_top = ui.found_top.min(ui.found.len().div_ceil(9).saturating_sub(FOUND_ROWS));
+        });
+    }
+    let Some(Some((v, tab, chosen, part, tops, s))) = UI.lock().ok().map(|g| {
+        g.as_ref().and_then(|ui| {
+            let s = Search { on: ui.all_items, query: ui.query.clone(), found: ui.found.clone(), top: ui.found_top };
+            ui.view.clone().map(|v| (v, ui.tab, ui.chosen, ui.part, (ui.trades_top, ui.players_top, ui.offer_top), s))
+        })
     }) else {
         return;
     };
@@ -515,7 +662,7 @@ pub(crate) fn draw(host: &dyn ClientHost, d: &mut dyn DrawContext, window: Rect,
             label(d, name, [(r[0] + (r[2] - w) / 2.0).floor(), y], if t == tab { LABEL } else { DIM });
         }
         match tab {
-            Tab::Trades => draw_trades(host, d, &v, o, mouse, chosen, part, tops.0, &mut tip),
+            Tab::Trades => draw_trades(host, d, &v, o, mouse, (chosen, part, tops.0), &s, &mut tip),
             Tab::Send => draw_send(d, &v, o, mouse, tops.1),
         }
     }
@@ -525,7 +672,7 @@ pub(crate) fn draw(host: &dyn ClientHost, d: &mut dyn DrawContext, window: Rect,
 }
 
 #[allow(clippy::too_many_arguments)]
-fn draw_trades(host: &dyn ClientHost, d: &mut dyn DrawContext, v: &JoonView, o: [f32; 2], mouse: [f32; 2], chosen: usize, part: u8, top: usize, tip: &mut Option<String>) {
+fn draw_trades(host: &dyn ClientHost, d: &mut dyn DrawContext, v: &JoonView, o: [f32; 2], mouse: [f32; 2], (chosen, part, top): (usize, u8, usize), s: &Search, tip: &mut Option<String>) {
     label(d, "Joon's trades", [o[0] + 8.0, o[1] + 8.0], LABEL);
     right_label(d, "Click one to edit it", o[0] + PW - 8.0, o[1] + 8.0, DIM);
     label(d, "Her trades", [o[0] + 8.0, o[1] + 20.0], DIM);
@@ -603,20 +750,76 @@ fn draw_trades(host: &dyn ClientHost, d: &mut dyn DrawContext, v: &JoonView, o: 
     let status = fit(d, &status, 108.0);
     label(d, &status, [o[0] + 140.0, o[1] + 98.0], argb);
 
-    // Their items, to set the parts from.
-    label(d, "Your items: click one to put it in", [o[0] + 8.0, o[1] + 120.0], LABEL);
-    button(d, at(o, 176.0, 132.0, 72.0, 20.0), "Her stock", mouse, true);
-    for i in 0..v.items.len().min(37) {
-        let r = item_rect(o, i);
-        slot(d, r);
-        if inside(r, mouse) {
-            d.fill([r[0] + 1.0, r[1] + 1.0, 16.0, 16.0], 0x80FF_FFFF);
-        }
-        item(host, d, &v.items[i], r[0] + 1.0, r[1] + 1.0, mouse, tip);
+    // What to set the parts from: their own items, or any item in the game.
+    for (all, name) in [(false, "Your items"), (true, "All items")] {
+        toggle(d, mode_rect(o, all), name, mouse, s.on == all);
     }
-    label(d, "Off hand", [o[0] + 196.0, o[1] + 195.0], DIM);
-    label(d, "Right-click", [o[0] + 178.0, o[1] + 158.0], DIM);
-    label(d, "puts in one", [o[0] + 178.0, o[1] + 168.0], DIM);
+    button(d, at(o, 176.0, 132.0, 72.0, 20.0), "Her stock", mouse, true);
+    if s.on {
+        let field = search_rect(o);
+        d.fill(field, 0xFFA0_A0A0);
+        d.fill([field[0] + 1.0, field[1] + 1.0, field[2] - 2.0, field[3] - 2.0], 0xFF00_0000);
+        let caret = if blink() { "_" } else { "" };
+        let shown = if s.query.is_empty() && !blink() { "Type an item, e.g. water_bucket".to_owned() } else { format!("{}{caret}", s.query) };
+        let colour = if s.query.is_empty() { 0xFF70_7070 } else { 0xFFE0_E0E0 };
+        // The end of what is typed, when it is longer than the box.
+        let mut text = shown.clone();
+        while d.text_width(&text) > field[2] - 6.0 && !text.is_empty() {
+            text.remove(0);
+        }
+        d.text(&text, [field[0] + 3.0, field[1] + 3.0], colour, true);
+        for k in 0..9 * FOUND_ROWS {
+            let r = found_rect(o, k);
+            slot(d, r);
+            let Some(id) = s.found.get(s.top * 9 + k) else { continue };
+            if inside(r, mouse) {
+                d.fill([r[0] + 1.0, r[1] + 1.0, 16.0, 16.0], 0x80FF_FFFF);
+            }
+            let shown = Some((id.clone(), 1));
+            item(host, d, &shown, r[0] + 1.0, r[1] + 1.0, mouse, tip);
+            if inside(r, mouse) {
+                *tip = Some(format!("{} ({id})", tip.take().unwrap_or_default()));
+            }
+        }
+        scrollbar(d, [o[0] + 172.0, o[1] + 150.0, 3.0, 18.0 * FOUND_ROWS as f32], s.top, s.found.len().div_ceil(9), FOUND_ROWS);
+        let count = match s.found.len() {
+            0 => "Nothing found".to_owned(),
+            1 => "1 item".to_owned(),
+            n => format!("{n} items"),
+        };
+        label(d, &count, [o[0] + 178.0, o[1] + 158.0], if s.found.is_empty() { RED } else { DIM });
+        label(d, "Enter: the", [o[0] + 178.0, o[1] + 172.0], DIM);
+        label(d, "first one", [o[0] + 178.0, o[1] + 182.0], DIM);
+    } else {
+        for i in 0..v.items.len().min(37) {
+            let r = item_rect(o, i);
+            slot(d, r);
+            if inside(r, mouse) {
+                d.fill([r[0] + 1.0, r[1] + 1.0, 16.0, 16.0], 0x80FF_FFFF);
+            }
+            item(host, d, &v.items[i], r[0] + 1.0, r[1] + 1.0, mouse, tip);
+        }
+        label(d, "Off hand", [o[0] + 196.0, o[1] + 195.0], DIM);
+        label(d, "Right-click", [o[0] + 178.0, o[1] + 158.0], DIM);
+        label(d, "puts in one", [o[0] + 178.0, o[1] + 168.0], DIM);
+    }
+}
+
+/// A two-way switch's half: pressed in (dark blue, yellow words) when it is the one chosen.
+fn toggle(d: &mut dyn DrawContext, r: Rect, label: &str, mouse: [f32; 2], on: bool) {
+    if !on {
+        button(d, r, label, mouse, true);
+        return;
+    }
+    let [x, y, w, h] = r;
+    d.fill(r, 0xFF00_0000);
+    d.fill([x + 1.0, y + 1.0, w - 2.0, h - 2.0], 0xFF2E_3460);
+    let tw = d.text_width(label);
+    d.text(label, [(x + (w - tw) / 2.0).floor(), (y + (h - 8.0) / 2.0).floor()], 0xFFFF_FFA0, true);
+}
+
+fn blink() -> bool {
+    std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(true, |t| t.as_millis() / 500 % 2 == 0)
 }
 
 fn draw_send(d: &mut dyn DrawContext, v: &JoonView, o: [f32; 2], mouse: [f32; 2], top: usize) {
@@ -751,5 +954,19 @@ mod tests {
         assert_eq!(ui.part, 1);
         assert_eq!(ui.tab, Tab::Send);
         assert_eq!(ui.outbox, vec![JoonAct::Set { trade: 0, part: 0, slot: 4, one: false }, JoonAct::Send { player: 7 }]);
+    }
+
+    #[test]
+    fn the_item_search_finds_by_words_and_puts_a_whole_id_first() {
+        let all: Vec<String> = ["minecraft:bucket", "minecraft:lava_bucket", "minecraft:water", "minecraft:water_bucket", "mymod:water_bucket"]
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
+        assert_eq!(search(&all, "water_bucket"), vec!["minecraft:water_bucket", "mymod:water_bucket"]);
+        assert_eq!(search(&all, "mymod:water_bucket")[0], "mymod:water_bucket");
+        assert_eq!(search(&all, "bucket lava"), vec!["minecraft:lava_bucket"]);
+        assert_eq!(search(&all, "minecraft:water")[0], "minecraft:water");
+        assert_eq!(search(&all, "").len(), all.len());
+        assert!(search(&all, "diamond").is_empty());
     }
 }

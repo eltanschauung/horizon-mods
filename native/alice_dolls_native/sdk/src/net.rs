@@ -361,7 +361,7 @@ pub fn decode_joon(data: &[u8]) -> Result<Option<JoonView>, ()> {
 
 /// What a player did on Joon's screen. Trades and parts are by index (parts: 0 and 1 what is paid,
 /// 2 what is got); the server checks every one.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum JoonAct {
     /// Part `part` of trade `trade` set to what is in their slot `slot` (as `JoonView::items`
     /// counts): its whole stack, or with `one` one of it.
@@ -378,6 +378,8 @@ pub enum JoonAct {
     Home,
     /// The screen closed.
     Close,
+    /// Part `part` of trade `trade` set to one of item `id`, picked from every item in the game.
+    SetId { trade: u8, part: u8, id: String },
 }
 
 pub fn encode_joon_act(a: JoonAct) -> Vec<u8> {
@@ -394,6 +396,10 @@ pub fn encode_joon_act(a: JoonAct) -> Vec<u8> {
         JoonAct::Trade { trade, many } => [5, trade, u8::from(many)].iter().for_each(|&b| w.u8(b)),
         JoonAct::Home => w.u8(6),
         JoonAct::Close => w.u8(7),
+        JoonAct::SetId { trade, part, id } => {
+            [8, trade, part].iter().for_each(|&b| w.u8(b));
+            w.str(&id);
+        }
     }
     w.0
 }
@@ -409,6 +415,7 @@ pub fn decode_joon_act(data: &[u8]) -> Option<JoonAct> {
         5 => JoonAct::Trade { trade: r.u8()?, many: r.u8()? != 0 },
         6 => JoonAct::Home,
         7 => JoonAct::Close,
+        8 => JoonAct::SetId { trade: r.u8()?, part: r.u8()?, id: r.str()? },
         _ => return None,
     };
     r.0.is_empty().then_some(a)
@@ -555,8 +562,9 @@ mod tests {
             JoonAct::Trade { trade: 3, many: true },
             JoonAct::Home,
             JoonAct::Close,
+            JoonAct::SetId { trade: 1, part: 2, id: "minecraft:water_bucket".into() },
         ] {
-            assert_eq!(decode_joon_act(&encode_joon_act(a)), Some(a));
+            assert_eq!(decode_joon_act(&encode_joon_act(a.clone())), Some(a));
         }
         assert_eq!(decode_joon_act(&[9]), None);
         assert_eq!(decode_joon_act(&[2]), None);

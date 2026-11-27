@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.44.1"
+published = "2026-11-28"
+game = "26.3"
+file = "alice_dolls_native-0.44.1.hmod"
+sha256 = "5764c9e444da57b1991a9352fd88ad701800575e6e146417126aa68b7f675fe1"
+changelog = "Joon's trades can ask for any item: the Trades tab's lower half switches between Your items and All items, every item in the game, searched by typing (words of the id, or a whole id such as minecraft:water_bucket; Enter takes the first found). Needs the assets 0.17.0."
+
+[[versions]]
 version = "0.44.0"
 published = "2026-11-28"
 game = "26.3"

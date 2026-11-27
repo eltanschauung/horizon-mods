@@ -268,6 +268,19 @@ impl Mod {
                 *part_mut(&mut data.trades[i], part) = Some(s);
                 changed = true;
             }
+            JoonAct::SetId { trade, part, ref id } if owner && usize::from(trade) < joon::MAX_TRADES && part < 3 => {
+                // Any item the game has (not air), one of it.
+                if id == "minecraft:air" || max_stack_size(host, id).is_none() {
+                    bar(host, player, format!("{} : I don't know the item {id}", goals::JOON));
+                    return;
+                }
+                let i = usize::from(trade);
+                if data.trades.len() <= i {
+                    data.trades.resize(i + 1, Trade::default());
+                }
+                *part_mut(&mut data.trades[i], part) = Some(ItemStack::new(id.clone(), 1));
+                changed = true;
+            }
             JoonAct::Count { trade, part, count } if owner && part < 3 => {
                 let Some(t) = data.trades.get_mut(usize::from(trade)) else { return };
                 let p = part_mut(t, part);
