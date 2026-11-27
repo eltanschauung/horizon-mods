@@ -46,13 +46,13 @@
   },
   {
     "kind": "content",
-    "url": "https://github.com/mxpbxb/block-variety/releases/download/assets-0.5.1/block_variety-0.5.1.hmod",
-    "sha256": "b3e72919262b67ced9b1f7f92dcb3dbf8245bbd2965735a182c579393d7498c9"
+    "url": "https://github.com/mxpbxb/block-variety/releases/download/assets-0.5.2/block_variety-0.5.2.hmod",
+    "sha256": "38f4375802653d5b445ca38afdf7d3058427f2bf28ab62444f536e4d63b76dbe"
   },
   {
     "kind": "native",
-    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/block_variety_native-0.7.0/block_variety_native-0.7.0.hmod",
-    "sha256": "2fe0741ad2964a88200d5e5ddac26c5ea7be5c89494a422c7904e0cb5a55d722"
+    "url": "https://github.com/mxpbxb/horizon-mods/releases/download/block_variety_native-0.7.1/block_variety_native-0.7.1.hmod",
+    "sha256": "7f0f39d8a816b5e7b3afb5854571dea2753b8246694aae1c32d55dfc79ce951d"
   },
   {
     "kind": "content",
