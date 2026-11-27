@@ -1,6 +1,6 @@
 id = "block_variety_native"
 name = "Block Variety"
-version = "0.7.0"
+version = "0.7.1"
 description = "Chisel block variants, camouflage frames and item trash cans."
 authors = ["mxpbxb"]
 license = "All Rights Reserved"
