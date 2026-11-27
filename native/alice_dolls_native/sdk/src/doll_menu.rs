@@ -170,7 +170,10 @@ pub(crate) fn open(
 ) -> Option<i32> {
     let player = host.player(uuid)?;
     let doll = host.entity(id)?;
-    let rows = (layout.slots + goals::BAUBLE_CELLS).div_ceil(9);
+    // Joon has no baubles: her screen is her chest and nothing under it.
+    let joon = is_joon(host, id);
+    let cells = if joon { 0 } else { goals::BAUBLE_CELLS };
+    let rows = (layout.slots + cells).div_ceil(9);
     let total_rows = rows + usize::from(has_switch);
     let name = format!("alice_dolls_native:inventory_{total_rows}");
     let kind = host.menu_keys().into_iter().find(|kind| kind.id(host) == name)?;
@@ -182,7 +185,7 @@ pub(crate) fn open(
         return None;
     };
     let tab = layout.slots > 0 && is_moscow(host, id);
-    if !bind(host, uuid, stand, window, layout, has_switch, tab) {
+    if !bind(host, uuid, stand, window, layout, has_switch, tab, !joon) {
         crate::debug(host, &format!("inventory {id}: its menu's slots would not bind"));
         host.close_menu(uuid);
         release(host, uuid, None);
@@ -196,7 +199,10 @@ pub(crate) fn refresh(host: &mut dyn ServerHost, uuid: u128, id: u32, window: i3
     let backs_it = stand.is_some_and(|s| STAND_FOR.lock().is_ok_and(|f| f.get(&s) == Some(&id)));
     let tab = layout.slots > 0 && is_moscow(host, id);
     match stand.filter(|_| backs_it).and_then(|s| host.entity(s)) {
-        Some(entity) => bind(host, uuid, entity, window, layout, has_switch, tab),
+        Some(entity) => {
+            let baubles = !is_joon(host, id);
+            bind(host, uuid, entity, window, layout, has_switch, tab, baubles)
+        }
         None => false,
     }
 }
@@ -209,13 +215,14 @@ fn bind(
     layout: goals::MenuLayout,
     has_switch: bool,
     ender_tab: bool,
+    with_baubles: bool,
 ) -> bool {
     let Some(player) = host.player(uuid) else { return false };
     let slots = (0..layout.slots).map(|slot| {
         let slot = layout.offset + slot;
         if slot < layout.total { slot } else { FILLER + 1 }
     });
-    let baubles = (0..goals::BAUBLE_CELLS)
+    let baubles = (0..if with_baubles { goals::BAUBLE_CELLS } else { 0 })
         .map(|cell| match goals::bauble_cell(cell, 0).flatten() {
             Some(slot) => BAUBLES + slot,
             None if ender_tab && cell == ENDER_CELL => ENDER_TAB,
@@ -226,6 +233,10 @@ fn bind(
         .map(|slot| MenuSlotPlace::EntityItems { entity, slot })
         .collect();
     player.back_mod_menu_slots(host, window, places).is_ok()
+}
+
+fn is_joon(host: &dyn Host, id: u32) -> bool {
+    doll_of(host, id).is_some_and(|doll| doll.name == goals::JOON)
 }
 
 fn is_moscow(host: &dyn Host, id: u32) -> bool {
@@ -272,7 +283,8 @@ impl DollInventory {
         if index >= total {
             return 0;
         }
-        if total > goals::ARMOUR_SLOTS {
+        // Joon wears nothing: all her slots are storage.
+        if total > goals::ARMOUR_SLOTS && !is_joon(host, self.0.id()) {
             if let Some(part) = (0..goals::ARMOUR_SLOTS).find(|&part| index == goals::armour_slot(total, part)) {
                 return u32::from(goals::armour_part(&item) == Some(part));
             }

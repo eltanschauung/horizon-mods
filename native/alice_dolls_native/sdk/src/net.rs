@@ -17,6 +17,11 @@ pub const ENDER: &str = "alice_dolls_native:ender";
 /// A click on Moscow's screen the server does itself (her slots hold more than a stack).
 pub const BIG_CLICK: &str = "alice_dolls_native:big_click";
 
+/// Joon's screen: what it shows (sent when it opens or changes; empty when it closes).
+pub const JOON: &str = "alice_dolls_native:joon";
+/// From a client: what was done on Joon's screen (`JoonAct`).
+pub const JOON_ACT: &str = "alice_dolls_native:joon_act";
+
 /// The most shots and beams one message carries: a message holds 30 000 bytes.
 pub const MAX_SHOTS: usize = 400;
 pub const MAX_BEAMS: usize = 64;
@@ -234,6 +239,188 @@ pub fn decode_menu(data: &[u8]) -> Result<Option<Menu>, ()> {
     if r.0.is_empty() { Ok(Some(menu)) } else { Err(()) }
 }
 
+/// A stack as Joon's screen shows it: item id and count.
+pub type Shown = Option<(String, u32)>;
+
+/// One of her trades on her screen.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct ShownTrade {
+    /// What is paid (two stacks), then what is got.
+    pub parts: [Shown; 3],
+    /// How many times her stock pays it out; `u32::MAX` when it pays nothing out.
+    pub stock: u32,
+    /// Whether the viewer has what it takes.
+    pub affordable: bool,
+}
+
+/// A player she can be sent to.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct ShownPlayer {
+    pub uuid: u128,
+    pub name: String,
+    /// Seconds before she can go to them again.
+    pub wait: u32,
+    pub you: bool,
+}
+
+/// Joon's screen: her owner's (her trades, and who to send her to) or the visited player's (her
+/// trade offer, `visitor`).
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct JoonView {
+    pub visitor: bool,
+    /// Her owner's name.
+    pub owner: String,
+    /// Seconds left of her visit.
+    pub secs: u32,
+    pub trades: Vec<ShownTrade>,
+    /// The viewer's own stacks (their 36 slots, then the off hand), to set trades from.
+    pub items: Vec<Shown>,
+    pub players: Vec<ShownPlayer>,
+}
+
+const MAX_JOON: usize = 64;
+
+fn put_shown(w: &mut Writer, s: &Shown) {
+    match s {
+        Some((id, n)) => {
+            w.u8(1);
+            w.str(id);
+            w.u32(*n);
+        }
+        None => w.u8(0),
+    }
+}
+
+fn read_shown(r: &mut Reader<'_>) -> Option<Shown> {
+    match r.u8()? {
+        0 => Some(None),
+        1 => Some(Some((r.str()?, r.u32()?))),
+        _ => None,
+    }
+}
+
+/// None: the screen closed.
+pub fn encode_joon(v: Option<&JoonView>) -> Vec<u8> {
+    let mut w = Writer(Vec::new());
+    let Some(v) = v else { return w.0 };
+    w.u8(u8::from(v.visitor));
+    w.str(&v.owner);
+    w.u32(v.secs);
+    let trades = &v.trades[..v.trades.len().min(MAX_JOON)];
+    w.u16(trades.len());
+    for t in trades {
+        t.parts.iter().for_each(|p| put_shown(&mut w, p));
+        w.u32(t.stock);
+        w.u8(u8::from(t.affordable));
+    }
+    let items = &v.items[..v.items.len().min(MAX_JOON)];
+    w.u16(items.len());
+    items.iter().for_each(|i| put_shown(&mut w, i));
+    let players = &v.players[..v.players.len().min(MAX_JOON)];
+    w.u16(players.len());
+    for p in players {
+        w.0.extend_from_slice(&p.uuid.to_le_bytes());
+        w.str(&p.name);
+        w.u32(p.wait);
+        w.u8(u8::from(p.you));
+    }
+    w.0
+}
+
+/// The screen, or None for a closed one; Err for a message that doesn't read.
+pub fn decode_joon(data: &[u8]) -> Result<Option<JoonView>, ()> {
+    if data.is_empty() {
+        return Ok(None);
+    }
+    let mut r = Reader(data);
+    let read = |r: &mut Reader<'_>| -> Option<JoonView> {
+        let visitor = r.u8()? != 0;
+        let owner = r.str()?;
+        let secs = r.u32()?;
+        let n = r.count(MAX_JOON)?;
+        let trades = (0..n)
+            .map(|_| {
+                let parts = [read_shown(r)?, read_shown(r)?, read_shown(r)?];
+                Some(ShownTrade { parts, stock: r.u32()?, affordable: r.u8()? != 0 })
+            })
+            .collect::<Option<Vec<_>>>()?;
+        let n = r.count(MAX_JOON)?;
+        let items = (0..n).map(|_| read_shown(r)).collect::<Option<Vec<_>>>()?;
+        let n = r.count(MAX_JOON)?;
+        let players = (0..n)
+            .map(|_| {
+                let uuid = u128::from_le_bytes(r.take::<16>()?);
+                Some(ShownPlayer { uuid, name: r.str()?, wait: r.u32()?, you: r.u8()? != 0 })
+            })
+            .collect::<Option<Vec<_>>>()?;
+        Some(JoonView { visitor, owner, secs, trades, items, players })
+    };
+    let v = read(&mut r).ok_or(())?;
+    if r.0.is_empty() { Ok(Some(v)) } else { Err(()) }
+}
+
+/// What a player did on Joon's screen. Trades and parts are by index (parts: 0 and 1 what is paid,
+/// 2 what is got); the server checks every one.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum JoonAct {
+    /// Part `part` of trade `trade` set to what is in their slot `slot` (as `JoonView::items`
+    /// counts): its whole stack, or with `one` one of it.
+    Set { trade: u8, part: u8, slot: u8, one: bool },
+    /// A part's count changed; 0 empties it.
+    Count { trade: u8, part: u8, count: u8 },
+    Delete { trade: u8 },
+    /// Her stock (her own inventory) opened.
+    Stock,
+    Send { player: u128 },
+    /// A trade made: once, or with `many` as many times as it can be.
+    Trade { trade: u8, many: bool },
+    /// The visited player sends her home.
+    Home,
+    /// The screen closed.
+    Close,
+    /// Part `part` of trade `trade` set to one of item `id`, picked from every item in the game.
+    SetId { trade: u8, part: u8, id: String },
+}
+
+pub fn encode_joon_act(a: JoonAct) -> Vec<u8> {
+    let mut w = Writer(Vec::new());
+    match a {
+        JoonAct::Set { trade, part, slot, one } => [0, trade, part, slot, u8::from(one)].iter().for_each(|&b| w.u8(b)),
+        JoonAct::Count { trade, part, count } => [1, trade, part, count].iter().for_each(|&b| w.u8(b)),
+        JoonAct::Delete { trade } => [2, trade].iter().for_each(|&b| w.u8(b)),
+        JoonAct::Stock => w.u8(3),
+        JoonAct::Send { player } => {
+            w.u8(4);
+            w.0.extend_from_slice(&player.to_le_bytes());
+        }
+        JoonAct::Trade { trade, many } => [5, trade, u8::from(many)].iter().for_each(|&b| w.u8(b)),
+        JoonAct::Home => w.u8(6),
+        JoonAct::Close => w.u8(7),
+        JoonAct::SetId { trade, part, id } => {
+            [8, trade, part].iter().for_each(|&b| w.u8(b));
+            w.str(&id);
+        }
+    }
+    w.0
+}
+
+pub fn decode_joon_act(data: &[u8]) -> Option<JoonAct> {
+    let mut r = Reader(data);
+    let a = match r.u8()? {
+        0 => JoonAct::Set { trade: r.u8()?, part: r.u8()?, slot: r.u8()?, one: r.u8()? != 0 },
+        1 => JoonAct::Count { trade: r.u8()?, part: r.u8()?, count: r.u8()? },
+        2 => JoonAct::Delete { trade: r.u8()? },
+        3 => JoonAct::Stock,
+        4 => JoonAct::Send { player: u128::from_le_bytes(r.take::<16>()?) },
+        5 => JoonAct::Trade { trade: r.u8()?, many: r.u8()? != 0 },
+        6 => JoonAct::Home,
+        7 => JoonAct::Close,
+        8 => JoonAct::SetId { trade: r.u8()?, part: r.u8()?, id: r.str()? },
+        _ => return None,
+    };
+    r.0.is_empty().then_some(a)
+}
+
 /// Aya's photo: from her eyes, turned as she looks.
 pub fn encode_photo(eye: [f64; 3], yaw: f32, pitch: f32) -> Vec<u8> {
     let mut w = Writer(Vec::new());
@@ -347,6 +534,40 @@ mod tests {
         assert_eq!(decode_menu(&encode_menu(Some(&m))), Ok(Some(m)));
         assert_eq!(decode_menu(&encode_menu(None)), Ok(None));
         assert_eq!(decode_menu(&[1, 0]), Err(()));
+    }
+
+    #[test]
+    fn joons_screen_reaches_its_viewer() {
+        let v = JoonView {
+            visitor: true,
+            owner: "Alice".into(),
+            secs: 120,
+            trades: vec![ShownTrade {
+                parts: [Some(("minecraft:emerald".into(), 3)), None, Some(("minecraft:bread".into(), 6))],
+                stock: 4,
+                affordable: true,
+            }],
+            items: vec![None, Some(("minecraft:dirt".into(), 64))],
+            players: vec![ShownPlayer { uuid: u128::MAX - 7, name: "Steve".into(), wait: 30, you: false }],
+        };
+        assert_eq!(decode_joon(&encode_joon(Some(&v))), Ok(Some(v)));
+        assert_eq!(decode_joon(&encode_joon(None)), Ok(None));
+        assert_eq!(decode_joon(&[1, 0]), Err(()));
+        for a in [
+            JoonAct::Set { trade: 2, part: 1, slot: 36, one: true },
+            JoonAct::Count { trade: 0, part: 2, count: 64 },
+            JoonAct::Delete { trade: 11 },
+            JoonAct::Stock,
+            JoonAct::Send { player: 0x1234_5678_9ABC_DEF0_1122_3344_5566_7788 },
+            JoonAct::Trade { trade: 3, many: true },
+            JoonAct::Home,
+            JoonAct::Close,
+            JoonAct::SetId { trade: 1, part: 2, id: "minecraft:water_bucket".into() },
+        ] {
+            assert_eq!(decode_joon_act(&encode_joon_act(a.clone())), Some(a));
+        }
+        assert_eq!(decode_joon_act(&[9]), None);
+        assert_eq!(decode_joon_act(&[2]), None);
     }
 
     #[test]
