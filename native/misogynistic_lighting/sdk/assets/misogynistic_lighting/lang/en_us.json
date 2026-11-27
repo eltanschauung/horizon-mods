@@ -1,0 +1,16 @@
+{
+  "misogynistic_lighting.lighting": "Old lighting",
+  "misogynistic_lighting.lighting.tooltip": "One grey light as before the coloured lighting: no orange torchlight, no flicker, darker nights.",
+  "misogynistic_lighting.colours": "Old sky and fog colours",
+  "misogynistic_lighting.colours.tooltip": "1.7.10's sky, fog, sunrise and cloud colours, and the Nether's old red fog.",
+  "misogynistic_lighting.fog": "Old distance fog",
+  "misogynistic_lighting.fog.tooltip": "The world fades from a quarter of the render distance out, as in alpha and beta.",
+  "misogynistic_lighting.void_fog": "Void fog",
+  "misogynistic_lighting.void_fog.tooltip": "Near the bottom of the Overworld, where no sky light reaches, the fog closes in and turns black.",
+  "misogynistic_lighting.version": "Version text",
+  "misogynistic_lighting.version.tooltip": "The old version text in the top left of the screen. What it says is set in nostalgic.cfg.",
+  "misogynistic_lighting.item_name": "Item name over the hotbar",
+  "misogynistic_lighting.item_name.tooltip": "The item's name when you pick another slot, which the old game never showed.",
+  "misogynistic_lighting.xp_bar": "Experience bar",
+  "misogynistic_lighting.xp_bar.tooltip": "The old game had none; enchanting needs it. A horse's jump bar stays either way."
+}
