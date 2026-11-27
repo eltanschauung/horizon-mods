@@ -28,9 +28,12 @@ pub const MOSCOW: &str = "Moscow Doll";
 pub const YUKARI: &str = "Yukari Doll";
 pub const PATCHOULI: &str = "Patchouli Doll";
 pub const ALICE: &str = "Alice Doll";
+pub const JOON: &str = "Joon Doll";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Kind {
+    /// Joon trades: she follows, keeps her stock untouched, and does nothing else.
+    Joon,
     Shanghai,
     Horai,
     Ooedo,

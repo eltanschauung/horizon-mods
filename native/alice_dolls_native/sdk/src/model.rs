@@ -1625,6 +1625,70 @@ pub static ALICE: Model = Model {
     scale: 1.0,
 };
 
+/// Joon (mxpbxb's Blockbench model, on Yuuka's body): her hair in two drills, her sunglasses, her
+/// hat, and her coat. Made from `JOON DOLL.bbmodel`: x the other way, y down from 24, each box
+/// hanging from the part its group is (a sleeve from the arm it is on, the glasses from the head).
+pub static JOON: Model = Model {
+    tex: [64.0, 64.0],
+    parts: &[
+        bx(Head, false, [0.0, 0.0], [-3.0, -6.0, -3.0], [6.0, 6.0, 6.0], 0.0, [0.0, 6.0, 0.0], NO_TURN),
+        bx(Headwear, false, [24.0, 0.0], [-3.0, -6.0, -3.0], [6.0, 6.0, 6.0], 0.375, [0.0, 6.0, 0.0], NO_TURN),
+        bx(Body, false, [0.0, 12.0], [-3.0, 0.0, -1.5], [6.0, 8.0, 3.0], 0.0, [0.0, 6.0, 0.0], NO_TURN),
+        bx(RightArm, false, [30.0, 12.0], [-2.0, -1.0, -1.0], [2.0, 8.0, 2.0], 0.0, [-3.0, 7.0, 0.0], NO_TURN),
+        bx(LeftArm, false, [30.0, 12.0], [0.0, -1.0, -1.0], [2.0, 8.0, 2.0], 0.0, [3.0, 7.0, 0.0], NO_TURN),
+        bx(RightLeg, false, [18.0, 12.0], [-3.0, 0.0, -1.5], [3.0, 9.0, 3.0], 0.0, [0.0, 15.0, 0.0], NO_TURN),
+        bx(LeftLeg, false, [18.0, 12.0], [0.0, 0.0, -1.5], [3.0, 9.0, 3.0], 0.0, [0.0, 15.0, 0.0], NO_TURN),
+        // Her hair: a drill each side.
+        bx(Head, true, [42.0, 1.0], [-1.0, -2.0, -1.0], [2.0, 1.0, 2.0], 0.0, [-4.0, 2.0, 0.0], NO_TURN),
+        bx(Head, true, [42.0, 1.0], [-1.0, -2.0, -1.0], [2.0, 4.0, 2.0], 0.0, [-5.0, 2.0, 0.0], NO_TURN),
+        bx(Head, true, [42.0, 1.0], [-1.0, -2.0, -1.0], [2.0, 4.0, 2.0], 0.0, [-5.0, 3.0, 0.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -2.0, -1.0], [1.0, 4.0, 2.0], 0.0, [-6.0, 5.0, 0.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -2.0, -1.0], [1.0, 4.0, 2.0], 0.0, [-6.0, 1.0, 0.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -3.0, -1.0], [1.0, 5.0, 2.0], 0.0, [-6.0, 3.0, -1.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -3.0, -1.0], [1.0, 5.0, 2.0], 0.0, [-6.0, 3.0, 1.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -2.0, -1.0], [1.0, 4.0, 2.0], 0.0, [-7.0, 2.0, 0.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -2.0, -1.0], [1.0, 4.0, 2.0], 0.0, [-7.0, 3.0, 0.0], NO_TURN),
+        bx(Head, true, [42.0, 1.0], [-1.0, -2.0, -1.0], [2.0, 1.0, 2.0], 0.0, [3.0, 2.0, 0.0], NO_TURN),
+        bx(Head, true, [42.0, 1.0], [-1.0, -2.0, -1.0], [2.0, 4.0, 2.0], 0.0, [6.0, 2.0, 0.0], NO_TURN),
+        bx(Head, true, [42.0, 1.0], [-1.0, -2.0, -1.0], [2.0, 4.0, 2.0], 0.0, [6.0, 3.0, 0.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -2.0, -1.0], [1.0, 4.0, 2.0], 0.0, [5.0, 5.0, 0.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -2.0, -1.0], [1.0, 4.0, 2.0], 0.0, [5.0, 1.0, 0.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -3.0, -1.0], [1.0, 5.0, 2.0], 0.0, [5.0, 3.0, -1.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -3.0, -1.0], [1.0, 5.0, 2.0], 0.0, [5.0, 3.0, 1.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -2.0, -1.0], [1.0, 4.0, 2.0], 0.0, [4.0, 2.0, 0.0], NO_TURN),
+        bx(Head, true, [43.0, 1.0], [0.0, -2.0, -1.0], [1.0, 4.0, 2.0], 0.0, [4.0, 3.0, 0.0], NO_TURN),
+        // Her sunglasses.
+        bx(Head, true, [54.0, 16.0], [-1.0, -2.0, 1.0], [2.0, 2.0, 0.0], 0.0, [2.0, 2.0, -5.0], NO_TURN),
+        bx(Head, true, [54.0, 16.0], [-1.0, -2.0, 1.0], [2.0, 1.0, 0.0], 0.0, [0.0, 2.0, -5.0], NO_TURN),
+        bx(Head, true, [54.0, 16.0], [-1.0, -2.0, 1.0], [2.0, 1.0, 0.0], 0.0, [0.0, 2.0, -5.0], NO_TURN),
+        bx(Head, true, [51.0, 12.0], [0.0, -2.0, 1.0], [0.0, 1.0, 4.0], 0.0, [-3.0, 2.0, -5.0], NO_TURN),
+        bx(Head, true, [51.0, 12.0], [0.0, -2.0, 1.0], [0.0, 1.0, 4.0], 0.0, [3.0, 2.0, -5.0], NO_TURN),
+        bx(Head, true, [54.0, 16.0], [-1.0, -2.0, 1.0], [2.0, 2.0, 0.0], 0.0, [-2.0, 2.0, -5.0], NO_TURN),
+        // Her hat, and what is pinned to her hair.
+        bx(Headwear, true, [48.0, 12.0], [-2.0, -2.0, -2.0], [4.0, 2.0, 4.0], 0.0, [0.0, 0.0, 0.0], NO_TURN),
+        bx(Headwear, true, [50.0, 16.0], [-1.0, -2.0, -1.0], [2.0, 1.0, 2.0], 0.0, [0.0, -2.0, 0.0], NO_TURN),
+        bx(Headwear, true, [11.0, 60.0], [0.0, -1.0, 0.0], [1.0, 1.0, 0.0], 0.0, [-6.0, 1.0, -2.0], NO_TURN),
+        bx(Headwear, true, [11.0, 60.0], [0.0, -2.0, 0.0], [1.0, 3.0, 0.0], 0.0, [-7.0, 1.0, -2.0], NO_TURN),
+        bx(Headwear, true, [11.0, 60.0], [0.0, -2.0, 0.0], [1.0, 3.0, 0.0], 0.0, [-5.0, 1.0, -2.0], NO_TURN),
+        bx(Headwear, true, [11.0, 60.0], [0.0, -1.0, 0.0], [1.0, 1.0, 0.0], 0.0, [5.0, 1.0, -2.0], NO_TURN),
+        bx(Headwear, true, [11.0, 60.0], [0.0, -2.0, 0.0], [1.0, 3.0, 0.0], 0.0, [4.0, 1.0, -2.0], NO_TURN),
+        bx(Headwear, true, [11.0, 60.0], [0.0, -2.0, 0.0], [1.0, 3.0, 0.0], 0.0, [6.0, 1.0, -2.0], NO_TURN),
+        bx(Headwear, true, [51.0, 27.0], [-1.0, -1.0, -1.0], [2.0, 1.0, 2.0], 0.0, [0.0, -2.0, 0.0], NO_TURN),
+        // Her skirt, as Yuuka's, and her coat over it all.
+        bx(Body, true, [0.0, 24.0], [-3.0, 1.5, -1.0], [6.0, 4.0, 2.0], 0.0, [0.0, 5.0, 0.0], [-20.0, 0.0, 0.0]),
+        bx(Body, true, [0.0, 30.0], [-3.0, 0.0, -2.0], [6.0, 1.0, 4.0], 0.0, [0.0, 13.0, 0.0], NO_TURN),
+        bx(Body, true, [0.0, 35.0], [-4.0, 0.0, -3.0], [8.0, 2.0, 6.0], 0.0, [0.0, 14.0, 0.0], NO_TURN),
+        bx(Body, true, [0.0, 43.0], [-5.0, 0.0, -4.5], [10.0, 2.0, 9.0], 0.0, [0.0, 16.0, 0.0], NO_TURN),
+        bx(Body, true, [41.0, 37.0], [-3.0, -8.0, -2.0], [6.0, 7.0, 4.0], 0.0, [0.0, 14.0, 0.0], NO_TURN),
+        // The coat's sleeves.
+        bx(RightArm, true, [44.0, 52.0], [-4.0, -8.0, -1.0], [2.0, 6.0, 2.0], 0.0, [-1.0, 14.0, 0.0], NO_TURN),
+        bx(LeftArm, true, [45.0, 52.0], [-3.0, -8.0, -1.0], [2.0, 6.0, 2.0], 0.0, [6.0, 14.0, 0.0], NO_TURN),
+    ],
+    leg_angle: 1.4,
+    item_scale: 0.8,
+    scale: 1.0,
+};
+
 /// Turns what follows about `pivot` the way a `ModelRenderer` does (z, then y, then x), given in the
 /// original's space: the pose has y and z the other way, so those two turn the other way.
 fn turn(draw: &mut dyn BlockEntityDrawContext, pivot: [f32; 3], rot: [f32; 3]) {
@@ -1765,7 +1829,7 @@ mod tests {
             assert_eq!(24.0 - top, tall);
         }
         for model in [
-            &MARISA, &REIMU, &AYA, &WAKASAGI, &YUUKA, &GOLIATH, &YUKARI, &PATCHOULI, &ALICE,
+            &MARISA, &REIMU, &AYA, &WAKASAGI, &YUUKA, &GOLIATH, &YUKARI, &PATCHOULI, &ALICE, &JOON,
         ] {
             for child in model.parts.iter().filter(|p| p.child) {
                 assert!(
@@ -1778,7 +1842,7 @@ mod tests {
 
     #[test]
     fn the_new_dolls_stand_on_the_ground() {
-        for model in [&YUKARI, &PATCHOULI, &ALICE] {
+        for model in [&YUKARI, &PATCHOULI, &ALICE, &JOON] {
             let feet = model
                 .parts
                 .iter()

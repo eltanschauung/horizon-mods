@@ -60,6 +60,16 @@ pub trait DollPlayerAccess {
     fn open_doll_view(&mut self, player: u128, rows: u8, title: Text, items: Vec<Option<DollStack>>) -> Option<i32>;
     fn update_doll_view(&mut self, player: u128, items: Vec<Option<DollStack>>);
     fn menu_contents(&self, player: u128) -> Option<Vec<Option<DollStack>>>;
+    /// What `player` carries: their 36 slots and their off hand.
+    fn player_stacks(&mut self, player: u128) -> Vec<Option<DollStack>>;
+    /// Takes every one of `wants` (the same item, wear and components) out of `player`'s
+    /// inventory: all of them, or, when they haven't got them all, nothing.
+    fn take_stacks(&mut self, player: u128, wants: &[DollStack]) -> bool;
+}
+
+/// A player's slots, as `ItemPlace::PlayerSlot` counts them: 36, and the off hand.
+fn carried_slots() -> impl Iterator<Item = i32> {
+    (0..36).chain([-106])
 }
 
 impl DollPlayerAccess for dyn ServerHost + '_ {
@@ -178,6 +188,45 @@ impl DollPlayerAccess for dyn ServerHost + '_ {
         (0..menu.slot_count(self)?)
             .map(|slot| menu.slot(self, slot).map(|stack| stack.and_then(|stack| DollStack::from_game(self, &stack))))
             .collect()
+    }
+
+    fn player_stacks(&mut self, player: u128) -> Vec<Option<DollStack>> {
+        if self.player(player).is_none() {
+            return Vec::new();
+        }
+        let mut out = Vec::new();
+        for slot in carried_slots() {
+            let stack = ItemPlace::PlayerSlot { player, slot }.stack(self);
+            out.push(stack.and_then(|s| DollStack::from_game(self, &s)));
+        }
+        out
+    }
+
+    fn take_stacks(&mut self, player: u128, wants: &[DollStack]) -> bool {
+        if self.player(player).is_none() {
+            return false;
+        }
+        self.transaction(|host, tx| {
+            for want in wants {
+                let mut left = want.count;
+                for slot in carried_slots() {
+                    if left == 0 {
+                        break;
+                    }
+                    let place = ItemPlace::PlayerSlot { player, slot };
+                    let Some(stack) = place.stack(host) else { continue };
+                    if !DollStack::from_game(host, &stack).is_some_and(|s| crate::joon::same(&s, want)) {
+                        continue;
+                    }
+                    left -= place.extract(host, tx, &ItemResource::of(&stack), left).min(left);
+                }
+                if left > 0 {
+                    return Err(());
+                }
+            }
+            Ok(())
+        })
+        .is_ok()
     }
 }
 

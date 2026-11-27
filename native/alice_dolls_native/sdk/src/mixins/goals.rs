@@ -35,6 +35,7 @@ fn kind_of(m: &Mob) -> Option<Kind> {
         YUKARI => Some(Kind::Yukari),
         PATCHOULI => Some(Kind::Patchouli),
         ALICE => Some(Kind::Alice),
+        JOON => Some(Kind::Joon),
         _ => None,
     }
 }
@@ -318,12 +319,18 @@ fn tick_doll(m: &mut Mob, w: &MobWorld) {
     }
     // Every walk and run of a doll scales from this.
     m.attrs.speed = m.kind.speed * SPEED_SCALE * speed_factor(kind);
-    // A doll's health is its own: a doll placed before this gets its new health in full.
+    // A doll's health is its own, for its love level. It is set as the attribute's base, not only
+    // the cached maximum (which anything that reads the attribute again puts back to the mob type's),
+    // and only where the doll's state, and so its level, is known: nothing that hasn't been told its
+    // level heals it back and forth. A doll whose maximum changes gets its new health in full.
     let health = levelled_health(max_health(kind), level_of(m.id));
-    if m.attrs.max_health != health {
-        m.attrs.max_health = health;
-        if m.alive() {
-            m.health = health;
+    if state(m.id).is_some() {
+        use crate::mobs::finalize::{Attr, base_value, set_base};
+        if (base_value(m, Attr::MaxHealth) - f64::from(health)).abs() > 1e-3 {
+            set_base(m, Attr::MaxHealth, f64::from(health));
+            if m.alive() {
+                m.health = health;
+            }
         }
     }
     // Whether the player is sneaking, for the api crate's shift-click pickup.
@@ -342,19 +349,23 @@ fn tick_doll(m: &mut Mob, w: &MobWorld) {
     // Whole again: what its owner did is forgotten.
     if m.health >= health && OWNER_HURT.lock().is_ok_and(|mut h| h.remove(&m.id)) {}
     // Healing what its owner did to it earns no love; healing a mob's or another player's blows does.
-    if m.alive() && m.health <= health - 1.0 && m.age % 40 == 0 {
+    // Joon's inventory is her stock for trading: she eats none of it.
+    let joon = kind == Kind::Joon;
+    if !joon && m.alive() && m.health <= health - 1.0 && m.age % 40 == 0 {
         eat(m, health, !hurt_by_owner(m.id));
     }
     // At work (on patrol, following or on the head), it eats a piece of food every five minutes,
     // hungry or not.
-    if m.alive() && matches!(state.mode, PATROL | FOLLOW | RIDE) && m.age > 0 && m.age % MEAL_TICKS == 0 {
+    if !joon && m.alive() && matches!(state.mode, PATROL | FOLLOW | RIDE) && m.age > 0 && m.age % MEAL_TICKS == 0 {
         eat(m, health, true);
     }
     if kind == Kind::Wakasagi && m.fluids.in_water && state.mode != RIDE {
         swim(m);
     }
-    // Every doll wears what is in its armour slots.
-    wear_armour(m);
+    // Every doll wears what is in its armour slots; Joon has none, only stock.
+    if !joon {
+        wear_armour(m);
+    }
     // The nimble fabric: a shot it was about to take, it teleports away from.
     if DODGE.lock().is_ok_and(|mut d| d.remove(&m.id)) {
         dodge(m);
@@ -416,7 +427,7 @@ fn tick_doll(m: &mut Mob, w: &MobWorld) {
             ai.goals.add(0, Detonate::default());
             ai.goals.add(4, Explode::default());
         }
-        // PlantTree needs a sapling from the doll's inventory, which is not ported yet. Ahead of
+        // She plants a sapling from her inventory where each tree she fells stood. Ahead of
         // picking up what is dropped (5): at 10, every log it cut drew it off the tree to fetch the
         // drop, and the tree was forgotten; now it fells the whole tree, then gathers.
         Kind::Germany => {
@@ -462,10 +473,12 @@ fn tick_doll(m: &mut Mob, w: &MobWorld) {
         }
         // Alice does nothing yet but go where her mode has her.
         Kind::Alice => {}
+        // Joon follows whoever she is with (her owner, or the player she is visiting) and trades.
+        Kind::Joon => {}
     }
     let idle = kind == Kind::Alice;
-    // Alice and Yukari attack nothing at all.
-    let peaceful = idle || kind == Kind::Yukari;
+    // Alice, Yukari and Joon attack nothing at all (nor pick anything up).
+    let peaceful = idle || kind == Kind::Yukari || kind == Kind::Joon;
     // The dolls that don't fight still stand up for a badly hurt doll near them.
     if !fights(kind) && !peaceful {
         ai.goals.add(0, DollAttack { defend_only: true, ..DollAttack::default() });
@@ -1606,6 +1619,28 @@ struct CutTree {
     counter: i32,
     strength: i32,
     last_scan: i64,
+    /// The block being cut is the trunk's bottom one: a sapling goes in where it stood.
+    last: bool,
+}
+
+/// The sapling a log grows from (a mangrove's propagule, a crimson or warped stem's fungus): oak
+/// log, oak sapling, and so on for any wood named that way.
+fn sapling_for(log: &str) -> Option<&'static str> {
+    static NAMES: std::sync::LazyLock<std::sync::Mutex<std::collections::HashMap<String, &'static str>>> =
+        std::sync::LazyLock::new(Default::default);
+    let name = match log {
+        "minecraft:mangrove_log" => "minecraft:mangrove_propagule".to_owned(),
+        "minecraft:crimson_stem" => "minecraft:crimson_fungus".to_owned(),
+        "minecraft:warped_stem" => "minecraft:warped_fungus".to_owned(),
+        _ => format!("{}_sapling", log.strip_suffix("_log")?),
+    };
+    let mut names = NAMES.lock().ok()?;
+    if let Some(n) = names.get(&name) {
+        return Some(n);
+    }
+    let leaked: &'static str = Box::leak(name.clone().into_boxed_str());
+    names.insert(name, leaked);
+    Some(leaked)
 }
 
 impl CutTree {
@@ -1718,16 +1753,19 @@ impl Goal for CutTree {
             match branch {
                 Some(at) => self.cut = at,
                 None => {
-                    self.cut = self.target;
-                    self.target[1] -= 1;
                     if name_at(w, self.target) != log {
                         self.log = None;
                         return;
                     }
+                    self.cut = self.target;
+                    self.target[1] -= 1;
+                    // The trunk's bottom block: cut too, and a sapling put in its place.
+                    self.last = name_at(w, self.target) != log;
                 }
             }
             let hardness = hardness_at(w, self.cut);
-            self.strength = ((1.0 + 30.0 * hardness / CUT_SPEED).floor() as i32).max(0);
+            // Half as quick again as a plain axe's pace.
+            self.strength = ((1.0 + 30.0 * hardness / CUT_SPEED) / 1.5).floor().max(0.0) as i32;
         }
         let at = self.cut.map(|c| f64::from(c) + 0.5);
         m.look_at(at);
@@ -1735,6 +1773,19 @@ impl Goal for CutTree {
             cx.events.push(MobEvent::BreakBlock { pos: self.cut, drop: true, by: None, breaker: Some(m.id) });
             worked(m.id);
             self.counter = 0;
+            if std::mem::take(&mut self.last) {
+                // A sapling of the same wood, if she carries one, where the tree stood.
+                let ground = name_at(w, add(self.cut, [0, -1, 0]));
+                if let Some(sapling) = sapling_for(&log)
+                    && !is_air(&ground)
+                    && !is_log(&ground)
+                    && take_one(m.id, sapling)
+                {
+                    cx.events.push(MobEvent::SetBlockName { mob: Some(m.id), pos: self.cut, name: sapling, effect: false, flags: 3 });
+                    cx.events.push(MobEvent::Sound("block.grass.place", at, 1.0, 0.8));
+                }
+                self.log = None;
+            }
             return;
         }
         let progress = (self.counter * 10 / self.strength.max(1)).min(9);
@@ -2691,7 +2742,11 @@ fn stem_beside(w: &MobWorld, p: [i32; 3]) -> bool {
     [[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]].iter().any(|&d| is_stem(&name_at(w, add(p, d))))
 }
 
-/// A crop at its last age, or a melon or pumpkin with a stem beside it.
+/// The plants that grow up from their bottom block, which Yuuka always leaves.
+const TALL_PLANTS: [&str; 3] = ["minecraft:cactus", "minecraft:sugar_cane", "minecraft:bamboo"];
+
+/// A crop at its last age, a melon or pumpkin with a stem beside it, or a cactus, sugar cane or
+/// bamboo two blocks tall or more.
 fn harvestable(w: &MobWorld, p: [i32; 3]) -> Option<&'static str> {
     let name = name_at(w, p);
     if let Some(crop) = CROPS.iter().find(|c| *c.0 == *name) {
@@ -2708,6 +2763,14 @@ fn harvestable(w: &MobWorld, p: [i32; 3]) -> Option<&'static str> {
         let [x, y, z] = p;
         let ripe = w.registry.state(w.world.block(x, y, z)).and_then(|s| s.properties.get("age")).is_some_and(|a| a.as_str() == "2");
         return ripe.then_some("minecraft:cocoa");
+    }
+    // Cactus, sugar cane and bamboo: cut from the second block up, so the bottom one stays and
+    // grows again (what is above it comes down with it).
+    if let Some(tall) = TALL_PLANTS.iter().copied().find(|t| *t == &*name)
+        && *name_at(w, add(p, [0, -1, 0])) == *tall
+        && *name_at(w, add(p, [0, -2, 0])) != *tall
+    {
+        return Some(tall);
     }
     match &*name {
         "minecraft:melon" if stem_beside(w, p) => Some("minecraft:melon"),

@@ -7,7 +7,7 @@ description = """
 
 A port of Alice's Dolls (1.7.10-kog3, by iwa_yukinoshita), used with permission, restrung for Horizon:
 
-- **Dolls with jobs:** Shanghai and Goliath fight, Horai mines to ore, Ooedo explodes, Germany fells trees, London finds spawners, Russia and Moscow gather, Marisa and Reimu shoot homing danmaku, Patchouli snipes from far off, Yukari follows you as your portable gap (with Yukari Gaps), Yuuka farms, Wakasagi fishes (with the rod you give her), and Aya takes real photos from her own eyes.
+- **Dolls with jobs:** Shanghai and Goliath fight, Horai mines to ore, Ooedo explodes, Germany fells trees, London finds spawners, Russia and Moscow gather, Marisa and Reimu shoot homing danmaku, Patchouli snipes from far off, Yukari follows you as your portable gap (with Yukari Gaps), Yuuka farms, Wakasagi fishes (with the rod you give her), Aya takes real photos from her own eyes, and Joon trades: set her trades and send her to another player.
 - **Love:** feed them, and give them point and power items from [Touhou Items](https://playhorizon.dev/mods/thkaguyamod_native), and they level up, stronger and faster at their work each level. Their name tag shows their level and how far to the next.
 - **Evolutions** every three levels: Shanghai to Goliath to Netherite Goliath, Horai to Diamond and Netherite Horai, Russia to Moscow.
 - They eat food to heal, store experience for you to bottle, take the heads of the mobs they kill, and stand up for each other.
@@ -23,6 +23,14 @@ source = "https://github.com/mxpbxb/alice-dolls-restringed"
 icon = "icons/alice_dolls_native.png"
 categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
+
+[[versions]]
+version = "0.44.0"
+published = "2026-11-28"
+game = "26.3"
+file = "alice_dolls_native-0.44.0.hmod"
+sha256 = "c5fe03829ca6d06cdb597dede3f2404a83010ace6ed7e6bc22361932b26a08fa"
+changelog = "New doll: Joon, the trader (a Doll Core ringed with gold and emerald blocks), with a large chest of stock and no armour or baubles. Her own screen has two tabs: Trades (up to twelve villager-style trades, set from your own items) and Send (the players in her dimension). Sent to a player she follows them for 200 seconds, can't be hurt, and offers her trades; what she is paid goes into her stock, and she won't visit the same player again for 300 seconds. Yuuka cuts cactus, sugar cane and bamboo down to their bottom block. Germany chops half as fast again and replants a sapling of the tree's wood. Dolls get their love-level health again, and wear the armour in their armour slots. The Yukari Doll's empty-handed click opens Yukari Gaps' travel screen again. Needs the assets 0.17.0."
 
 [[versions]]
 version = "0.43.4"

@@ -16,6 +16,14 @@ categories = ["adventure", "library"]
 tags = ["touhou", "dolls", "assets"]
 
 [[versions]]
+version = "0.17.0"
+published = "2026-11-28"
+game = "26.3"
+file = "alice_dolls-0.17.0.hmod"
+sha256 = "53f86aa5be60dac15222083569c94e40ddfed0bbf2b86ddae6fe5676277786ac"
+changelog = "The Joon Doll: item, recipe, model and textures. The doll mob has 30 health. Needs alice_dolls_native 0.44.0."
+
+[[versions]]
 version = "0.16.0"
 published = "2026-11-24"
 game = "26.3"
