@@ -1,0 +1,11 @@
+[package]
+name = "mod-misogynistic_lighting"
+version = "0.3.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
+
+[dev-dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api", features = ["testing"] }

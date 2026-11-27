@@ -1,0 +1,38 @@
+id = "misogynistic_lighting"
+name = "Misogynistic Lighting"
+version = "0.3.0"
+description = "The old lighting and looks, after Nostalgic Tweaks: one grey light, no coloured or flickering light, darker nights, 1.7.10's sky and fog colours, the old distance and void fog, the version text and no item name over the hotbar. Client side only; switched in Options > Mods or its config files."
+authors = ["mxpbxb"]
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "71156c86c351fa42a77f616c8422412eaaae0760"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.module]]
+id = "classic-light"
+file = "crates/horizon-client/src/game.rs"
+name = "misogynistic_lighting"
+visibility = "pub(crate)"
+source = "src/mixins/classic_light.rs"
+
+[[native.mixin]]
+id = "old-sky"
+kind = "HEAD"
+target = "horizon_client::game::end::Game::end_flash_sky"
+helper = "src/mixins/old_sky.rs"
+bindings = [
+    { name = "sky", ty = "&mut horizon_client::environment::Sky", value = "&mut *sky" },
+    { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+    { name = "partial", ty = "f64", value = "partial" },
+]
+
+[[native.mixin]]
+id = "old-lightmap"
+kind = "HEAD"
+target = "horizon_client::game::Game::render_frame"
+helper = "src/mixins/old_lightmap.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]

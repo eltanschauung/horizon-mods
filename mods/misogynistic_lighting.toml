@@ -1,0 +1,33 @@
+id = "misogynistic_lighting"
+kind = "native-mod"
+name = "Misogynistic Lighting"
+summary = "The old lighting and look, after Nostalgic Tweaks: one grey light, darker nights, 1.7.10's sky and fog colours and the old fog."
+description = """
+Client side only: it changes what your game draws, so it has no effect on joining a server and nobody else needs it.
+
+- **The old light:** plain grey light as before the coloured lighting. No orange torchlight, no torch flicker, no blue nights; light fades on beta's curve down to the old darkness.
+- **Darker nights:** the open sky at night is as dark as the old sky light eleven levels down; torches stay as bright as by day.
+- **1.7.10's sky and fog colours:** the sky by the biome's temperature, black at night and grey in rain and thunder; the old pale blue fog; the old orange sunrise and sunset; clouds that grey and darken. The Nether's fog is the old dark red everywhere, the End's the old dark purple.
+- **The old distance fog:** the world fades from a quarter of the render distance out, as in alpha and beta.
+- **Void fog:** near the bottom of the Overworld, where no sky light reaches, the fog closes in and turns black.
+- **The version text** in the top left ("Minecraft Beta 1.7.3", or what you set), and **no item name over the hotbar**; the experience bar can go too.
+
+Every part has a button in Options > Mods > Misogynistic Lighting, and the same switches are in `config/misogynistic_lighting/`. The light levels follow Nostalgic Tweaks' classic light texture (Adrenix), written anew for Horizon.
+
+Native source mod: it runs with your account's permissions, and is pinned to one Horizon revision. No Minecraft code or assets are included."""
+authors = ["mxpbxb"]
+owners = ["mxpbxb"]
+owner_ids = [73505523]
+license = "MIT"
+source = "https://github.com/mxpbxb/misogynistic-lighting"
+icon = "icons/misogynistic_lighting.png"
+categories = ["atmosphere", "vanilla-like"]
+tags = ["lighting", "classic", "nostalgia", "fog", "sky"]
+
+[[versions]]
+version = "0.3.0"
+published = "2026-11-28"
+game = "26.3"
+file = "misogynistic_lighting-0.3.0.hmod"
+sha256 = "2df26c7d46be906aa122344a1a5cb6269420b914e8dd97d1a0fad6e4df7f4ad2"
+changelog = "First release: the old lighting, 1.7.10's sky and fog colours, the old distance and void fog, the version text, no item name over the hotbar, and a settings page in Options > Mods."
