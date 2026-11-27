@@ -1,6 +1,6 @@
 id = "yukari_gap_native"
 name = "Yukari Gaps Beta"
-version = "0.9.0+sdk.1"
+version = "0.9.1+sdk.1"
 description = "Teleport between gaps, with owner controls, dyeable bows and distance-based hunger costs."
 authors = ["mxpbxb"]
 api = "0.2"

@@ -355,8 +355,10 @@ static OPENED_AT: LazyLock<Mutex<HashMap<u128, Key>>> = LazyLock::new(Default::d
 const REACH: f64 = 8.0;
 
 /// Alice Dolls Restringed's Yukari Doll: her owner's portable gap. A click opens the travel screen
-/// where she is, and she follows them through; she is no gap to travel to.
-const DOLL_KIND: &str = "minecraft:chicken";
+/// where she is, and she follows them through; she is no gap to travel to. A doll is its own mob,
+/// `alice_dolls:doll`, since Alice Dolls 0.43; before, it was a chicken (one not yet converted
+/// still is, until its first tick).
+const DOLL_KINDS: [&str; 2] = ["alice_dolls:doll", "minecraft:chicken"];
 const YUKARI_DOLL: &str = "Yukari Doll";
 /// The tag Alice Dolls gives her, naming her owner.
 fn owner_tag(owner: u128) -> String {
@@ -1232,7 +1234,7 @@ impl Hooks for Mod {
         let HostSide::Server(host) = host else {
             return None;
         };
-        if event.kind != DOLL_KIND || event.stack.is_some() {
+        if !DOLL_KINDS.iter().any(|k| *k == event.kind) || event.stack.is_some() {
             return None;
         }
         let Ok(id) = u32::try_from(event.entity) else {
@@ -1768,6 +1770,12 @@ mod tests {
         // The bigger Giga Gap's lower tip sits on the block too.
         let alt = gap_size(GIGA);
         assert!((gap_lift(alt) + alt * GAP_TIP - 1.0).abs() < 1e-6);
+    }
+
+    #[test]
+    fn the_yukari_doll_is_found_as_alice_dolls_own_mob() {
+        assert!(DOLL_KINDS.contains(&"alice_dolls:doll"));
+        assert!(DOLL_KINDS.contains(&"minecraft:chicken"));
     }
 
     #[test]
