@@ -1,0 +1,20 @@
+id = "curios_horizon"
+name = "Curios Horizon"
+version = "0.1.0"
+description = "Nine configurable accessory slots and a tag-based API for Horizon."
+authors = ["TheIllusiveC4 and Curios contributors (original)", "eltanschauung (Horizon port)"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "fd841ab9704891f4c1d75f5a6bfd53799637184a"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+[[native.mixin]]
+id = "curios-menu-screen"
+kind = "RETURN"
+target = "horizon_client::game::menu_screens::blockless_menu_screen"
+helper = "src/mixins/menu_screen.rs"
+bindings = [{ name = "value", ty = "Option<mod_api::Screen>", value = "$value" }, { name = "menu", ty = "&str", value = "_menu" }]

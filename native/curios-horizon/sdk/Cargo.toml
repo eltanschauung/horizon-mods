@@ -1,0 +1,9 @@
+[package]
+name = "mod-curios-horizon"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "LGPL-3.0-or-later"
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
