@@ -30,6 +30,14 @@ categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
 
 [[versions]]
+version = "0.9.1"
+published = "2026-11-28"
+game = "26.3"
+file = "yukari_gap_native-0.9.1.hmod"
+sha256 = "25f33d4e6621a0f4b6f662fedb45a4debcf583c64d314a1723eda7ec038e32dd"
+changelog = "A Yukari Doll opens the travel screen again: since Alice Dolls Restringed 0.43 a doll is its own mob (alice_dolls:doll), not a chicken, and right-clicking her did nothing. Dolls not yet converted from chickens still work. Needs the assets 0.7.0."
+
+[[versions]]
 version = "0.8.1"
 published = "2026-11-19"
 game = "26.3"
