@@ -8,4 +8,4 @@ side = "both"
 capabilities = ["registries"]
 
 [dependencies]
-yukari_gap_native = "=0.9.1"
+yukari_gap_native = "=0.9.2"

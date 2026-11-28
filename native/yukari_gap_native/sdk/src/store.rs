@@ -5,9 +5,15 @@ pub type Key = (String, [i32; 3]);
 
 pub const DEFAULT_BOW: u32 = 0xb02e26;
 
+/// Gaps this close to each other (in blocks) are free to travel between.
+pub const FREE_WITHIN: f64 = 50.0;
+
 pub fn hunger_cost(from: [f64; 3], to: [i32; 3]) -> i32 {
     let [x, y, z] = std::array::from_fn(|i| from[i] - f64::from(to[i]));
     let distance = x.hypot(y).hypot(z);
+    if distance <= FREE_WITHIN {
+        return 0;
+    }
     ((distance.min(5000.0) * 15.0 / 5000.0) as i32).clamp(1, 15)
 }
 
@@ -464,7 +470,9 @@ mod tests {
 
     #[test]
     fn hunger_scales_with_direct_distance() {
-        assert_eq!(hunger_cost([0.0; 3], [0, 0, 0]), 1);
+        assert_eq!(hunger_cost([0.0; 3], [0, 0, 0]), 0);
+        assert_eq!(hunger_cost([0.0; 3], [30, 0, 40]), 0);
+        assert_eq!(hunger_cost([0.0; 3], [51, 0, 0]), 1);
         assert_eq!(hunger_cost([0.0; 3], [3000, 0, 4000]), 15);
         assert_eq!(hunger_cost([0.0; 3], [4999, 0, 0]), 14);
         assert_eq!(hunger_cost([0.0; 3], [0, 2500, 0]), 7);
