@@ -30,6 +30,14 @@ categories = ["transportation", "utility"]
 tags = ["teleport", "waypoints", "touhou", "multiplayer"]
 
 [[versions]]
+version = "0.9.2"
+published = "2026-11-28"
+game = "26.3"
+file = "yukari_gap_native-0.9.2.hmod"
+sha256 = "018c3474a5baf6255735af09c0560b2404650de937674d92c0d302b182859a25"
+changelog = "Travel between gaps within 50 blocks of each other costs no hunger (a Yukari Doll within 50 blocks of the gap too). Needs the assets 0.7.0."
+
+[[versions]]
 version = "0.9.1"
 published = "2026-11-28"
 game = "26.3"
