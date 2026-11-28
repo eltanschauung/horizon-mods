@@ -25,6 +25,14 @@ categories = ["adventure", "mobs"]
 tags = ["touhou", "dolls", "companions", "automation"]
 
 [[versions]]
+version = "0.44.2"
+published = "2026-11-28"
+game = "26.3"
+file = "alice_dolls_native-0.44.2.hmod"
+sha256 = "bf1be6ef876f881bad4190a6edc1a38aff6254ab03e392dab590a6a3eedb5088"
+changelog = "Joon: shift- or right-click Trade trades as many times as can be paid and she has stock for. Yuuka picks pumpkins whole, as with Silk Touch. Needs the assets 0.17.0."
+
+[[versions]]
 version = "0.44.1"
 published = "2026-11-28"
 game = "26.3"

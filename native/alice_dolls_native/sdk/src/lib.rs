@@ -4324,9 +4324,15 @@ impl Hooks for Mod {
             joon_ui::key(event.key);
             return Flow::Cancel;
         }
+        joon_ui::released("key.keyboard.left.shift");
         let k = event.key.strip_prefix("key.keyboard.").unwrap_or("");
         let moves_items = matches!(k, "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "f" | "q");
         if moves_items && on_doll_screen(host, event.screen) { Flow::Cancel } else { Flow::Continue }
+    }
+
+    fn screen_key_released_pre(&self, host: &dyn ClientHost, event: &mut mod_api::ScreenKeyReleasedPreEvent<'_>) -> Flow {
+        joon_ui::released(event.key);
+        if joon_ui::ours(host, event.screen.id) && event.key != "key.keyboard.escape" { Flow::Cancel } else { Flow::Continue }
     }
 
     fn screen_mouse_button_pressed_pre(
@@ -4335,7 +4341,7 @@ impl Hooks for Mod {
         event: &mut mod_api::ScreenMouseButtonPressedPreEvent<'_>,
     ) -> Flow {
         if joon_ui::ours(host, event.screen.id) {
-            joon_ui::pressed(event.screen.rect, event.screen.mouse, event.button, event.modifiers & 1 != 0);
+            joon_ui::pressed(event.screen.rect, event.screen.mouse, event.button, event.modifiers & 1 != 0 || joon_ui::shift_held());
             return Flow::Cancel;
         }
         if on_doll_screen(host, event.screen) {

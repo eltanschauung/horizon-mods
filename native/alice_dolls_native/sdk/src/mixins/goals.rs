@@ -3014,7 +3014,12 @@ impl Goal for Farmer {
                     cx.w.registry.resolve(&state).ok()
                 })
                 .flatten();
-            cx.events.push(MobEvent::BreakBlock { pos: self.target, drop: true, by: None, breaker: Some(m.id) });
+            // A pumpkin comes off with Silk Touch: the block itself, whatever its loot says.
+            let silk = block == "minecraft:pumpkin";
+            cx.events.push(MobEvent::BreakBlock { pos: self.target, drop: !silk, by: None, breaker: Some(m.id) });
+            if silk {
+                cx.events.push(MobEvent::DropItem { mob: m.id, item: Arc::from(block), count: 1, at });
+            }
             worked(m.id);
             if let Some(state) = new_pod {
                 take_one(m.id, "minecraft:cocoa_beans");
@@ -3733,9 +3738,14 @@ impl SeekOre {
         let me = [m.position.x.floor() as i32, m.position.y.floor() as i32, m.position.z.floor() as i32];
         let owner = owner_position(m, cx)?;
         let mut found = Vec::new();
-        for dy in -SEEK_UP..=SEEK_UP {
-            for dx in -SEEK_ACROSS..=SEEK_ACROSS {
-                for dz in -SEEK_ACROSS..=SEEK_ACROSS {
+        let (across, up, reach) = if horai_tier(m) >= 2 {
+            (SEEK_ACROSS_NETHERITE, SEEK_UP_NETHERITE, SEEK_FROM_OWNER_NETHERITE)
+        } else {
+            (SEEK_ACROSS, SEEK_UP, SEEK_FROM_OWNER)
+        };
+        for dy in -up..=up {
+            for dx in -across..=across {
+                for dz in -across..=across {
                     let p = add(me, [dx, dy, dz]);
                     let name = name_at(cx.w, p);
                     if seeks(m, &name) && !self.bad.contains(&p) {
@@ -3750,7 +3760,7 @@ impl SeekOre {
         for (_, p) in found {
             let c = centre(p);
             let (dx, dy, dz) = (c[0] - owner[0], c[1] - owner[1], c[2] - owner[2]);
-            if dx * dx + dy * dy + dz * dz > SEEK_FROM_OWNER * SEEK_FROM_OWNER {
+            if dx * dx + dy * dy + dz * dz > reach * reach {
                 continue;
             }
             if lava_close(cx.w, p).is_some() {
