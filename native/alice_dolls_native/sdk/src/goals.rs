@@ -1354,6 +1354,10 @@ pub fn giga_cells(site: [i32; 3], y: i32) -> Vec<[i32; 3]> {
 pub const SEEK_ACROSS: i32 = 16;
 pub const SEEK_UP: i32 = 12;
 pub const SEEK_FROM_OWNER: f64 = 40.0;
+/// The Netherite Horai's: three quarters again on each.
+pub const SEEK_ACROSS_NETHERITE: i32 = 28;
+pub const SEEK_UP_NETHERITE: i32 = 21;
+pub const SEEK_FROM_OWNER_NETHERITE: f64 = 70.0;
 
 // ---- Moscow: bound to another doll ----
 

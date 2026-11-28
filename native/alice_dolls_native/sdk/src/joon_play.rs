@@ -141,11 +141,13 @@ impl Mod {
     /// The players Joon can be sent to: everyone in her dimension (but spectators), her owner first.
     fn visitees(&self, host: &mut dyn ServerHost, owner: u128, doll: u32, tag: u64) -> Vec<Visitee> {
         let dimension = host.entity(doll).and_then(|e| e.level(host)).map(|l| l.dimension_id().to_owned());
+        // Slot 36 of the carried slots is the off hand.
+        let axe = host.player_stacks(owner).get(36).cloned().flatten().is_some_and(|s| s.item == "minecraft:wooden_axe" && s.count > 0);
         let mut players: Vec<Visitee> = host
             .server_players()
             .into_iter()
             .filter(|p| p.game_mode != 3 && Some(&p.dimension) == dimension.as_ref())
-            .map(|p| Visitee { uuid: p.uuid, wait: cooldown_left(tag, p.uuid, owner), you: p.uuid == owner, name: p.name })
+            .map(|p| Visitee { uuid: p.uuid, wait: if axe { 0 } else { cooldown_left(tag, p.uuid, owner) }, you: p.uuid == owner, name: p.name })
             .collect();
         players.sort_by(|a, b| b.you.cmp(&a.you).then_with(|| a.name.to_lowercase().cmp(&b.name.to_lowercase())));
         players
@@ -351,7 +353,8 @@ impl Mod {
         }
         let Some(me) = host.server_players().into_iter().find(|p| p.uuid == player) else { return };
         let costs: Vec<ItemStack> = t.cost.iter().flatten().cloned().collect();
-        let rounds = if many && !costs.is_empty() { 64 } else { 1 };
+        // As many as can be: at most a full inventory's worth of rounds.
+        let rounds = if many && !costs.is_empty() { 36 * 64 } else { 1 };
         let maxes: HashMap<String, u32> =
             costs.iter().map(|c| (c.item.to_string(), max_stack_size(host, &c.item).unwrap_or(64))).collect();
         let mut stock = goals::inventory(doll).unwrap_or_else(|| data.items.clone());

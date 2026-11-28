@@ -395,7 +395,7 @@ pub(crate) fn pressed(window: Rect, mouse: [f32; 2], button: i32, shift: bool) {
                 .trades
                 .get(i)
                 .filter(|t| t.affordable && t.stock > 0)
-                .map(|_| JoonAct::Trade { trade: i as u8, many: shift }),
+                .map(|_| JoonAct::Trade { trade: i as u8, many: shift || right }),
             Hit::Home => Some(JoonAct::Home),
             _ => None,
         };
@@ -463,8 +463,31 @@ pub(crate) fn typed(c: char) {
     });
 }
 
+/// Whether a Shift key is held on her screen, from its own presses and releases: the click's
+/// modifier bits can miss a Shift pressed before the screen had focus.
+static SHIFT: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+fn is_shift(name: &str) -> bool {
+    matches!(name, "key.keyboard.left.shift" | "key.keyboard.right.shift")
+}
+
+pub(crate) fn shift_held() -> bool {
+    SHIFT.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+/// A key let go on her screen.
+pub(crate) fn released(name: &str) {
+    if is_shift(name) {
+        SHIFT.store(false, std::sync::atomic::Ordering::Relaxed);
+    }
+}
+
 /// A key: Backspace in the search, Enter to take the first item it found.
 pub(crate) fn key(name: &str) {
+    if is_shift(name) {
+        SHIFT.store(true, std::sync::atomic::Ordering::Relaxed);
+        return;
+    }
     with(|ui| {
         if !searching(ui) {
             return;
@@ -864,7 +887,7 @@ fn draw_offer(host: &dyn ClientHost, d: &mut dyn DrawContext, v: &JoonView, o: [
     let title = fit(d, &format!("Trade offer from {}", v.owner), PW - 60.0);
     label(d, &title, [o[0] + 8.0, o[1] + 8.0], LABEL);
     right_label(d, &clock(v.secs), o[0] + PW - 8.0, o[1] + 8.0, LABEL);
-    label(d, "Shift-click Trade to trade all you can", [o[0] + 8.0, o[1] + 20.0], DIM);
+    label(d, "Shift- or right-click Trade: trade all you can", [o[0] + 8.0, o[1] + 20.0], DIM);
     if v.trades.is_empty() {
         label(d, "She has nothing to trade", [o[0] + 12.0, o[1] + 36.0], DIM);
     }
